@@ -13,6 +13,7 @@ recordDF = pd.read_csv('FieldRecords.csv')
 #Can reduce GPS API calls by lumping all groups with exactly == coords
 
 #Should notify user of scientific name changes resulting from CoL interaction
+#Was suggested to offer a notification of suggested changes with confirmation dialogs.
 
 def recordCell(row,col,val):
     recordDF.set_value(row,col,val)
