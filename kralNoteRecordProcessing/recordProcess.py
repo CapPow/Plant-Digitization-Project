@@ -18,18 +18,23 @@ recordDF = pd.read_csv('FieldRecords.csv')
 def recordCell(row,col,val):
     recordDF.set_value(row,col,val)
 
+def roundGPSUncertainty():  #Rounds off the uncertainty value.
+    recordDF['coordinateUncertaintyInMeters'] = round(recordDF['coordinateUncertaintyInMeters']).astype(int)
+
 def revGeoLocate(index,record):
-        
     try:
+        
         latitude = record['decimalLatitude']
         longitude = record['decimalLongitude']
-        g = geocoder.google([latitude,longitude],method='reverse')
-
+        
+        gAPI = 'AIzaSyC1RdfLi4N2FhjnhzoMG4hOHpXVfV_9iVM'
+        #g = geocoder.google([latitude,longitude],method='reverse')
+        g = geocoder.google([latitude,longitude],method='reverse',key=gAPI)
+        print(g)
         colDict = {'country':g.country_long,'stateProvince':g.state_long,'county':g.county,'municipality':g.city,'path':g.street}
         #dictionary to store the column name to the cell value.
         autoLocalityList = [] #empty list to build the locality string from
         for item in list(colDict.keys()): #for each key in the dictionary, do stuff..
-
             dictValue = colDict.get(item)
             recordCell(index,item,dictValue)
 
@@ -37,14 +42,25 @@ def revGeoLocate(index,record):
                 autoLocalityList.append(dictValue)
 
         autoLocalityList.append(recordDF.get_value(index,'locality')) #Build locality string.
-
         recordCell(index,'locality',(", ".join(autoLocalityList))) #save this row and move on.
+        retryCounter = 0
 
     except (IOError, ValueError) as e: #IO Error is the return from geocoder recieving bad info. Not sure how to warn user that
                     #some fields will be left blank when this happens. the PRINT is a temporary solution for me.
-        print('IOError, probably bad or missing GPS')
+        print(e,': probably bad or missing GPS')
         pass
-
+    except TypeError as e:
+        print('\n',e, ': GeoLocate Request Denied on index # ',index)
+    except requests.exceptions.Timeout:     #If the web has an issue, wait a second and rety (up to 3 times.)
+        if retryCounter < 3:
+            print('request time out, retrying...')
+            time.sleep(1)
+            revGeoLocate(index,record)
+            retryCounter = retryCounter + 1
+        else:
+            retryCounter = 0
+            print('multiple requests failed, giving up')
+            pass
 
 def CoLNameSearch(index, record):
     try:
@@ -103,18 +119,25 @@ def associatedTaxaConcat(index,record):
     assTaxaGroup = sorted([str(item.rstrip()) for item in assTaxaGroup if not (pd.isnull(item) or item is record['scientificName'])])
     if len(assTaxaGroup) > 0: #are there any other taxa found at this site?
         existingAssTaxa = ', ' + record['associatedTaxa'] #if so, let's add some joiner formatting.
+        
     else:
         existingAssTaxa = record['associatedTaxa'] #if not, don't include the formatting.
-    assTaxaStr = (', '.join(assTaxaGroup) + existingAssTaxa) #then join the user entered to the generated lists
+    if existingAssTaxa == 'nan':             #This is a sloppy fix to occasional nan's slipping through for unknown reasons.
+        existingAssTaxa = ''
+    assTaxaStr = (', '.join(assTaxaGroup) + str(existingAssTaxa)) #then join the user entered to the generated lists
     recordCell(index,'associatedTaxa',assTaxaStr)
 
 
 #################################################
                #Process workflow#
     
-recordDF['siteNum'] = recordDF['othercatalognumbers'].str.split('-').str[0]
+recordDF['siteNum'] = (recordDF['othercatalognumbers'].str.split('-').str[0]).replace("'","")
 recordDF['specNum'] = recordDF['othercatalognumbers'].str.split('-').str[1]
 #Set up site / specimen columns from the field Numbers.
+
+roundGPSUncertainty() #round the uncertenty to whole meters for label brevity
+
+retryCounter = 0 #necessary to keep a run away recursive error loop. (probably a better way to handle this. See revGeoLocate Function's error handling.
 
 for index, record in recordDF.iterrows():
     if  (pd.notnull(record['scientificName']) and record['specNum'].isnumeric()):
@@ -137,5 +160,5 @@ recordDF = recordDF.drop(colDropList,1) #dump the helper columns (DWC won't know
 
 recordDF.to_csv(('processedFieldRecords.csv'),encoding='utf-8') #save the record list as a processed one.
 
-input('Take Note of the Errors and Press Enter To Exit')
-
+input('Take Note of the Errors and Press "Enter" To Exit')
+time.sleep(1)
