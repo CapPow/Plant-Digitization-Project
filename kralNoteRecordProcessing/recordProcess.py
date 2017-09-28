@@ -18,8 +18,9 @@ recordDF = pd.read_csv('FieldRecords.csv')
 def recordCell(row,col,val):
     recordDF.set_value(row,col,val)
 
-def roundGPSUncertainty():  #Rounds off the uncertainty value.
+def roundGPSUncertainty():
     recordDF['coordinateUncertaintyInMeters'] = round(recordDF['coordinateUncertaintyInMeters']).astype(int)
+    print(recordDF['coordinateUncertaintyInMeters'])
 
 def revGeoLocate(index,record):
     try:
@@ -122,10 +123,9 @@ def associatedTaxaConcat(index,record):
         
     else:
         existingAssTaxa = record['associatedTaxa'] #if not, don't include the formatting.
-    if existingAssTaxa == 'nan':             #This is a sloppy fix to occasional nan's slipping through for unknown reasons.
-        existingAssTaxa = ''
     assTaxaStr = (', '.join(assTaxaGroup) + str(existingAssTaxa)) #then join the user entered to the generated lists
-    recordCell(index,'associatedTaxa',assTaxaStr)
+    if not assTaxaStr == 'nan':             #This is a sloppy fix to occasional nan's slipping through for unknown reasons.
+        recordCell(index,'associatedTaxa',assTaxaStr)
 
 
 #################################################
