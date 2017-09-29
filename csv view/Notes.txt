@@ -1,0 +1,5 @@
+Most of this is modified example text found through various tutorials, it is a starting point.
+
+The actual desktop will require some class creation code and seperate frames for seperate "views" of the app.
+
+For now, this accomplishes the opening and displaying of csv data and should offer the ability to import in functions from the record processing module.
