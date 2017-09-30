@@ -3,7 +3,7 @@ from tkinter import Tk, ttk
 from tkinter.filedialog import askopenfilename
 import os
 import csv
-
+from PIL import Image
  
 def donothing():
    x = 0
@@ -30,7 +30,13 @@ def loadCsvFile(name):
 
     
 root = Tk()
-
+def openLogoFile():
+    logoPath = askopenfilename(initialdir=os.getcwd(),filetypes=(('Image Files',('*.jpg','*.png','*.bmp')),),title = 'Select csv File')
+    loadLogoFile(logoPath) #We'll want this path for the print process.
+    
+def loadLogoFile(name):
+   logoImg = Image.open(name)
+    
 menubar = Menu(root)
 filemenu = Menu(menubar, tearoff=0)
 filemenu.add_command(label="New", command=donothing)
@@ -46,11 +52,7 @@ helpmenu.add_command(label="About...", command=donothing)
 menubar.add_cascade(label="Help", menu=helpmenu)
  
 editmenu = Menu(menubar, tearoff=0)
-editmenu.add_command(label="Cut", command=donothing)
-editmenu.add_command(label="Copy", command=donothing)
-editmenu.add_command(label="Past", command=donothing)
-editmenu.add_command(label="Duplicate Line", command=donothing)
-editmenu.add_command(label="Toggle Case", command=donothing)
+editmenu.add_command(label="Select Collection Logo", command=openLogoFile)
 menubar.add_cascade(label="Edit",menu=editmenu)
  
 root.config(menu=menubar)
