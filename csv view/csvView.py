@@ -46,15 +46,15 @@ filemenu.add_separator()
 filemenu.add_command(label="Exit", command=root.destroy)
 menubar.add_cascade(label="File", menu=filemenu)
  
-helpmenu = Menu(menubar, tearoff=0)
-helpmenu.add_command(label="Help Index", command=donothing)
-helpmenu.add_command(label="About...", command=donothing)
-menubar.add_cascade(label="Help", menu=helpmenu)
- 
 editmenu = Menu(menubar, tearoff=0)
 editmenu.add_command(label="Select Collection Logo", command=openLogoFile)
 menubar.add_cascade(label="Edit",menu=editmenu)
  
+helpmenu = Menu(menubar, tearoff=0)
+helpmenu.add_command(label="Help Index", command=donothing)
+helpmenu.add_command(label="About...", command=donothing)
+menubar.add_cascade(label="Help", menu=helpmenu)
+
 root.config(menu=menubar)
 root.mainloop()
 
