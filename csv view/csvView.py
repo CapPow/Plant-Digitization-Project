@@ -56,7 +56,9 @@ def prepCsvAsDataFrame(csvName):
    recordDF = pd.read_csv(csvName) #Read the selected Data into a Pandas DataFrame (Used for record Processing functions)
    recordDF['siteNum'] = (recordDF['othercatalognumbers'].str.split('-').str[0]).replace("'","")
    recordDF['specNum'] = recordDF['othercatalognumbers'].str.split('-').str[1]
-   #Set up site / specimen columns from the field Numbers.
+   if 'scientificName' not in recordDF:
+      recordDF['scientificName'] = ''
+   #Set up site / specimen columns from the field Numbers, add in scientificName field (if not present).
    recordDF['coordinateUncertaintyInMeters'] = round(recordDF['coordinateUncertaintyInMeters']).astype(int)
    #^^^ round the uncertenty to whole meters for label brevity
    global retryCounter
