@@ -84,7 +84,7 @@ def recordProcess():
 def saveProcessedRecords():
    saveFileName = asksaveasfilename(initialdir=os.getcwd(),filetypes=(('csv','*.csv'),),title = 'Save As')
    recordDF.to_csv((saveFileName),encoding='utf-8') #save the record list as a processed one.
-   #^^^^Currently this just dumps it into the folder. "Save As" is probably wise.
+
 
 def revGeoLocate(index,record):
     try:
