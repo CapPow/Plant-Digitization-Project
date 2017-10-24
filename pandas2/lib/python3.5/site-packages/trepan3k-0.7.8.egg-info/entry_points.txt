@@ -1,0 +1,4 @@
+[console_scripts]
+trepan3k = trepan.cli:main
+trepan3kc = trepan.client:main
+
