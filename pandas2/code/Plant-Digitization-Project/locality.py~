@@ -1,0 +1,50 @@
+import time
+import urllib.request
+import urllib.parse
+import urllib.error
+import pandas as pd
+# Python native XML parser
+import xml.etree.ElementTree as ET
+# This should be replaced with an XML alternative using the above import
+import geocoder
+
+def revGeoLocate(index,record):
+    try:
+        latitude = record['decimalLatitude']
+        longitude = record['decimalLongitude']
+        
+        gAPI = "Google API Code Here"
+        g = geocoder.google([latitude,longitude],method='reverse',key=gAPI)
+        print(g)
+        # dictionary to store the column name to the cell value        
+        colDict = {'country':g.country_long,'stateProvince':g.state_long,'county':g.county,'municipality':g.city,'path':g.street}
+        # empty list to build the locality string from
+        autoLocalityList = []
+        for item in list(colDict.keys()):
+            dictValue = colDict.get(item)
+            recordCell(index,item,dictValue)
+            # omit country from the locality string (but still store it in a field)
+            if not (item =='country'):
+                autoLocalityList.append(dictValue)
+        # Build locality string.
+        autoLocalityList.append(recordDF.get_value(index,'locality'))
+        # save this row and move on
+        recordCell(index,'locality',(", ".join(autoLocalityList)))
+        retryCounter = 0
+
+    except (IOError, ValueError) as e: #IO Error is the return from geocoder recieving bad info. Not sure how to warn user that
+                    #some fields will be left blank when this happens. the PRINT is a temporary solution for me.
+        print(e,': probably bad or missing GPS')
+        pass
+    except TypeError as e:
+        print('\n',e, ': GeoLocate Request Denied on index # ',index)
+    except requests.exceptions.Timeout:     #If the web has an issue, wait a second and rety (up to 3 times.)
+        if retryCounter < 3:
+            print('request time out, retrying...')
+            time.sleep(1)
+            revGeoLocate(index,record)
+            retryCounter = retryCounter + 1
+        else:
+            retryCounter = 0
+            print('multiple requests failed, giving up')
+            pass
