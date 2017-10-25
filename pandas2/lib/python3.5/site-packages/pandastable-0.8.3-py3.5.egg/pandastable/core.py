@@ -1814,9 +1814,9 @@ class Table(Canvas):
         self.multiplerowlist.append(self.currentrow)
         self.drawSelectedRect(self.currentrow, self.currentcol)
         self.drawSelectedRow()
-        coltype = self.model.getColumnType(self.currentcol)
-        if coltype == 'text' or coltype == 'number':
-            self.drawCellEntry(self.currentrow, self.currentcol)
+        # coltype = self.model.getColumnType(self.currentcol)
+        # if coltype == 'text' or coltype == 'number':
+        #     self.drawCellEntry(self.currentrow, self.currentcol)
         return
 
     def gotonextRow(self):
@@ -1832,9 +1832,9 @@ class Table(Canvas):
         self.multiplerowlist.append(self.currentrow)
         self.drawSelectedRect(self.currentrow, self.currentcol)
         self.drawSelectedRow()
-        coltype = self.model.getColumnType(self.currentcol)
-        if coltype == 'text' or coltype == 'number':
-            self.drawCellEntry(self.currentrow, self.currentcol)
+        # coltype = self.model.getColumnType(self.currentcol)
+        # if coltype == 'text' or coltype == 'number':
+        #     self.drawCellEntry(self.currentrow, self.currentcol)
         return
 
     def handle_left_click(self, event):
@@ -3265,31 +3265,58 @@ class Table(Canvas):
     # and makes call to function defined in locality module
     # here self is a Table, self refers to calling object
     # used in function's that are part of a class
+    # this needs to stop at end of row (need a row count)
+    # this also needs to check for duplicate locality values
+    # save api calls by detecting close gps values (what is close enough?)
     def dolittle(self):
-        # this needs to stop at end of row (need a row count)
-        # this also needs to check for duplicate locality values
-        # save api calls by detecting close gps values (what is close enough?)
         currentRow = self.currentrow
-        currentRecord = self.model.getRecordAtRow(currentRow)
+        while currentRow < int(self.model.getRowCount() - 1):
+            print("looped once")
+            currentRow = self.currentrow
+            currentRecord = self.model.getRecordAtRow(currentRow)
+            localityIndex = self.findColumnIndex('locality')
+            print("current row: " + str(currentRow))
+            print("row count: " + str(self.model.getRowCount()))
+            if localityIndex != '':
+                # localityIndex returns empty string if not set
+                locality = self.model.getValueAt(currentRow, localityIndex)
+                print("locality is: " + str(locality))
+                latitude = currentRecord['decimalLatitude']
+                longitude = currentRecord['decimalLongitude']
+                address = genLocality(latitude, longitude)
+                
+            # check for locality variable existence in local variables to dolittle
+            if 'locality' in locals():
+                print("hit locality in table")
+                localityAddressAdded = locality + ' Address: ' + address
+                self.model.setValueAt(localityAddressAdded, currentRow, localityIndex)
+                self.redraw()
+                self.gotonextRow()
+            else:
+                # add a popup error
+                # needs some formatting but functional enough for now
+                popupError = Toplevel()
+                popupError.title("Error in Locality Generator")
+                message1 = Message(popupError, text="Error in locality function at row.")
+                message2 = Message(popupError, text="Could be caused by lack of lat or long values.")
+                message3 = Message(popupError, text="Also, if there's no column with header 'locality' this will fail.")
+                message1.pack()
+                message2.pack()
+                message3.pack()
+                button = Button(popupError, text="Next Row", command=popupError.destroy)
+                button.pack()
+                self.gotonextRow()
+        return
+
+    # columnLabel should be a string
+    def findColumnIndex(self, columnLabel):
+        columnIndex = ''
         for column in range(0,self.model.getColumnCount()):
             # do we need to modify this for flexibility on column name
-
-            if self.model.getColumnName(column) == 'locality':
+            if self.model.getColumnName(column) == columnLabel:
                 columnIndex = column
-        if columnIndex:
-            locality = self.model.getValueAt(currentRow, columnIndex)
-        
-        latitude = currentRecord['decimalLatitude']
-        longitude = currentRecord['decimalLongitude']
-        address = genLocality(latitude, longitude)
+        return columnIndex
 
-        localityAddressAdded = locality + ' Address: ' + address
-        # print(localityAddressAdded)
-        self.model.setValueAt(localityAddressAdded, currentRow, columnIndex)
-        self.redraw()
-        self.gotonextRow()
-        return
-    
     def load(self, filename=None):
         """load from a file"""
         if filename == None:
@@ -3361,6 +3388,17 @@ class Table(Canvas):
         model = TableModel(dataframe=df)
         self.updateModel(model)
         self.redraw()
+        # row highlighter should be on first row when a new file is loaded
+        # if self.currentrow > 0:
+        #     print("resetting current row to 0")
+        #     while self.currentrow > 0:
+        #         self.gotoprevRow()
+        
+        # set selected row to 0 on import
+        self.setSelectedRow(0)
+        self.drawSelectedRow()
+        # at first row; at first cell
+        self.drawSelectedRect(0,0)
         self.importpath = os.path.dirname(filename)
         return
 

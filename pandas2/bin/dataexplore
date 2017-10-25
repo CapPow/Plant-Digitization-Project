@@ -1,4 +1,4 @@
-#!/home/jacob/Programming/Projects/Plant_Digitization/pandas2/bin/python3
+#!/home/jacob/Programming/Projects/Plant-Digitization-Project/pandas2/bin/python3
 # EASY-INSTALL-ENTRY-SCRIPT: 'pandastable==0.8.3','gui_scripts','dataexplore'
 __requires__ = 'pandastable==0.8.3'
 import sys
