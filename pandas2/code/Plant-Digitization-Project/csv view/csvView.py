@@ -125,7 +125,7 @@ def revGeoLocate(index,record):
             retryCounter = 0
             print('multiple requests failed, giving up')
             pass
-
+# catalogue of life name search
 def CoLNameSearch(index, record):
     try:
 

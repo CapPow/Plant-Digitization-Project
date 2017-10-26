@@ -127,6 +127,11 @@ class Table(Canvas):
         self.plotted = False
         self.importpath = None
         self.prevdf = None
+
+        # list of dictionaries that include each unique GPS and address components
+        # how should the list look (variable name of dict? or none?)
+        # empty list for now
+        self.uniqueLocality = []
         return
 
     def set_defaults(self):
@@ -3264,44 +3269,95 @@ class Table(Canvas):
     # this needs to stop at end of row (need a row count) (DONE)
     # this also needs to check for duplicate locality values (TODO)
     # save api calls by detecting close gps values (what is close enough?)
+    # currentDF = print(str(type(self.model.df))) -----> Table Model instance does have a dataframe attribute
+    # currentDF = print(str(type(self.df))) -----------> Table instance has not dataframe attribute
     def dolittle(self):
         currentRow = self.currentrow
         while currentRow < int(self.model.getRowCount() - 1):
-            print("looped once")
             currentRow = self.currentrow
             currentRecord = self.model.getRecordAtRow(currentRow)
             localityIndex = self.findColumnIndex('locality')
-            print("current row: " + str(currentRow))
-            print("row count: " + str(self.model.getRowCount()))
+            # check to ensure there is a column named locality
             if localityIndex != '':
-                # localityIndex returns empty string if not set
                 locality = self.model.getValueAt(currentRow, localityIndex)
-                print("locality is: " + str(locality))
-                latitude = currentRecord['decimalLatitude']
-                longitude = currentRecord['decimalLongitude']
-                address = genLocality(latitude, longitude)
+                # round latitude and longitude to 1000th
+                latitude = round(float(currentRecord['decimalLatitude']), 3)
+                longitude = round(float(currentRecord['decimalLongitude']), 3)
+                # filter will return a dictionary if matching lat/long exists
+                latMatch = filter(lambda elem: elem['latitude'] == str(latitude), self.uniqueLocality)
+                longMatch = filter( lambda elem: elem['longitude'] == str(longitude), self.uniqueLocality)
                 
-            # check for locality variable existence in local variables to dolittle
-            if 'locality' in locals():
-                print("hit locality in table")
-                localityAddressAdded = locality + ' Address: ' + address
-                self.model.setValueAt(localityAddressAdded, currentRow, localityIndex)
-                self.redraw()
-                self.gotonextRow()
+                if latMatch and longMatch:
+                    # use old locality string from dictionary
+                    self.model.setValueAt(latMatch['localityString'], currentRow, localityIndex)
+                    self.redraw()
+                    self.gotonextRow()
+                    return
+                else:
+                    address = genLocality(latitude, longitude)
+                    # error handling here for genLocality call
+                    for addressComponent in address:
+                        if addressComponent['types'][0] == 'street_number':
+                            streetNumber = addressComponent['long_name']
+                        if addressComponent['types'][0] == 'route':
+                            streetName = addressComponent['long_name']
+                        if addressComponent['types'][0] == 'administrative_area_level_1':
+                            stateProvince = addressComponent['long_name']
+                        if addressComponent['types'][0] == 'administrative_area_level_2':
+                            county = addressComponent['long_name']
+                        if addressComponent['types'][0] == 'locality':
+                            municipality = addressComponent['long_name']
+                        if addressComponent['types'][0] == 'country':
+                            country = addressComponent['long_name']
+
+                    # assuming we'll have either a street number or street name returned from google
+                    # if we don't theres no back up case as of now
+                    if 'streetNumber' in locals():
+                        if stateProvince and county and municipality and country:
+                            # add whatever separators we want for locality string here
+                            addressString = str(streetNumber) + ' ' + str(streetName) + '. ' + str(municipality) + ' ' + str(county) + ' ' + str(stateProvince) + ' ' + str(country) + '.'
+                            tempDict = {'latitude': str(latitude), 'longitude': str(longitude), 'path': str(streetNumber) + ' ' + str(streetName),
+                                    'municipality': str(municipality), 'county': str(county), 'stateProvince': str(stateProvince),
+                                    'country': str(country), 'localityString': addressString}
+                    
+                    elif 'streetName' in locals():
+                        if stateProvince and county and municipality and country:
+                            # add whatever separators we want for locality string here
+                            addressString = str(streetName) + '. ' + str(municipality) + ' ' + str(county) + ' ' + str(stateProvince) + ' ' + str(country) + '.'
+                            tempDict = {'latitude': str(latitude), 'longitude': str(longitude), 'path': str(streetName),
+                                    'municipality': str(municipality), 'county': str(county), 'stateProvince': str(stateProvince),
+                                    'country': str(country), 'localityString': addressString}
+                            
+                    else:
+                        # for now we'll have an error as backup
+                        # what should we do if we can only get city... probably won't be useful
+                        # may not ever happen though
+                        popupError = Toplevel()
+                        popupError.title("Error in Locality Generator")
+                        message1 = Message(popupError, text="No Street Name or Street Number.")
+                        message1.pack()
+                        button = Button(popupError, text="OK", command=popupError.destroy)
+                        button.pack()
+                        self.gotonextRow()
+                        return
+                    
+                    self.uniqueLocality.append(tempDict)
+                    localityAddressAdded = locality + ' Address: ' + addressString
+                    self.model.setValueAt(localityAddressAdded, currentRow, localityIndex)
+                    self.redraw()
+                    self.gotonextRow()
+                    return
             else:
-                # add a popup error
-                # needs some formatting but functional enough for now
-                popupError = Toplevel()
-                popupError.title("Error in Locality Generator")
-                message1 = Message(popupError, text="Error in locality function at row.")
-                message2 = Message(popupError, text="Could be caused by lack of lat or long values.")
-                message3 = Message(popupError, text="Also, if there's no column with header 'locality' this will fail.")
-                message1.pack()
-                message2.pack()
-                message3.pack()
-                button = Button(popupError, text="Next Row", command=popupError.destroy)
-                button.pack()
-                self.gotonextRow()
+            popupError = Toplevel()
+            popupError.title("Error in Locality Generator")
+            message3 = Message(popupError, text="If there is no column with header 'locality' this function will fail.")
+            message4 = Message(popupError, text="This should not be an issue if you're using Kral Mobile!")
+            message3.pack()
+            message4.pack()
+            button = Button(popupError, text="OK", command=popupError.destroy)
+            button.pack()
+            self.gotonextRow()
+            return
         return
 
     # columnLabel should be a string

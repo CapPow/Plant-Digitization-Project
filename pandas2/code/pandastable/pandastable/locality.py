@@ -2,15 +2,19 @@
 # License
 import requests
 
-
+# status codes
+# link -> https://developers.google.com/maps/documentation/geocoding/intro#StatusCodes
+# link -> https://developers.google.com/maps/documentation/geocoding/intro#ReverseGeocoding
 def genLocality(latitude, longitude):
     apiKey = 'AIzaSyCwugFdGLz6QUtcYqD1z0PKKsYJhay3vIg'
     apiUrl = 'https://maps.googleapis.com/maps/api/geocode/json?latlng=' + str(latitude) + ',' + str(longitude) + '&key=' + apiKey
-    # add some error checking for api call
     apiCall = requests.get(apiUrl)
+    # error checking here
+    status = apiCall.json()['status']
+    
     results = apiCall.json()['results']
-    formattedAddress = results[0]['formatted_address']
-    return formattedAddress
+    addressComponents = results[0]['address_components']
+    return addressComponents
 
 
 def dolittle():

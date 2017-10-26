@@ -127,6 +127,11 @@ class Table(Canvas):
         self.plotted = False
         self.importpath = None
         self.prevdf = None
+
+        # list of dictionaries that include each unique GPS and address components
+        # how should the list look (variable name of dict? or none?)
+        # empty list for now
+        self.uniqueLocality = []
         return
 
     def set_defaults(self):
@@ -3260,16 +3265,14 @@ class Table(Canvas):
             self.updateModel(model)
         return
 
-    # function that takes
-    # (self)
-    # and makes call to function defined in locality module
-    # here self is a Table, self refers to calling object
-    # used in function's that are part of a class
-    # this needs to stop at end of row (need a row count)
-    # this also needs to check for duplicate locality values
+    # makes call to function defined in locality module
+    # this needs to stop at end of row (need a row count) (DONE)
+    # this also needs to check for duplicate locality values (TODO)
     # save api calls by detecting close gps values (what is close enough?)
     def dolittle(self):
         currentRow = self.currentrow
+        # currentDF = print(str(type(self.model.df))) -----> Table Model instance does have a dataframe attribute
+        # currentDF = print(str(type(self.df))) -----------> Table instance has not dataframe attribute
         while currentRow < int(self.model.getRowCount() - 1):
             print("looped once")
             currentRow = self.currentrow
@@ -3277,18 +3280,68 @@ class Table(Canvas):
             localityIndex = self.findColumnIndex('locality')
             print("current row: " + str(currentRow))
             print("row count: " + str(self.model.getRowCount()))
+            # check to ensure there is a column named locality
             if localityIndex != '':
-                # localityIndex returns empty string if not set
                 locality = self.model.getValueAt(currentRow, localityIndex)
                 print("locality is: " + str(locality))
                 latitude = currentRecord['decimalLatitude']
                 longitude = currentRecord['decimalLongitude']
                 address = genLocality(latitude, longitude)
-                
-            # check for locality variable existence in local variables to dolittle
-            if 'locality' in locals():
-                print("hit locality in table")
-                localityAddressAdded = locality + ' Address: ' + address
+                # playing with address_components list to find way to it's components
+                # address is a list of dictionaries
+                # guaranteed to have 8 elements
+                # order should be guaranteed as well
+                for addressComponent in address:
+                    # street number
+                    if addressComponent['types'][0] == 'street_number':
+                        streetNumber = addressComponent['long_name']
+                    # street name
+                    if addressComponent['types'][0] == 'route':
+                        streetName = addressComponent['long_name']
+                    # state
+                    if addressComponent['types'][0] == 'administrative_area_level_1':
+                        stateProvince = addressComponent['long_name']
+                    # county
+                    if addressComponent['types'][0] == 'administrative_area_level_2':
+                        county = addressComponent['long_name']
+                    # city
+                    if addressComponent['types'][0] == 'locality':
+                        municipality = addressComponent['long_name']
+                    # country
+                    if addressComponent['types'][0] == 'country':
+                        country = addressComponent['long_name']
+
+                # add address components to dictionary, including latitude and longitude
+                # double check existence of each
+                # and do a str cast
+                # have to check locals if it may not exist
+                # local references variables local to dolittle
+                if 'streetNumber' in locals():
+                    if stateProvince and county and municipality and country:
+                    # put components into dictionary
+                        tempDict = {'latitude': str(latitude), 'longitude': str(longitude), 'path': str(streetNumber) + ' ' + str(streetName),
+                                    'municipality': str(municipality), 'county': str(county), 'stateProvince': str(stateProvince),
+                                    'country': str(country)}
+                        # add whatever separators we want for locality string here
+                        addressString = str(streetNumber) + ' ' + str(streetName) + '. ' + str(municipality) + ' ' + str(county) + ' ' + str(stateProvince) + ' ' + str(country) + '.'
+                if 'streetName' in locals():
+                    if stateProvince and county and municipality and country:
+                    # put components into dictionary
+                        tempDict = {'latitude': str(latitude), 'longitude': str(longitude), 'path': str(streetName),
+                                    'municipality': str(municipality), 'county': str(county), 'stateProvince': str(stateProvince),
+                                    'country': str(country)}
+                        # add whatever separators we want for locality string here
+                        addressString = str(streetName) + '. ' + str(municipality) + ' ' + str(county) + ' ' + str(stateProvince) + ' ' + str(country) + '.'
+                # append dictionary to unqiueLocality
+                if tempDict:
+                    self.uniqueLocality.append(tempDict)
+            # check for locality variable existence in current row
+            # perform more checks here
+            # need to ensure the google api returns OK
+            # status codes
+            # link -> https://developers.google.com/maps/documentation/geocoding/intro#StatusCodes
+            if 'locality' and 'addressString' in locals():
+                localityAddressAdded = locality + ' Address: ' + addressString
                 self.model.setValueAt(localityAddressAdded, currentRow, localityIndex)
                 self.redraw()
                 self.gotonextRow()
@@ -3306,6 +3359,7 @@ class Table(Canvas):
                 button = Button(popupError, text="Next Row", command=popupError.destroy)
                 button.pack()
                 self.gotonextRow()
+                return
         return
 
     # columnLabel should be a string
