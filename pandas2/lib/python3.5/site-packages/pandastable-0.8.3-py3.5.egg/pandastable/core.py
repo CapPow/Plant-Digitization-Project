@@ -3269,94 +3269,103 @@ class Table(Canvas):
     # this needs to stop at end of row (need a row count) (DONE)
     # this also needs to check for duplicate locality values (TODO)
     # save api calls by detecting close gps values (what is close enough?)
+    # currentDF = print(str(type(self.model.df))) -----> Table Model instance does have a dataframe attribute
+    # currentDF = print(str(type(self.df))) -----------> Table instance has not dataframe attribute
     def dolittle(self):
         currentRow = self.currentrow
-        # currentDF = print(str(type(self.model.df))) -----> Table Model instance does have a dataframe attribute
-        # currentDF = print(str(type(self.df))) -----------> Table instance has not dataframe attribute
         while currentRow < int(self.model.getRowCount() - 1):
-            print("looped once")
             currentRow = self.currentrow
             currentRecord = self.model.getRecordAtRow(currentRow)
             localityIndex = self.findColumnIndex('locality')
-            print("current row: " + str(currentRow))
-            print("row count: " + str(self.model.getRowCount()))
             # check to ensure there is a column named locality
             if localityIndex != '':
                 locality = self.model.getValueAt(currentRow, localityIndex)
-                print("locality is: " + str(locality))
-                latitude = currentRecord['decimalLatitude']
-                longitude = currentRecord['decimalLongitude']
-                address = genLocality(latitude, longitude)
-                # playing with address_components list to find way to it's components
-                # address is a list of dictionaries
-                # guaranteed to have 8 elements
-                # order should be guaranteed as well
-                for addressComponent in address:
-                    # street number
-                    if addressComponent['types'][0] == 'street_number':
-                        streetNumber = addressComponent['long_name']
-                    # street name
-                    if addressComponent['types'][0] == 'route':
-                        streetName = addressComponent['long_name']
-                    # state
-                    if addressComponent['types'][0] == 'administrative_area_level_1':
-                        stateProvince = addressComponent['long_name']
-                    # county
-                    if addressComponent['types'][0] == 'administrative_area_level_2':
-                        county = addressComponent['long_name']
-                    # city
-                    if addressComponent['types'][0] == 'locality':
-                        municipality = addressComponent['long_name']
-                    # country
-                    if addressComponent['types'][0] == 'country':
-                        country = addressComponent['long_name']
+                # round latitude and longitude to 1000th
+                latitude = round(float(currentRecord['decimalLatitude']), 3)
+                longitude = round(float(currentRecord['decimalLongitude']), 3)
+                # filter will return a dictionary if matching lat/long exists
+                latMatch = list(filter(lambda elem: elem['latitude'] == str(latitude), self.uniqueLocality))
+                longMatch = list(filter( lambda elem: elem['longitude'] == str(longitude), self.uniqueLocality))
 
-                # add address components to dictionary, including latitude and longitude
-                # double check existence of each
-                # and do a str cast
-                # have to check locals if it may not exist
-                # local references variables local to dolittle
-                if 'streetNumber' in locals():
-                    if stateProvince and county and municipality and country:
-                    # put components into dictionary
-                        tempDict = {'latitude': str(latitude), 'longitude': str(longitude), 'path': str(streetNumber) + ' ' + str(streetName),
+                if latMatch and longMatch and latMatch != [] and longMatch != []:
+                    # use old locality string from dictionary
+                    addressString = latMatch[0]['localityString']
+                    localityAddressAdded = locality + ' Address: ' + addressString
+                    self.model.setValueAt(localityAddressAdded, currentRow, localityIndex)
+                    self.redraw()
+                    self.gotonextRow()
+                else:
+                    address = genLocality(latitude, longitude)
+                    if isinstance(address, list):
+                        for addressComponent in address:
+                            if addressComponent['types'][0] == 'street_number':
+                                streetNumber = addressComponent['long_name']
+                            if addressComponent['types'][0] == 'route':
+                                streetName = addressComponent['long_name']
+                            if addressComponent['types'][0] == 'administrative_area_level_1':
+                                stateProvince = addressComponent['long_name']
+                            if addressComponent['types'][0] == 'administrative_area_level_2':
+                                county = addressComponent['long_name']
+                            if addressComponent['types'][0] == 'locality':
+                                municipality = addressComponent['long_name']
+                            if addressComponent['types'][0] == 'country':
+                                country = addressComponent['long_name']
+
+                        # assuming we'll have either a street number or street name returned from google
+                        # if we don't theres no back up case as of now
+                        if 'streetNumber' in locals():
+                            if stateProvince and county and municipality and country:
+                                # add whatever separators we want for locality string here
+                                addressString = str(streetNumber) + ' ' + str(streetName) + '. ' + str(municipality) + ' ' + str(county) + ' ' + str(stateProvince) + ' ' + str(country) + '.'
+                                tempDict = {'latitude': str(latitude), 'longitude': str(longitude), 'path': str(streetNumber) + ' ' + str(streetName), 'municipality': str(municipality), 'county': str(county), 'stateProvince': str(stateProvince), 'country': str(country), 'localityString': addressString}
+
+                        elif 'streetName' in locals():
+                            if stateProvince and county and municipality and country:
+                                # add whatever separators we want for locality string here
+                                addressString = str(streetName) + '. ' + str(municipality) + ' ' + str(county) + ' ' + str(stateProvince) + ' ' + str(country) + '.'
+                                tempDict = {'latitude': str(latitude), 'longitude': str(longitude), 'path': str(streetName),
                                     'municipality': str(municipality), 'county': str(county), 'stateProvince': str(stateProvince),
-                                    'country': str(country)}
-                        # add whatever separators we want for locality string here
-                        addressString = str(streetNumber) + ' ' + str(streetName) + '. ' + str(municipality) + ' ' + str(county) + ' ' + str(stateProvince) + ' ' + str(country) + '.'
-                if 'streetName' in locals():
-                    if stateProvince and county and municipality and country:
-                    # put components into dictionary
-                        tempDict = {'latitude': str(latitude), 'longitude': str(longitude), 'path': str(streetName),
-                                    'municipality': str(municipality), 'county': str(county), 'stateProvince': str(stateProvince),
-                                    'country': str(country)}
-                        # add whatever separators we want for locality string here
-                        addressString = str(streetName) + '. ' + str(municipality) + ' ' + str(county) + ' ' + str(stateProvince) + ' ' + str(country) + '.'
-                # append dictionary to unqiueLocality
-                if tempDict:
-                    self.uniqueLocality.append(tempDict)
-            # check for locality variable existence in current row
-            # perform more checks here
-            # need to ensure the google api returns OK
-            # status codes
-            # link -> https://developers.google.com/maps/documentation/geocoding/intro#StatusCodes
-            if 'locality' and 'addressString' in locals():
-                localityAddressAdded = locality + ' Address: ' + addressString
-                self.model.setValueAt(localityAddressAdded, currentRow, localityIndex)
-                self.redraw()
-                self.gotonextRow()
+                                    'country': str(country), 'localityString': addressString}
+
+                        else:
+                            # for now we'll have an error as backup
+                            # what should we do if we can only get city... probably won't be useful
+                            # may not ever happen though
+                            popupError = Toplevel()
+                            popupError.title("Error in Locality Generator")
+                            message1 = Message(popupError, text="No Street Name or Street Number.")
+                            message1.pack()
+                            button = Button(popupError, text="OK", command=popupError.destroy)
+                            button.pack()
+                            self.gotonextRow()
+                            return
+                    
+                        self.uniqueLocality.append(tempDict)
+                        localityAddressAdded = locality + ' Address: ' + addressString
+                        self.model.setValueAt(localityAddressAdded, currentRow, localityIndex)
+                        self.redraw()
+                        self.gotonextRow()
+                    # address is a string, this indicates an error message has been returned
+                    # could also indicate that we've passed the limit of alloted API calls
+                    else:
+                        popupError = Toplevel()
+                        popupError.title("Error in Google API Call")
+                        message1 = Message(popupError, text="Are you connected to the internet?")
+                        message2 = Message(popupError, text="Some parts of this program require an internet connection!")
+                        message1.pack()
+                        message2.pack()
+                        button = Button(popupError, text="OK", command=popupError.destroy)
+                        button.pack()
+                        self.gotonextRow()
+                        return
             else:
-                # add a popup error
-                # needs some formatting but functional enough for now
                 popupError = Toplevel()
                 popupError.title("Error in Locality Generator")
-                message1 = Message(popupError, text="Error in locality function at row.")
-                message2 = Message(popupError, text="Could be caused by lack of lat or long values.")
-                message3 = Message(popupError, text="Also, if there's no column with header 'locality' this will fail.")
-                message1.pack()
-                message2.pack()
+                message3 = Message(popupError, text="If there is no column with header 'locality' this function will fail.")
+                message4 = Message(popupError, text="This should not be an issue if you're using Kral Mobile!")
                 message3.pack()
-                button = Button(popupError, text="Next Row", command=popupError.destroy)
+                message4.pack()
+                button = Button(popupError, text="OK", command=popupError.destroy)
                 button.pack()
                 self.gotonextRow()
                 return

@@ -3284,80 +3284,91 @@ class Table(Canvas):
                 latitude = round(float(currentRecord['decimalLatitude']), 3)
                 longitude = round(float(currentRecord['decimalLongitude']), 3)
                 # filter will return a dictionary if matching lat/long exists
-                latMatch = filter(lambda elem: elem['latitude'] == str(latitude), self.uniqueLocality)
-                longMatch = filter( lambda elem: elem['longitude'] == str(longitude), self.uniqueLocality)
-                
-                if latMatch and longMatch:
-                    # use old locality string from dictionary
-                    self.model.setValueAt(latMatch['localityString'], currentRow, localityIndex)
-                    self.redraw()
-                    self.gotonextRow()
-                    return
-                else:
-                    address = genLocality(latitude, longitude)
-                    # error handling here for genLocality call
-                    for addressComponent in address:
-                        if addressComponent['types'][0] == 'street_number':
-                            streetNumber = addressComponent['long_name']
-                        if addressComponent['types'][0] == 'route':
-                            streetName = addressComponent['long_name']
-                        if addressComponent['types'][0] == 'administrative_area_level_1':
-                            stateProvince = addressComponent['long_name']
-                        if addressComponent['types'][0] == 'administrative_area_level_2':
-                            county = addressComponent['long_name']
-                        if addressComponent['types'][0] == 'locality':
-                            municipality = addressComponent['long_name']
-                        if addressComponent['types'][0] == 'country':
-                            country = addressComponent['long_name']
+                latMatch = list(filter(lambda elem: elem['latitude'] == str(latitude), self.uniqueLocality))
+                longMatch = list(filter( lambda elem: elem['longitude'] == str(longitude), self.uniqueLocality))
 
-                    # assuming we'll have either a street number or street name returned from google
-                    # if we don't theres no back up case as of now
-                    if 'streetNumber' in locals():
-                        if stateProvince and county and municipality and country:
-                            # add whatever separators we want for locality string here
-                            addressString = str(streetNumber) + ' ' + str(streetName) + '. ' + str(municipality) + ' ' + str(county) + ' ' + str(stateProvince) + ' ' + str(country) + '.'
-                            tempDict = {'latitude': str(latitude), 'longitude': str(longitude), 'path': str(streetNumber) + ' ' + str(streetName),
-                                    'municipality': str(municipality), 'county': str(county), 'stateProvince': str(stateProvince),
-                                    'country': str(country), 'localityString': addressString}
-                    
-                    elif 'streetName' in locals():
-                        if stateProvince and county and municipality and country:
-                            # add whatever separators we want for locality string here
-                            addressString = str(streetName) + '. ' + str(municipality) + ' ' + str(county) + ' ' + str(stateProvince) + ' ' + str(country) + '.'
-                            tempDict = {'latitude': str(latitude), 'longitude': str(longitude), 'path': str(streetName),
-                                    'municipality': str(municipality), 'county': str(county), 'stateProvince': str(stateProvince),
-                                    'country': str(country), 'localityString': addressString}
-                            
-                    else:
-                        # for now we'll have an error as backup
-                        # what should we do if we can only get city... probably won't be useful
-                        # may not ever happen though
-                        popupError = Toplevel()
-                        popupError.title("Error in Locality Generator")
-                        message1 = Message(popupError, text="No Street Name or Street Number.")
-                        message1.pack()
-                        button = Button(popupError, text="OK", command=popupError.destroy)
-                        button.pack()
-                        self.gotonextRow()
-                        return
-                    
-                    self.uniqueLocality.append(tempDict)
+                if latMatch and longMatch and latMatch != [] and longMatch != []:
+                    # use old locality string from dictionary
+                    addressString = latMatch[0]['localityString']
                     localityAddressAdded = locality + ' Address: ' + addressString
                     self.model.setValueAt(localityAddressAdded, currentRow, localityIndex)
                     self.redraw()
                     self.gotonextRow()
-                    return
+                else:
+                    address = genLocality(latitude, longitude)
+                    if isinstance(address, list):
+                        for addressComponent in address:
+                            if addressComponent['types'][0] == 'street_number':
+                                streetNumber = addressComponent['long_name']
+                            if addressComponent['types'][0] == 'route':
+                                streetName = addressComponent['long_name']
+                            if addressComponent['types'][0] == 'administrative_area_level_1':
+                                stateProvince = addressComponent['long_name']
+                            if addressComponent['types'][0] == 'administrative_area_level_2':
+                                county = addressComponent['long_name']
+                            if addressComponent['types'][0] == 'locality':
+                                municipality = addressComponent['long_name']
+                            if addressComponent['types'][0] == 'country':
+                                country = addressComponent['long_name']
+
+                        # assuming we'll have either a street number or street name returned from google
+                        # if we don't theres no back up case as of now
+                        if 'streetNumber' in locals():
+                            if stateProvince and county and municipality and country:
+                                # add whatever separators we want for locality string here
+                                addressString = str(streetNumber) + ' ' + str(streetName) + '. ' + str(municipality) + ' ' + str(county) + ' ' + str(stateProvince) + ' ' + str(country) + '.'
+                                tempDict = {'latitude': str(latitude), 'longitude': str(longitude), 'path': str(streetNumber) + ' ' + str(streetName), 'municipality': str(municipality), 'county': str(county), 'stateProvince': str(stateProvince), 'country': str(country), 'localityString': addressString}
+
+                        elif 'streetName' in locals():
+                            if stateProvince and county and municipality and country:
+                                # add whatever separators we want for locality string here
+                                addressString = str(streetName) + '. ' + str(municipality) + ' ' + str(county) + ' ' + str(stateProvince) + ' ' + str(country) + '.'
+                                tempDict = {'latitude': str(latitude), 'longitude': str(longitude), 'path': str(streetName),
+                                    'municipality': str(municipality), 'county': str(county), 'stateProvince': str(stateProvince),
+                                    'country': str(country), 'localityString': addressString}
+
+                        else:
+                            # for now we'll have an error as backup
+                            # what should we do if we can only get city... probably won't be useful
+                            # may not ever happen though
+                            popupError = Toplevel()
+                            popupError.title("Error in Locality Generator")
+                            message1 = Message(popupError, text="No Street Name or Street Number.")
+                            message1.pack()
+                            button = Button(popupError, text="OK", command=popupError.destroy)
+                            button.pack()
+                            self.gotonextRow()
+                            return
+                    
+                        self.uniqueLocality.append(tempDict)
+                        localityAddressAdded = locality + ' Address: ' + addressString
+                        self.model.setValueAt(localityAddressAdded, currentRow, localityIndex)
+                        self.redraw()
+                        self.gotonextRow()
+                    # address is a string, this indicates an error message has been returned
+                    # could also indicate that we've passed the limit of alloted API calls
+                    else:
+                        popupError = Toplevel()
+                        popupError.title("Error in Google API Call")
+                        message1 = Message(popupError, text="Are you connected to the internet?")
+                        message2 = Message(popupError, text="Some parts of this program require an internet connection!")
+                        message1.pack()
+                        message2.pack()
+                        button = Button(popupError, text="OK", command=popupError.destroy)
+                        button.pack()
+                        self.gotonextRow()
+                        return
             else:
-            popupError = Toplevel()
-            popupError.title("Error in Locality Generator")
-            message3 = Message(popupError, text="If there is no column with header 'locality' this function will fail.")
-            message4 = Message(popupError, text="This should not be an issue if you're using Kral Mobile!")
-            message3.pack()
-            message4.pack()
-            button = Button(popupError, text="OK", command=popupError.destroy)
-            button.pack()
-            self.gotonextRow()
-            return
+                popupError = Toplevel()
+                popupError.title("Error in Locality Generator")
+                message3 = Message(popupError, text="If there is no column with header 'locality' this function will fail.")
+                message4 = Message(popupError, text="This should not be an issue if you're using Kral Mobile!")
+                message3.pack()
+                message4.pack()
+                button = Button(popupError, text="OK", command=popupError.destroy)
+                button.pack()
+                self.gotonextRow()
+                return
         return
 
     # columnLabel should be a string
