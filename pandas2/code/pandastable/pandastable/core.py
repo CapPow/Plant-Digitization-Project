@@ -2475,7 +2475,7 @@ class Table(Canvas):
                         "Clean Data" : self.cleanData,
                         "Clear Formatting" : self.clearFormatting}
 
-        main = ["Do Little","Copy", "Undo", "Fill Down", #"Fill Right",
+        main = ["Copy", "Undo", "Fill Down", #"Fill Right",
                 "Clear Data", "Set Color"]
         general = ["Select All", "Filter Rows",
                    "Show as Text", "Table Info", "Preferences"]
@@ -3277,6 +3277,12 @@ class Table(Canvas):
             currentRow = self.currentrow
             currentRecord = self.model.getRecordAtRow(currentRow)
             localityIndex = self.findColumnIndex('locality')
+            # get index values that correspond with Darwin Core address components
+            pathIndex = self.findColumnIndex('path')
+            municipalityIndex = self.findColumnIndex('municipality')
+            countyIndex = self.findColumnIndex('county')
+            stateProvinceIndex = self.findColumnIndex('stateProvince')
+            countryIndex = self.findColumnIndex('country')
             # check to ensure there is a column named locality
             if localityIndex != '':
                 locality = self.model.getValueAt(currentRow, localityIndex)
@@ -3290,8 +3296,18 @@ class Table(Canvas):
                 if latMatch and longMatch and latMatch != [] and longMatch != []:
                     # use old locality string from dictionary
                     addressString = latMatch[0]['localityString']
-                    localityAddressAdded = locality + ' Address: ' + addressString
+                    localityAddressAdded = locality + ' ' + addressString
                     self.model.setValueAt(localityAddressAdded, currentRow, localityIndex)
+                    if pathIndex != '':
+                        self.model.setValueAt(latMatch[0]['path'], currentRow, pathIndex)
+                    if municipalityIndex != '':
+                        self.model.setValueAt(latMatch[0]['municipality'], currentRow, municipalityIndex)
+                    if countyIndex != '':
+                        self.model.setValueAt(latMatch[0]['county'], currentRow, countyIndex)
+                    if stateProvinceIndex != '':
+                        self.model.setValueAt(latMatch[0]['stateProvince'], currentRow, stateProvinceIndex)
+                    if countryIndex != '':
+                        self.model.setValueAt(latMatch[0]['country'], currentRow, countryIndex)
                     self.redraw()
                     self.gotonextRow()
                 else:
@@ -3312,7 +3328,8 @@ class Table(Canvas):
                                 country = addressComponent['long_name']
 
                         # assuming we'll have either a street number or street name returned from google
-                        # if we don't theres no back up case as of now
+                        # if neither is returned from google api there's no backup case
+                        # assuming we find the lack of a street name useless this is probably ok and shouldn't occur
                         if 'streetNumber' in locals():
                             if stateProvince and county and municipality and country:
                                 # add whatever separators we want for locality string here
@@ -3341,8 +3358,21 @@ class Table(Canvas):
                             return
                     
                         self.uniqueLocality.append(tempDict)
-                        localityAddressAdded = locality + ' Address: ' + addressString
+                        localityAddressAdded = locality + ' ' + addressString
                         self.model.setValueAt(localityAddressAdded, currentRow, localityIndex)
+                        
+                        # set values for address components
+                        if pathIndex != '':
+                            self.model.setValueAt(tempDict['path'], currentRow, pathIndex)
+                        if municipalityIndex != '':
+                            self.model.setValueAt(tempDict['municipality'], currentRow, municipalityIndex)
+                        if countyIndex != '':
+                            self.model.setValueAt(tempDict['county'], currentRow, countyIndex)
+                        if stateProvinceIndex != '':
+                            self.model.setValueAt(tempDict['stateProvince'], currentRow, stateProvinceIndex)
+                        if countryIndex != '':
+                            self.model.setValueAt(tempDict['country'], currentRow, countryIndex)
+                            
                         self.redraw()
                         self.gotonextRow()
                     # address is a string, this indicates an error message has been returned
@@ -3519,8 +3549,8 @@ class ToolBar(Frame):
         img = images.open_dolittle()
         # try to use dolittle from locality import
         addButton(self, 'Gen Locality', self.parentapp.dolittle, img, 'Gen Locality')
-        img = images.open_proj()
-        addButton(self, 'Load table', self.parentapp.load, img, 'load table')
+        # img = images.open_proj()
+        # addButton(self, 'Load table', self.parentapp.load, img, 'load table')
         img = images.save_proj()
         addButton(self, 'Save', self.parentapp.save, img, 'save')
         img = images.importcsv()
@@ -3529,33 +3559,32 @@ class ToolBar(Frame):
         img = images.excel()
         addButton(self, 'Load excel', self.parentapp.loadExcel, img, 'load excel file')
         img = images.copy()
-        addButton(self, 'Copy', self.parentapp.copyTable, img, 'copy table to clipboard')
-        img = images.paste()
-        addButton(self, 'Paste', self.parentapp.pasteTable, img, 'paste table')
-        img = images.plot()
-        addButton(self, 'Plot', self.parentapp.plotSelected, img, 'plot selected')
-        img = images.transpose()
-        addButton(self, 'Transpose', self.parentapp.transpose, img, 'transpose')
-        img = images.aggregate()
-        addButton(self, 'Aggregate', self.parentapp.aggregate, img, 'aggregate')
-        img = images.pivot()
-        addButton(self, 'Pivot', self.parentapp.pivot, img, 'pivot')
-        img = images.melt()
-        addButton(self, 'Melt', self.parentapp.melt, img, 'melt')
-        img = images.merge()
-        addButton(self, 'Merge', self.parentapp.doCombine, img, 'merge, concat or join')
-        img = images.table_multiple()
-        addButton(self, 'Table from selection', self.parentapp.tableFromSelection,
-                    img, 'sub-table from selection')
-        img = images.filtering()
-        addButton(self, 'Query', self.parentapp.queryBar, img, 'filter table')
-        img = images.calculate()
-        addButton(self, 'Evaluate function', self.parentapp.evalBar, img, 'calculate')
-        img = images.fit()
-        addButton(self, 'Stats models', self.parentapp.statsViewer, img, 'model fitting')
-
-        img = images.table_delete()
-        addButton(self, 'Clear', self.parentapp.clearTable, img, 'clear table')
+        # addButton(self, 'Copy', self.parentapp.copyTable, img, 'copy table to clipboard')
+        # img = images.paste()
+        # addButton(self, 'Paste', self.parentapp.pasteTable, img, 'paste table')
+        # img = images.plot()
+        # addButton(self, 'Plot', self.parentapp.plotSelected, img, 'plot selected')
+        # img = images.transpose()
+        # addButton(self, 'Transpose', self.parentapp.transpose, img, 'transpose')
+        # img = images.aggregate()
+        # addButton(self, 'Aggregate', self.parentapp.aggregate, img, 'aggregate')
+        # img = images.pivot()
+        # addButton(self, 'Pivot', self.parentapp.pivot, img, 'pivot')
+        # img = images.melt()
+        # addButton(self, 'Melt', self.parentapp.melt, img, 'melt')
+        # img = images.merge()
+        # addButton(self, 'Merge', self.parentapp.doCombine, img, 'merge, concat or join')
+        # img = images.table_multiple()
+        # addButton(self, 'Table from selection', self.parentapp.tableFromSelection,
+        #             img, 'sub-table from selection')
+        # img = images.filtering()
+        # addButton(self, 'Query', self.parentapp.queryBar, img, 'filter table')
+        # img = images.calculate()
+        # addButton(self, 'Evaluate function', self.parentapp.evalBar, img, 'calculate')
+        # img = images.fit()
+        # addButton(self, 'Stats models', self.parentapp.statsViewer, img, 'model fitting')
+        # img = images.table_delete()
+        # addButton(self, 'Clear', self.parentapp.clearTable, img, 'clear table')
         #img = images.prefs()
         #addButton(self, 'Prefs', self.parentapp.showPrefs, img, 'table preferences')
         return

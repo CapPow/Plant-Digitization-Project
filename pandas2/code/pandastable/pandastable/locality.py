@@ -8,7 +8,7 @@ import requests
 
 
 def genLocality(latitude, longitude):
-    apiKey = 'AIzaSyCwugFdGLz6QUtcYqD1z0PKKsYJhay3vIg'
+    apiKey = 'add yours'
     apiUrl = 'https://maps.googleapis.com/maps/api/geocode/json?latlng=' + str(latitude) + ',' + str(longitude) + '&key=' + apiKey
     apiCall = requests.get(apiUrl)
 

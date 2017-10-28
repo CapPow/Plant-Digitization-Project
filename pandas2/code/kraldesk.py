@@ -13,7 +13,7 @@ class TestApp(Frame):
             f.pack(fill=BOTH,expand=1)
             df = TableModel.getSampleData()
             self.table = pt = Table(f, dataframe=df,
-                                    showtoolbar=True, showstatusbar=True)
+                                    showtoolbar=True, showstatusbar=False)
             pt.show()
             return
 
