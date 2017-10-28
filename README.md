@@ -16,8 +16,9 @@ Plant Digitization Project -- Python Tkintering
     - The virtual environment also requires you to have TK for Python and uses pip3 as it's Python package manager.
         - You will probably have issues if you try to work with this venv using another Python package installer/manager.
     - Change Readme to reflect added features on future commits
-        - TODO: Add automatic location generation for table
+        - DONE: Add automatic location generation for table
 	  - Goes through entire table with one button click
-	  - TODO: Still need to check for similar lat/long in subsequent rows to gain possibility of API call reduction
+	  - DONE: Still need to check for similar lat/long in subsequent rows to gain possibility of API call reduction
 	    - Recall that most specimens should be from similar site; this fact should imply a super-low API call necessity
+	    - DONE: Rounded GPS coordinates to 3 decimal places. (34.12345, -84.12345) becomes (34.123, -84.123)
 	- TODO: Add automatic scientific name generation for table
