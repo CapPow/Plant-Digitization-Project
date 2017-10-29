@@ -7,7 +7,7 @@ import requests
 # link -> https://developers.google.com/maps/documentation/geocoding/intro#ReverseGeocoding
 
 
-def genLocality(latitude, longitude):
+def reverseGeoCall(latitude, longitude):
     apiKey = 'add yours'
     apiUrl = 'https://maps.googleapis.com/maps/api/geocode/json?latlng=' + str(latitude) + ',' + str(longitude) + '&key=' + apiKey
     apiCall = requests.get(apiUrl)

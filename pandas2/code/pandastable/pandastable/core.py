@@ -44,7 +44,8 @@ from .prefs import Preferences
 from .dialogs import ImportDialog
 from . import images, util
 from .dialogs import *
-# added import of locality
+# jacob added imports
+from .catalogOfLife
 from .locality import *
 
 
@@ -3265,13 +3266,10 @@ class Table(Canvas):
             self.updateModel(model)
         return
 
-    # makes call to function defined in locality module
-    # this needs to stop at end of row (need a row count) (DONE)
-    # this also needs to check for duplicate locality values (TODO)
-    # save api calls by detecting close gps values (what is close enough?)
-    # currentDF = print(str(type(self.model.df))) -----> Table Model instance does have a dataframe attribute
-    # currentDF = print(str(type(self.df))) -----------> Table instance has not dataframe attribute
-    def dolittle(self):
+    # genLocality function
+    # uses google reverse geolocation api (locality.py)
+    # inserts values for address components and adds address string
+    def genLocality(self):
         currentRow = self.currentrow
         while currentRow < int(self.model.getRowCount() - 1):
             currentRow = self.currentrow
@@ -3283,12 +3281,11 @@ class Table(Canvas):
             countyIndex = self.findColumnIndex('county')
             stateProvinceIndex = self.findColumnIndex('stateProvince')
             countryIndex = self.findColumnIndex('country')
-            # check to ensure there is a column named locality
+
             if localityIndex != '':
                 locality = self.model.getValueAt(currentRow, localityIndex)
-                # round latitude and longitude to 1000th
-                latitude = round(float(currentRecord['decimalLatitude']), 3)
-                longitude = round(float(currentRecord['decimalLongitude']), 3)
+                latitude = round(float(currentRecord['decimalLatitude']), 5)
+                longitude = round(float(currentRecord['decimalLongitude']), 5)
                 # filter will return a dictionary if matching lat/long exists
                 latMatch = list(filter(lambda elem: elem['latitude'] == str(latitude), self.uniqueLocality))
                 longMatch = list(filter( lambda elem: elem['longitude'] == str(longitude), self.uniqueLocality))
@@ -3311,7 +3308,7 @@ class Table(Canvas):
                     self.redraw()
                     self.gotonextRow()
                 else:
-                    address = genLocality(latitude, longitude)
+                    address = reverseGeoCall(latitude, longitude)
                     if isinstance(address, list):
                         for addressComponent in address:
                             if addressComponent['types'][0] == 'street_number':
@@ -3356,11 +3353,11 @@ class Table(Canvas):
                             button.pack()
                             self.gotonextRow()
                             return
-                    
+
                         self.uniqueLocality.append(tempDict)
                         localityAddressAdded = locality + ' ' + addressString
                         self.model.setValueAt(localityAddressAdded, currentRow, localityIndex)
-                        
+
                         # set values for address components
                         if pathIndex != '':
                             self.model.setValueAt(tempDict['path'], currentRow, pathIndex)
@@ -3382,8 +3379,10 @@ class Table(Canvas):
                         popupError.title("Error in Google API Call")
                         message1 = Message(popupError, text="Are you connected to the internet?")
                         message2 = Message(popupError, text="Some parts of this program require an internet connection!")
+                        message3 = Message(popupError, text="The Google API key allows only 1000 requests/day!")
                         message1.pack()
                         message2.pack()
+                        message3.pack()
                         button = Button(popupError, text="OK", command=popupError.destroy)
                         button.pack()
                         self.gotonextRow()
@@ -3391,21 +3390,34 @@ class Table(Canvas):
             else:
                 popupError = Toplevel()
                 popupError.title("Error in Locality Generator")
-                message3 = Message(popupError, text="If there is no column with header 'locality' this function will fail.")
-                message4 = Message(popupError, text="This should not be an issue if you're using Kral Mobile!")
-                message3.pack()
-                message4.pack()
+                message1 = Message(popupError, text="If there is no column with header 'locality' this function will fail.")
+                message2 = Message(popupError, text="This should not be an issue if you're using Kral Mobile!")
+                message1.pack()
+                message2.pack()
                 button = Button(popupError, text="OK", command=popupError.destroy)
                 button.pack()
                 self.gotonextRow()
                 return
         return
 
-    # columnLabel should be a string
+    def genScientificName(self):
+        currentRow = self.currentrow
+        currentRecord = self.model.getRecordAtRow(currentRow)
+        sNameIndex = self.findColumnIndex('scientificName')
+        if sNameIndex != '':
+            currentSciName = self.model.getValueAt(currentRow, sNameIndex)
+            newSciNameList = colNameSearch(currentSciName)
+            if newSciNameList != []:
+                # we got some return values
+                # where do we want to set the new scientific name?
+        return
+
+    # returns index location of column header (if the header exists)
     def findColumnIndex(self, columnLabel):
         columnIndex = ''
         for column in range(0,self.model.getColumnCount()):
             # do we need to modify this for flexibility on column name
+            # capitalization?
             if self.model.getColumnName(column) == columnLabel:
                 columnIndex = column
         return columnIndex
@@ -3545,10 +3557,9 @@ class ToolBar(Frame):
         Frame.__init__(self, parent, width=600, height=40)
         self.parentframe = parent
         self.parentapp = parentapp
-        # add an image for the button later instead of using dolittle (copy of another image)
+        # add an image for the button later
         img = images.open_dolittle()
-        # try to use dolittle from locality import
-        addButton(self, 'Gen Locality', self.parentapp.dolittle, img, 'Gen Locality')
+        addButton(self, 'Gen Locality', self.parentapp.genLocality, img, 'Gen Locality')
         # img = images.open_proj()
         # addButton(self, 'Load table', self.parentapp.load, img, 'load table')
         img = images.save_proj()
