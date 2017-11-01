@@ -1,24 +1,23 @@
 # Plant-Digitization-Project
-Plant Digitization Project -- Python Tkintering
+- sample data contains what it says
+- kraldesk is a virtual environment from my computer
+	- since I'm programming on Ubuntu, for now create your own Python virtual environment and use the codeishere folder
+- in /codeishere/ folder, you'll find the pandastable source we're modifying and kraldesk.py application
+	- to run the application:
+		- install pandastable in your virtualenvironment
+		- "python3 setup.py install" ---- the setup.py file should be in /pandastable/ folder
+		- then run with "python3 kraldesk.py" in a command prompt
+
 - csv View 
     - contains the code for selecting and displaying a basic csv data. 
     - It also has the processing functions added in.
 
 - kralNotePostProcessing 
     - contains initial code for api interaction functions. It presumes the user has already added a new field "scientificName".
-    - This code should be adaptable to the final GUI on a by function basis.
-    
-- pandas2
-    - Jacob's virtual environment that contains all source code for current kraldesk prototype solution.
-        - Don't waste your time tinkering with this yet, my code is in an unclean state (will look like jibberish).
-    - Comments below are for future use...
-    - The kraldesk.py file is the main entry point for the application, so run this to see the application in action.
-    - The virtual environment also requires you to have TK for Python and uses pip3 as it's Python package manager.
-        - You will probably have issues if you try to work with this venv using another Python package installer/manager.
-    - Change Readme to reflect added features on future commits
-        - DONE: Add automatic location generation for table
-	  - Goes through entire table with one button click
-	  - DONE: Still need to check for similar lat/long in subsequent rows to gain possibility of API call reduction
-	    - Recall that most specimens should be from similar site; this fact should imply a super-low API call necessity
-	    - DONE: Rounded GPS coordinates to 3 decimal places. (34.12345, -84.12345) becomes (34.123, -84.123)
-	- TODO: Add automatic scientific name generation for table
+    - This code should be adaptable to the final GUI on a by function basis
+
+This program is going to be released with the GPLv3 license when it is ready for testing.
+
+We'll release an "alpha" version for testing soon.
+Source code will be kept here.
+The wiki will eventually contain all necessary documentation needed by a user to install/use the application.
