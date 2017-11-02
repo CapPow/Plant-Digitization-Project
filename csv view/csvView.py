@@ -11,6 +11,7 @@ import requests
 import urllib.parse
 import urllib.error
 import pandas as pd
+import re
 import xml.etree.ElementTree as ET #Python native XML parser
 import geocoder #This could(should) be replaced with an XML alternative using the above import.
 #######################################
@@ -92,9 +93,10 @@ def revGeoLocate(index,record):
         latitude = record['decimalLatitude']
         longitude = record['decimalLongitude']
 #GOOGLE API KEY ENTER HERE        
-        gAPI = ''
+        gAPI = 'AIzaSyC1RdfLi4N2FhjnhzoMG4hOHpXVfV_9iVM'
         #g = geocoder.google([latitude,longitude],method='reverse')
         g = geocoder.google([latitude,longitude],method='reverse',key=gAPI)
+        print(g)
         colDict = {'country':g.country_long,'stateProvince':g.state_long,'county':g.county,'municipality':g.city,'path':g.street}
         #dictionary to store the column name to the cell value.
         autoLocalityList = [] #empty list to build the locality string from
@@ -125,66 +127,92 @@ def revGeoLocate(index,record):
             retryCounter = 0
             print('multiple requests failed, giving up')
             pass
+##################################################################################################################
+############## CoL query Code ###########################
 
 def CoLNameSearch(index, record):
     try:
 
-        identification = str(recordDF.get_value(index,'scientificName'))
+        identification = str(recordDF.get_value(index,'scientificName')) #Pulling the user entered scientificName value from table.
         
-        if not identification == "nan":  #empty strings return false in python, therefore if mystring asks if mystring is not empty.
-            identification = identification.split() #Get the identification entered by the user as a list of words
-            identLevel = len(identification)
-            genus = identification[0]
-            identQuery = [genus]
-            
-            if (identLevel > 1):
-                species = identification[1]
-                identQuery.append(species)
-                if (identLevel > 2):
-                    infraspecies = identification[-1] #Super cool, index from end of array syntax!
-                    identQuery.append(infraspecies)
-            #^^^^Deciding what to do based on how many words the sciName was. 1=genus, 2=genus species 3=taxonomic grab bag (so only keep last word)
-            CoLQuery = (ET.parse(urllib.request.urlopen('http://webservice.catalogueoflife.org/col/webservice?name=' + ('+'.join(identQuery)))).getroot()) #This returns an XML from COL of all known info on that Name
+        if not identification == "nan": #nan is what Pandas fills in for "Not a number"
+            identification = identification.split() #Split the identification string into a list of individual words.
+            identLevel = len(identification) #count the list of words to det how far into the indentification the user went (genus = 1, species =2, extra crap >2 like "subspecies", or "variety")
+            genus = identification[0] #Genus would be the first word in the list
+            identQuery = [genus] #building the phrase to query CoL.
+
+#The if block below addresses the fact that there are many partially accepted names beyond the first 2,
+#and they might have all sorts of abbrevitations like "Genus species ssp. subspecies" or "Genus species var. variety"
+
+            if (identLevel > 1): #if the identification was more than only genus, then add it to the query
+                species = identification[1] #next word should be a species name
+                identQuery.append(species) #add species to the phrase to query CoL
+                if (identLevel > 2): #If the identification had more text than 2 words then it could be a ton of stuff.
+                    infraspecies = identification[-1] #the only word left we might care about is the very last word in the list of words.
+                    identQuery.append(infraspecies) #add the last word int he list to the first and second.
+
+            #The line below returns an XML from COL of all known info about the query that was built above.
+            CoLQuery = (ET.parse(urllib.request.urlopen('http://webservice.catalogueoflife.org/col/webservice?name=' + ('+'.join(identQuery)))).getroot())
+
+         #This makes sure there was no error message returned from the query.
         if (CoLQuery.attrib['error_message']) is "":
 
+         #the block below handles name changes, if necessary. THIS is the point to offer the user an option to accept or decline
+         #the suggested name change.
             if CoLQuery.find('result/name_status').text == 'synonym': #If the name given to CoL is not up to date
-                sciName = (CoLQuery.find('result/accepted_name/name').text) #Return the Up to date Name
-            else:           #Otherwise, use the passed name (except normalized by their return) why? Any use to this?
-                sciName = (CoLQuery.find('result/name').text)
+                sciName = (CoLQuery.find('result/accepted_name/name').text) #save the up to date name to variable sciName
+            else:
+                sciName = (CoLQuery.find('result/name').text) #saves the scientific name from the returned value
+                                                             #which by any account should be the same as the one sent in excepting
+                                                            #Captalization mistakes. We could handle this differently.
 
-            recordCell(index,'scientificName',sciName)
+            recordCell(index,'scientificName',sciName)  #THIS Line actually edits the existing scientificName field.
 
+            #Attempt to strip down the 'authority' field to the basic name, names and or random characters such as: "Joe Smith,(L.)"
             try:
                 auth = ((CoLQuery.find('result/name_html/i').tail).strip())
-                recordCell(index,'scientificNameAuthorship',auth)
+                auth = re.sub(r'\d+','',auth)
+                recordCell(index,'scientificNameAuthorship',auth) #Helper function to update the cell with the new string.
+#IF the attempt fails, it'll be an attribute failure, because there is NO authority returned for this. My error handling
+#was to print the warning to the user and move on with the process anyways. This means the process does not stop, only warns.
             except AttributeError:
                 print('Catalog of Life Failed to find Authority for: ' , identification , '\n')
 
-
+#Returning to the if statement above, if it is infact returned with an "error mesasge" then warn the use the name is probably
+#Misspelled (or it is something new they've discovered and named) At any rate, it does not exist in CoL.
+#Again, this does not stop the process, only warns the user that nothing can be done with THIS scientific name.
+#This is 99% of the time going to be because of a typo on the user's part. So we should get the message to them.
         else:
             print('\nCatalog of Life returned this error: ' + (CoLQuery.attrib['error_message']))
             print('something is wrong with the name: ' , ' '.join(identification),'\n')
 
 
 
-    except IOError: #IO Error is the return from geocoder recieving bad info. Not sure how to warn user that
-                #some fields will be left blank when this happens. the PRINT is a temporary solution for me.
+    except IOError: #If some IOError is returned from the CoL Query, handle it by printing a warning to the user.
+                   # This does not stop the process, only warns the user and moves on.
         print('IOError, something went wrongwith CatalogOfLife query')
-        pass
+        pass #Pass just means to pass the exception off to ... nowhere and ignore it now that we've handled it (by warning)
 
+#The code below must be called after CoL Queries. It handles building the associated taxa field.
+      
 def associatedTaxaConcat(index,record):
-    siteGroups = (recordDF.groupby('siteNum')['scientificName'].unique())
-    #^^^^get a set of scientificnames grouped according to the site numbers they were in.
-    assTaxaGroup = (siteGroups.get(record['siteNum']).tolist())
+
+#This uses Pandas Groupby Function to lump all records with the same site Number togeather, which also have unique scientificNames
+    siteGroups = (recordDF.groupby('siteNum')['scientificName'].unique()) 
+
+    assTaxaGroup = (siteGroups.get(record['siteNum']).tolist()) #Add each record in the group to a list
+
+    #List comprehension for sorting (alphabetically) the list according to scientific names
     assTaxaGroup = sorted([str(item.rstrip()) for item in assTaxaGroup if not (pd.isnull(item) or item is record['scientificName'])])
+
     if len(assTaxaGroup) > 0: #are there any other taxa found at this site?
-        existingAssTaxa = ', ' + record['associatedTaxa'] #if so, let's add some joiner formatting.
+        existingAssTaxa = ', ' + record['associatedTaxa'] #if so, join them into a string
         
     else:
-        existingAssTaxa = record['associatedTaxa'] #if not, don't include the formatting.
-    assTaxaStr = (', '.join(assTaxaGroup) + str(existingAssTaxa)) #then join the user entered to the generated lists
-    if not assTaxaStr == 'nan':             #This is a sloppy fix to occasional nan's slipping through for unknown reasons.
-        recordCell(index,'associatedTaxa',assTaxaStr)
+        existingAssTaxa = record['associatedTaxa'] #if not, don't include them.
+    assTaxaStr = (', '.join(assTaxaGroup) + str(existingAssTaxa)) #either way, join the user entered stuff to the generated lists
+    if not assTaxaStr == 'nan':  #I don't know why, sometimes a 'nan' slips through, so I'm checking for it before updating cell.
+        recordCell(index,'associatedTaxa',assTaxaStr) #Helper function to update the cell. with new string.
 
 def recordCell(row,col,val):
     recordDF.set_value(row,col,val)
@@ -213,10 +241,5 @@ menubar.add_cascade(label="Help", menu=helpmenu)
  
 root.config(menu=menubar)
 root.mainloop()
-
-
-
-
-
 
 
