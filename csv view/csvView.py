@@ -93,7 +93,7 @@ def revGeoLocate(index,record):
         latitude = record['decimalLatitude']
         longitude = record['decimalLongitude']
 #GOOGLE API KEY ENTER HERE        
-        gAPI = 'AIzaSyC1RdfLi4N2FhjnhzoMG4hOHpXVfV_9iVM'
+        gAPI = 
         #g = geocoder.google([latitude,longitude],method='reverse')
         g = geocoder.google([latitude,longitude],method='reverse',key=gAPI)
         print(g)
