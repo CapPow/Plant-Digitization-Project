@@ -168,13 +168,16 @@ def CoLNameSearch(index, record):
 
             recordCell(index,'scientificName',sciName)  #THIS Line actually edits the existing scientificName field.
 
-            #Attempt to strip down the 'authority' field to the basic name, names and or random characters such as: "Joe Smith,(L.)"
+#Block Blow will Attempt to strip down the 'authority' field to the basic name, names and or random characters such as: "Joe Smith,(L.)"
             try:
                 auth = ((CoLQuery.find('result/name_html/i').tail).strip())
                 auth = re.sub(r'\d+','',auth)
+                auth = auth.rstrip(', ')
                 recordCell(index,'scientificNameAuthorship',auth) #Helper function to update the cell with the new string.
+
 #IF the attempt fails, it'll be an attribute failure, because there is NO authority returned for this. My error handling
 #was to print the warning to the user and move on with the process anyways. This means the process does not stop, only warns.
+
             except AttributeError:
                 print('Catalog of Life Failed to find Authority for: ' , identification , '\n')
 
