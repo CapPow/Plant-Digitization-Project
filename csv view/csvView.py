@@ -141,8 +141,8 @@ def CoLNameSearch(index, record):
             genus = identification[0] #Genus would be the first word in the list
             identQuery = [genus] #building the phrase to query CoL.
 
-#The if block below addresses the fact that there are many partially accepted names beyond the first 2,
-#and they might have all sorts of abbrevitations like "Genus species ssp. subspecies" or "Genus species var. variety"
+#The if block below addresses the fact that there are many partially accepted name formats  beyond the first 2 words,
+#and they might have all sorts of abbrevitations like "ssp, subspecies, var., v or variety"
 
             if (identLevel > 1): #if the identification was more than only genus, then add it to the query
                 species = identification[1] #next word should be a species name
@@ -151,13 +151,14 @@ def CoLNameSearch(index, record):
                     infraspecies = identification[-1] #the only word left we might care about is the very last word in the list of words.
                     identQuery.append(infraspecies) #add the last word int he list to the first and second.
 
-            #The line below returns an XML from COL of all known info about the query that was built above.
+        # The result is a string to add into the url to ask CoL about it.
+        #The line below returns an XML from COL of all known info about the query that was built above.
             CoLQuery = (ET.parse(urllib.request.urlopen('http://webservice.catalogueoflife.org/col/webservice?name=' + ('+'.join(identQuery)))).getroot())
 
-         #This makes sure there was no error message returned from the query.
+         #This makes sure there was no error message returned inside the query.
         if (CoLQuery.attrib['error_message']) is "":
 
-         #the block below handles name changes, if necessary. THIS is the point to offer the user an option to accept or decline
+         #the block below handles name changes, if necessary. THIS is the place to offer the user an option to accept or decline
          #the suggested name change.
             if CoLQuery.find('result/name_status').text == 'synonym': #If the name given to CoL is not up to date
                 sciName = (CoLQuery.find('result/accepted_name/name').text) #save the up to date name to variable sciName
@@ -168,7 +169,7 @@ def CoLNameSearch(index, record):
 
             recordCell(index,'scientificName',sciName)  #THIS Line actually edits the existing scientificName field.
 
-#Block Blow will Attempt to strip down the 'authority' field to the basic name, names and or random characters such as: "Joe Smith,(L.)"
+#The block below will Attempt to strip down the 'authority' field to the basic name, names and or random characters such as: "Joe Smith,(L.)"
             try:
                 auth = ((CoLQuery.find('result/name_html/i').tail).strip())
                 auth = re.sub(r'\d+','',auth)
