@@ -1,12 +1,6 @@
 # Plant-Digitization-Project
-- sample data contains what it says
-- kraldesk is a virtual environment from my computer
-	- since I'm programming on Ubuntu, for now create your own Python virtual environment and use the codeishere folder
-- in /codeishere/ folder, you'll find the pandastable source we're modifying and kraldesk.py application
-	- to run the application:
-		- install pandastable in your virtualenvironment
-		- "python3 setup.py install" ---- the setup.py file should be in /pandastable/ folder
-		- then run with "python3 kraldesk.py" in a command prompt
+- sample data has sample data
+- kraldesk contains my virtual environment and the modified pandastable source code
 
 - csv View 
     - contains the code for selecting and displaying a basic csv data. 
