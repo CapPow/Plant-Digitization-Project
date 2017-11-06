@@ -3271,6 +3271,8 @@ class Table(Canvas):
     # inserts values for address components and adds address string
     def genLocality(self):
         currentRow = self.currentrow
+        # modify this to only work once
+        # will go through table with one function
         while currentRow < int(self.model.getRowCount() - 1):
             currentRow = self.currentrow
             currentRecord = self.model.getRecordAtRow(currentRow)
@@ -3374,17 +3376,37 @@ class Table(Canvas):
                 return
         return
 
+    # sets the scientific name of specimen
+    # uses colNameSearch in catalogOfLife.py
     def genScientificName(self):
         currentRow = self.currentrow
-        currentRecord = self.model.getRecordAtRow(currentRow)
+        print("current row " + str(currentRow))
         sNameIndex = self.findColumnIndex('scientificName')
+        aNameIndex = self.findColumnIndex('authorship')
+        assTaxaIndex = self.findColumnIndex('associated taxa')
+        print("current index " + str(sNameIndex))
         if sNameIndex != '':
             currentSciName = self.model.getValueAt(currentRow, sNameIndex)
             newSciNameList = colNameSearch(currentSciName)
             if newSciNameList != []:
-                # we got some return values
-                # where do we want to set the new scientific name?
+                for elem in newSciNameList:
+                    print("returned list: " + str(elem))
+                # only returned scientific name
+                if len(newSciNameList) == 1:
+                    self.model.setValueAt(str(newSciNameList[0]), currentRow, sNameIndex)
+                    self.redraw()
+                # also returned authorship
+                elif len(newSciNameList) == 2:
+                    self.model.setValueAt(str(newSciNameList[0]), currentRow, sNameIndex)
+                    if aNameIndex != '':
+                        self.model.setValueAt(str(newSciNameList[1]), currentRow, aNameIndex)
+                    self.redraw()
+            else:
+                # no return values, pass for now
                 pass
+        if assTaxaIndex != '':
+            siteGroups = self.model.df.groupby('siteNum')['scientificName'].unique()
+            print("site groups " + str(siteGroups))
         return
 
     # returns index location of column header
@@ -3393,8 +3415,9 @@ class Table(Canvas):
         columnIndex = ''
         for column in range(0,self.model.getColumnCount()):
             # convert self.model.getColumnName(column) to lower case before comparison
+            lowerCaseLabel = columnLabel.lower()
             lowerCaseCName = self.model.getColumnName(column).lower()
-            if lowerCaseCName == columnLabel:
+            if lowerCaseCName == lowerCaseLabel:
                 columnIndex = column
         return columnIndex
 
@@ -3536,6 +3559,8 @@ class ToolBar(Frame):
         # add an image for the button later
         img = images.open_dolittle()
         addButton(self, 'Gen Locality', self.parentapp.genLocality, img, 'Gen Locality')
+        img = images.open_dolittle()
+        addButton(self, 'SciName', self.parentapp.genScientificName, img, 'SciName')
         # img = images.open_proj()
         # addButton(self, 'Load table', self.parentapp.load, img, 'load table')
         img = images.save_proj()

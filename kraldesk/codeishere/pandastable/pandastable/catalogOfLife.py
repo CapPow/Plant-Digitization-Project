@@ -2,54 +2,50 @@
 # License
 
 import urllib
+import xml.etree.ElementTree as ET
+import re
 
 
-# returns a list
+# takes scientific name (string argument)
+# returns up-to-date scientific name of plant
+# may also return authorship
+# uses Catalog of Life
 def colNameSearch(scientificName):
     results = []
     identification = str(scientificName).split()
-    if len(identification) == 1:
-        identQuery = identification
-    elif len(identification) == 2:
-        genus = identification[0]
-        species = identification[1]
-        identQuery = [genus, species]
-    elif len(identification) > 2:
-        genus = identification[0]
-        species = identification[1]
-        infraspecies = identification[-1]
-        identQuery = [genus, species, infraspecies]
+    if scientificName != '':
+        identQuery = [identification[0]]
+    else:
+        return []
+    if len(identification) > 1:
+        identQuery.append(identification[1])
+        if len(identification) > 2:
+            identQuery.append(identification[-1])
 
-    #This returns an XML from COL of all known info on that Name
+    # can view XML results by using link and sci name
     CoLQuery = (ET.parse(urllib.request.urlopen('http://webservice.catalogueoflife.org/col/webservice?name=' + ('+'.join(identQuery)))).getroot())
 
+    # scientific name for plant specimen
     if (CoLQuery.attrib['error_message']) is "":
-
-        # If the name given to CoL is not up to date
-        if CoLQuery.find('result/name_status').text == 'synonym':
-
-            # Return the Up to date Name
+        text = CoLQuery.find('result/name_status').text
+        text = text.lower()
+        if 'synonym' in text:
             sciName = (CoLQuery.find('result/accepted_name/name').text)
-
-        # Otherwise, use the passed name (except normalized by their return) why? Any use to this?
+            results.append(str(sciName))
+            print("(synonym) scientific name: " + sciName)
         else:
             sciName = (CoLQuery.find('result/name').text)
-            # recordCell(index,'scientificName',sciName)
-            results.append(sciName)
-
-        # don't want to throw exceptions
-        # just handle missing data
-        # otherwise we'll have weird things happening to GUI event flow
-        try:
-            auth = ((CoLQuery.find('result/name_html/i').tail).strip())
-            # recordCell(index,'scientificNameAuthorship',auth)
-            results.append(auth)
-        except AttributeError:
-            print('Catalog of Life Failed to find Authority for: ' , identification , '\n')
-
-        # return list of results
+            print("scientific name: " + sciName)
+            results.append(str(sciName))
+        # authorship
+        auth = ((CoLQuery.find('result/name_html/i').tail).strip())
+        # assuming we don't want empty L. ... not sure what this means
+        if auth != '' and auth != 'L.':
+            auth = re.sub(r'\d+','',auth)
+            auth = auth.rstrip(', ')
+            results.append(str(auth))
+            for elem in results:
+                print("results is: " + str(elem))
         return results
-
     else:
-        print('\nCatalog of Life returned this error: ' + (CoLQuery.attrib['error_message']))
-        print('something is wrong with the name: ' , ' '.join(identification),'\n')
+        return []
