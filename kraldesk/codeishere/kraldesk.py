@@ -11,7 +11,7 @@ class TestApp(Frame):
             self.main.title('Table app')
             f = Frame(self.main)
             f.pack(fill=BOTH,expand=1)
-            df = TableModel.getSampleData()
+            df = TableModel.getKralSample()
             self.table = pt = Table(f, dataframe=df,
                                     showtoolbar=True, showstatusbar=False)
             pt.show()

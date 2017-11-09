@@ -84,6 +84,16 @@ class TableModel(object):
         return df
 
     @classmethod
+    def getKralSample(self):
+        """Get Sample data for KralDesk testing"""
+
+        df = pd.read_csv('/home/jacob/Programming/Projects/Plant-Digitization-Project/sample-data/FieldRecords.csv')
+        cwd = str(os.getcwd())
+        print(cwd)
+        return df
+
+
+    @classmethod
     def getStackedData(self):
         """Get a dataframe to pivot test"""
 

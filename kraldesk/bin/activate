@@ -37,7 +37,7 @@ deactivate () {
 # unset irrelavent variables
 deactivate nondestructive
 
-VIRTUAL_ENV="/home/jacob/Git_Clones/Plant-Digitization-Project/kraldesk"
+VIRTUAL_ENV="/home/jacob/Programming/Projects/Plant-Digitization-Project/kraldesk"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"

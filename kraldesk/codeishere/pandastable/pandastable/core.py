@@ -3380,17 +3380,13 @@ class Table(Canvas):
     # uses colNameSearch in catalogOfLife.py
     def genScientificName(self):
         currentRow = self.currentrow
-        print("current row " + str(currentRow))
         sNameIndex = self.findColumnIndex('scientificName')
-        aNameIndex = self.findColumnIndex('authorship')
-        assTaxaIndex = self.findColumnIndex('associated taxa')
-        print("current index " + str(sNameIndex))
+        authIndex = self.findColumnIndex('authorship')
+        asTaxaIndex = self.findColumnIndex('associated taxa')
         if sNameIndex != '':
             currentSciName = self.model.getValueAt(currentRow, sNameIndex)
             newSciNameList = colNameSearch(currentSciName)
             if newSciNameList != []:
-                for elem in newSciNameList:
-                    print("returned list: " + str(elem))
                 # only returned scientific name
                 if len(newSciNameList) == 1:
                     self.model.setValueAt(str(newSciNameList[0]), currentRow, sNameIndex)
@@ -3404,9 +3400,6 @@ class Table(Canvas):
             else:
                 # no return values, pass for now
                 pass
-        if assTaxaIndex != '':
-            siteGroups = self.model.df.groupby('siteNum')['scientificName'].unique()
-            print("site groups " + str(siteGroups))
         return
 
     # returns index location of column header
