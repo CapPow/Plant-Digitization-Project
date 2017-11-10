@@ -23,31 +23,95 @@ try:
 except:
      import Tkinter as tk
 
-def open_dolittle():
-     img = tk.PhotoImage(format='gif',data=
-             'R0lGODlhEAAQAIcAAAAAABV5ABt5AB57AyF9ACV/ACZ+ECR8FUJ3uy2DAS2D'
-            +'CTWHCTCHFzyLEESPFkaQGUqRHFKXIleYKFubKV6fOlygPGKdMGOfMWWfMWih'
-            +'NGujN2mjOW6jOG+lPW6kPl+hQ2KjRmalSGilRnSrT3yvVXy+dkmCpVKHpVOG'
-            +'vFKEw1WGxlaHx1mKyFuKyV6Oy1+Py2OSzmSTzmiW0WqX0W6Z02+b1HKe1nSg'
-            +'13Wh13qj2nqk2X2l3H6o3YGzWoCzYYK1Z4W2ZoW2aom4a466b5C8dIDBeoTD'
-            +'foCp3YKq34Ss4Ieu4Yiv4oyx44yy5I+05ZC15pO355S355a66Zi66Zq865u9'
-            +'652+656/7InGgo7Jh5bBgJfCgpPLi5jCg57FiJjOkJ3QlKHGiqHHiqXIjajL'
-            +'kKnKkKrLka3NlKHTmKXVnLDOlp/A7aHB7qLB76PC76bD6anE6KrG6azG6azH'
-            +'6K3H6azH6q7J6a7J6rLK4bDJ6bDJ6rLL6rPM6rfO6rrQ67vQ677S67/T69bi'
-            +'6t7n8uLq9Obt9urw9+vx9+3y+O7z+e/z+fD0+vH2+vL2+vT3+////wAAAAAA'
-            +'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
-            +'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
-            +'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
-            +'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
-            +'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
-            +'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
-            +'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
-            +'AAAAAAAAAAAAAAAAAAAAACH5BAEAAJAALAAAAAAQABAAAAjcACEJHEiw4MA2'
-            +'a6xQkQLlSZMlSY7syCGQjaOLGDNevCHwiqM0aMB84ZIFi5EiJRzVEFjF0aOX'
-            +'MGM6miFwiqM3OHPqdBRDYJSbj+DAnAPz0AuBThrFkVOHjp08czxgwDOIhUAm'
-            +'jO480jN0Qw8JglQIVLJoDx8+HThksEDCzIgHKAQiUdTn0R8Nas6YIUNEjIgF'
-            +'Anko8vPnz4UzQ4QA8fGjS4UCkHQkAvQo0IQyY8J4CbIlhAGBOBAZKkQoAgQH'
-            +'DShoAcHghEAbNGTAcNFiRYoUCj4cMIHAYEECAwgGBAA7')
+
+def open_processRecords():
+     img = tk.PhotoImage(format='png',data=
+          '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')
      return img
 
 def open_proj():

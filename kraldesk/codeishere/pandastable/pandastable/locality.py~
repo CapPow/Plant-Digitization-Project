@@ -12,13 +12,11 @@ def reverseGeoCall(latitude, longitude):
     apiUrl = 'https://maps.googleapis.com/maps/api/geocode/json?latlng=' + str(latitude) + ',' + str(longitude) + '&key=' + apiKey
     apiCall = requests.get(apiUrl)
 
+    # error checking here
     status = apiCall.json()['status']
-    # api returns OK (query went through, received results)
     if status == 'OK':
         results = apiCall.json()['results']
         addressComponents = results[0]['address_components']
         return addressComponents
-    # some error occured
-    # will be indicated by the status
     else:
         return str(status)

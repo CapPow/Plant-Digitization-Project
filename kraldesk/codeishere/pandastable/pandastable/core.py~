@@ -3266,22 +3266,9 @@ class Table(Canvas):
             self.updateModel(model)
         return
     
-    # no args
-    # runs through table automatically
-    # calls genLocality and genScientificName
-    def processRecords(self):
-        cRow = self.currentrow
-        while cRow < int(self.model.getRowCount() -1):
-            cRow = self.currentrow
-            self.genLocality(cRow)
-            self.genScientificName(cRow)
-            self.redraw()
-            self.gotonextRow()
-        return
-
-    # takes current row as argument
-    # calls google reverse geolocation api
-    # sets values in proper cells in Table
+    # genLocality function
+    # uses google reverse geolocation api (locality.py)
+    # inserts values for address components and adds address string
     def genLocality(self, currentRowArg):
         currentRow = currentRowArg
         currentRecord = self.model.getRecordAtRow(currentRow)
@@ -3332,18 +3319,19 @@ class Table(Canvas):
                         if addressComponent['types'][0] == 'administrative_area_level_2':
                             county = addressComponent['long_name']
                         if addressComponent['types'][0] == 'locality':
-                            municipality = addressComponent['long_name']
-                        if addressComponent['types'][0] == 'country':
-                            country = addressComponent['short_name']
+                                municipality = addressComponent['long_name']
+                            if addressComponent['types'][0] == 'country':
+                                country = addressComponent['short_name']
 
                         # a streetname is returned from reverse geolocation call
-                        # in some cases, the api will not return a street at all
+                        # in some cases, the api will not return a street
                         if 'streetName' in locals():
                             if stateProvince and county and municipality and country:
                                 addressString = str(country) + '. ' + str(stateProvince) + '. ' + str(county) + '. ' + str(municipality) + '. ' + str(streetName) + '.'
                                 tempDict = {'latitude': str(latitude), 'longitude': str(longitude), 'path': str(streetName), 'municipality': str(municipality), 'county': str(county), 'stateProvince': str(stateProvince), 'country': str(country), 'localityString': addressString}
 
-                        # no street is returned
+                        # if no street name is returned
+                        # that's fine, use other returned values
                         else:
                             addressString = str(country) + '. ' + str(stateProvince) + '. ' + str(county) + '. ' + str(municipality) + '. '
                             tempDict = {'latitude': str(latitude), 'longitude': str(longitude), 'municipality': str(municipality), 'county': str(county), 'stateProvince': str(stateProvince), 'country': str(country), 'localityString': addressString}
@@ -3360,13 +3348,14 @@ class Table(Canvas):
                             self.model.setValueAt(tempDict['stateProvince'], currentRow, stateProvinceIndex)
                         if countryIndex != '':
                             self.model.setValueAt(tempDict['country'], currentRow, countryIndex)
+                        self.redraw()
 
                 # Google API call returned error/status string
                 else:
                     popupError = Toplevel()
                     popupError.title("Error in Google API Call")
                     apiErrorMessage = address
-                    message = "Google API call error message: " + str(apiErrorMessage)
+                    message = "Google API call error message: " + str(apiErrorMessage))
                     message.pack()
                     button = Button(popupError, text="OK", command=popupError.destroy)
                     button.pack()
@@ -3385,44 +3374,32 @@ class Table(Canvas):
 
     # sets the scientific name of specimen
     # uses colNameSearch in catalogOfLife.py
-    def genScientificName(self, currentRowArg):
-        currentRow = currentRowArg
+    def genScientificName(self):
+        currentRow = self.currentrow
         sNameIndex = self.findColumnIndex('scientificName')
         authIndex = self.findColumnIndex('authorship')
         asTaxaIndex = self.findColumnIndex('associated taxa')
-
         if sNameIndex != '':
             currentSciName = self.model.getValueAt(currentRow, sNameIndex)
-            results = colNameSearch(currentSciName)
-            if isinstance(results, tuple):
-                if len(results) == 1:
-                    self.model.setValueAt(str(results[0]), currentRow, sNameIndex)
-                elif len(results) == 2:
-                    self.model.setValueAt(str(results[0]), currentRow, sNameIndex)
+            newSciNameList = colNameSearch(currentSciName)
+            if newSciNameList != []:
+                # only returned scientific name
+                if len(newSciNameList) == 1:
+                    self.model.setValueAt(str(newSciNameList[0]), currentRow, sNameIndex)
+                    self.redraw()
+                # also returned authorship
+                elif len(newSciNameList) == 2:
+                    self.model.setValueAt(str(newSciNameList[0]), currentRow, sNameIndex)
                     if aNameIndex != '':
-                        self.model.setValueAt(str(results[1]), currentRow, aNameIndex)
-            elif isinstance(results, str):
-                if results == 'not_accepted_or_syn':
-                    popupError = Toplevel()
-                    popupError.title("Scientific Name Error")
-                    apiErrorMessage = address
-                    message = "Catalog of Life didn't find an accepted name"
-                    message.pack()
-                    button = Button(popupError, text="OK", command=popupError.destroy)
-                    button.pack()
-                elif results == 'empty_string':
-                    popupError = Toplevel()
-                    popupError.title("Scientific Name Error")
-                    apiErrorMessage = address
-                    message = "Add a Scientific Name to the specimen in this row!"
-                    message.pack()
-                    button = Button(popupError, text="OK", command=popupError.destroy)
-                    button.pack()
+                        self.model.setValueAt(str(newSciNameList[1]), currentRow, aNameIndex)
+                    self.redraw()
+            else:
+                # no return values, pass for now
+                pass
         return
 
     # returns index location of column header
-    # if the column header doesn't exist
-    # returns empty string
+    # returns empty string if not (duck typing is amazing!)
     def findColumnIndex(self, columnLabel):
         columnIndex = ''
         for column in range(0,self.model.getColumnCount()):
@@ -3569,8 +3546,10 @@ class ToolBar(Frame):
         self.parentframe = parent
         self.parentapp = parentapp
         # add an image for the button later
-        img = images.open_processRecords()
-        addButton(self, 'Process Records', self.parentapp.processRecords, img, 'Process Records')
+        img = images.open_dolittle()
+        addButton(self, 'Gen Locality', self.parentapp.genLocality, img, 'Gen Locality')
+        img = images.open_dolittle()
+        addButton(self, 'SciName', self.parentapp.genScientificName, img, 'SciName')
         # img = images.open_proj()
         # addButton(self, 'Load table', self.parentapp.load, img, 'load table')
         img = images.save_proj()

@@ -87,11 +87,8 @@ class TableModel(object):
     def getKralSample(self):
         """Get Sample data for KralDesk testing"""
 
-        df = pd.read_csv('/home/jacob/Programming/Projects/Plant-Digitization-Project/sample-data/FieldRecords.csv')
-        cwd = str(os.getcwd())
-        print(cwd)
+        df = pd.read_csv('/home/lidless/Programming/pd-project/sample-data/new_sampledata.csv')
         return df
-
 
     @classmethod
     def getStackedData(self):

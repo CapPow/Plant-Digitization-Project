@@ -1,56 +1,42 @@
 # Author
 # License
 
-import urllib
-import xml.etree.ElementTree as ET
+import urllib.request
 import re
+import xml.etree.ElementTree as ET
+import html
+import sys
 
 
-# takes scientific name (string argument)
-# returns up-to-date scientific name of plant
-# may also return authorship
-# uses Catalog of Life
-def colNameSearch(scientificName):
-    results = []
-    identification = str(scientificName).split()
-    if scientificName != '':
+# catalog of life scientific name search
+# queries catalog of life with a scientific name
+# returns the most up-to-date, accepted, scientific name for a specimen
+# or an error message to calling function
+def CoLNameSearch(givenScientificName):
+    identification = str(givenScientificName).split()
+    if givenScientificName != '':
         identQuery = [identification[0]]
+    # no sci-name in row
     else:
-        return []
+        return 'empty_string'
     if len(identification) > 1:
         identQuery.append(identification[1])
         if len(identification) > 2:
             identQuery.append(identification[-1])
-
-    # can view XML results by using link and sci name
-    CoLQuery = ET.parse(urllib.request.urlopen('http://webservice.catalogueoflife.org/col/webservice?name=' + ('+'.join(identQuery)), timeout=30))
-    # we need to be able to choose the best possible (most up-to-date) scientific name from XML results
-    rootCoLQuery = CoLQuery.getroot()
-    for result in rootCoLQuery.findall('result'):
-        for tag in result.findall('accepted_name'):
-            name = tag.find('name').text
-            nameStatus = tag.find('name_status').text
-            name_html = tag.find('name_html').find('i').tail
-            print("name: " + name)
-            print("nameStatus: " + nameStatus)
-            print("name_html: " + name_html)
-
-    # scientific name for plant specimen
-    if (rootCoLQuery.attrib['error_message']) is "":
-        text = rootCoLQuery.find('result/name_status').text
-        text = text.lower()
-        if 'synonym' in text:
-            sciName = (rootCoLQuery.find('result/accepted_name/name').text)
-            results.append(str(sciName))
+    CoLQuery = ET.parse(urllib.request.urlopen('http://webservice.catalogueoflife.org/col/webservice?name=' + ('+'.join(identQuery)), timeout=30).getroot())
+    for result in CoLQuery.findall('result'):
+        nameStatus = result.find('name_status').text
+        if nameStatus == 'accepted name':
+            name = result.find('name').text
+            try:
+                authorityName = result.find('name_html').find('i').tail
+            except AttributeError:
+                authorityName = html.unescape(result.find('name_html').text)
+                authorityName = authorityName.split('</i> ')[1]
+            authorityName = re.sub(r'\d+','',authorityName)
+            authorityName = authorityName.strip().rstrip(',')
+            return (name,authorityName)
+        elif 'synonym' in nameStatus:
+            return CoLNameSearch(result.find('accepted_name/name').text)
         else:
-            sciName = (rootCoLQuery.find('result/name').text)
-            results.append(str(sciName))
-
-        # authorship
-        auth = ((rootCoLQuery.find('result/name_html/i').tail).strip())
-        if auth != '' and auth != 'L.':
-            auth = re.sub(r'\d+','',auth)
-            auth = auth.rstrip(', ')
-        return results
-    else:
-        return []
+            return 'not_accepted_or_syn'
