@@ -309,7 +309,10 @@ def genPrintLabelPDFs(labelDataInput):
         elements.append(PageBreak())
 
     #Build the base document's parameters.
-    labelFileName = filedialog.asksaveasfilename(initialdir=os.getcwd(),filetypes=(('pdf','*.pdf'),),title = 'Save Labels As')
+    labelFileName = filedialog.asksaveasfilename(
+                                            initialdir=os.getcwd(),
+                                            defaultextension='.pdf',
+                                            filetypes=(('pdf','*.pdf'),),title = 'Save Labels As')
     doc = BaseDocTemplate(labelFileName,
      pagesize=customPageSize,
      pageTemplates=[],
