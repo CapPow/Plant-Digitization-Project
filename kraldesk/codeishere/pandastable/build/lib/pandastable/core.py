@@ -47,6 +47,8 @@ from .dialogs import *
 # jacob added imports
 from .catalogOfLife import *
 from .locality import *
+# caleb added imports
+from .printLabels import *
 
 
 class Table(Canvas):
@@ -3271,6 +3273,7 @@ class Table(Canvas):
     # calls genLocality and genScientificName
     def processRecords(self):
         cRow = self.currentrow
+        print(cRow)
         while cRow < int(self.model.getRowCount() -1):
             cRow = self.currentrow
             self.genLocality(cRow)
@@ -3282,7 +3285,7 @@ class Table(Canvas):
     # takes current row as argument
     # calls google reverse geolocation api
     # sets values in proper cells in Table
-    def genLocality(self, currentRowArg):
+    def genLocality(currentRowArg):
         currentRow = currentRowArg
         currentRecord = self.model.getRecordAtRow(currentRow)
         localityIndex = self.findColumnIndex('locality')
@@ -3324,6 +3327,7 @@ class Table(Canvas):
                 # reverseGeoCall will return a list of results
                 # or it will return an error/status string
                 if isinstance(address, list):
+                    print(address)
                     for addressComponent in address:
                         if addressComponent['types'][0] == 'route':
                             streetName = addressComponent['long_name']
@@ -3335,6 +3339,7 @@ class Table(Canvas):
                             municipality = addressComponent['long_name']
                         if addressComponent['types'][0] == 'country':
                             country = addressComponent['short_name']
+                            
 
                         # a streetname is returned from reverse geolocation call
                         # in some cases, the api will not return a street at all
@@ -3420,6 +3425,20 @@ class Table(Canvas):
                     button.pack()
         return
 
+    # causes a pdf to be saved (uses dialog to get save name.
+    # causes a pdf to be opened with default pdf reader.
+    # if inproper data passed, returns empty return.
+    # expects a dataframe or a series
+    # a row should be a series
+    # getSelectedDataFrame(self) should be a dataframe
+    # http://pandastable.readthedocs.io/en/latest/_modules/pandastable/core.html#Table.getSelectedDataFrame
+
+    def genLabelPDF(self):
+        toPrintDataFrame = self.getSelectedDataFrame()
+        genPrintLabelPDFs(toPrintDataFrame)
+        return
+
+    
     # returns index location of column header
     # if the column header doesn't exist
     # returns empty string
@@ -3488,10 +3507,7 @@ class Table(Canvas):
             filename = filedialog.askopenfilename(parent=self.master,
                                                           defaultextension='.csv',
                                                           initialdir=self.importpath,
-                                                          filetypes=[("csv","*.csv"),
-                                                                     ("tsv","*.tsv"),
-                                                                     ("txt","*.txt"),
-                                                            ("All files","*.*")])
+                                                          filetypes=[("csv","*.csv")])
         if not filename:
             return
         if dialog == True:
@@ -3500,7 +3516,36 @@ class Table(Canvas):
             if df is None:
                 return
         else:
-            df = pd.read_csv(filename, **kwargs)
+            column_order = [
+            'othercatalognumbers',
+            'eventDate',
+            'genericcolumn1',
+            'scientificName',
+            'scientificNameAuthorship',
+            'locality',
+            'associatedTaxa',
+            'recordedBy',
+            'associatedCollectors',
+            'samplingEffort',
+            'locationRemarks',
+            'occurrenceRemarks',
+            'genericcolumn2',
+            'substrate',
+            'habitat',
+            'individualCount',
+            'reproductiveCondition',
+            'cultivationStatus',
+            'decimalLatitude',
+            'decimalLongitude',
+            'coordinateUncertaintyInMeters',
+            'minimumElevationInMeters',
+            'country',
+            'stateProvince',
+            'county',
+            'path'
+            ]
+
+            df = pd.read_csv(filename, usecols = column_order, encoding =  'utf-8')[column_order]
         model = TableModel(dataframe=df)
         self.updateModel(model)
         self.redraw()
@@ -3576,11 +3621,13 @@ class ToolBar(Frame):
         img = images.save_proj()
         addButton(self, 'Save', self.parentapp.save, img, 'save')
         img = images.importcsv()
-        func = lambda: self.parentapp.importCSV(dialog=1)
+        func = lambda: self.parentapp.importCSV(dialog=False)
         addButton(self, 'Import', func, img, 'import csv')
-        img = images.excel()
-        addButton(self, 'Load excel', self.parentapp.loadExcel, img, 'load excel file')
-        img = images.copy()
+        img = images.aggregate() #hijacking random image for now
+        addButton(self, 'Export',self.parentapp.genLabelPDF, img, 'Export Labels to PDF')
+        #img = images.excel()
+        #addButton(self, 'Load excel', self.parentapp.loadExcel, img, 'load excel file')
+        #img = images.copy()
         # addButton(self, 'Copy', self.parentapp.copyTable, img, 'copy table to clipboard')
         # img = images.paste()
         # addButton(self, 'Paste', self.parentapp.pasteTable, img, 'paste table')
