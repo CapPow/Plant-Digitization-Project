@@ -38,7 +38,7 @@ import platform
 import numpy as np
 import pandas as pd
 from .data import TableModel
-from .headers import ColumnHeader, RowHeader, IndexHeader
+from .headers import ColumnHeader, RowHeader, IndexHeader, RowWidgetColumn
 from .prefs import Preferences
 from .dialogs import ImportDialog
 from . import images, util
@@ -237,21 +237,24 @@ class Table(Canvas):
         self.rowheader = RowHeader(self.parentframe, self, width=self.rowheaderwidth)
         self.tablecolheader = ColumnHeader(self.parentframe, self)
         self.rowindexheader = IndexHeader(self.parentframe, self)
+        self.rowwidgetcolumn = RowWidgetColumn(self.parentframe, self)
         self.Yscrollbar = AutoScrollbar(self.parentframe,orient=VERTICAL,command=self.set_yviews)
-        self.Yscrollbar.grid(row=2,column=2,rowspan=1,sticky='news',pady=0,ipady=0)
+        self.Yscrollbar.grid(row=2,column=3,rowspan=1,sticky='news',pady=0,ipady=0)
         self.Xscrollbar = AutoScrollbar(self.parentframe,orient=HORIZONTAL,command=self.set_xviews)
-        self.Xscrollbar.grid(row=3,column=1,columnspan=1,sticky='news')
+        self.Xscrollbar.grid(row=3,column=2,columnspan=1,sticky='news')
         self['xscrollcommand'] = self.Xscrollbar.set
         self['yscrollcommand'] = self.Yscrollbar.set
         self.tablecolheader['xscrollcommand'] = self.Xscrollbar.set
         self.rowheader['yscrollcommand'] = self.Yscrollbar.set
         self.parentframe.rowconfigure(2,weight=1)
-        self.parentframe.columnconfigure(1,weight=1)
+        self.parentframe.columnconfigure(2,weight=1)
 
-        self.rowindexheader.grid(row=1,column=0,rowspan=1,sticky='news')
-        self.tablecolheader.grid(row=1,column=1,rowspan=1,sticky='news')
-        self.rowheader.grid(row=2,column=0,rowspan=1,sticky='news')
-        self.grid(row=2,column=1,rowspan=1,sticky='news',pady=0,ipady=0)
+        self.rowwidgetcolumn.grid(row=2,column=0,rowspan=1,sticky='ns')
+
+        self.rowindexheader.grid(row=1,column=1,rowspan=1,sticky='news')
+        self.tablecolheader.grid(row=1,column=2,rowspan=1,sticky='news')
+        self.rowheader.grid(row=2,column=1,rowspan=1,sticky='news')
+        self.grid(row=2,column=2,rowspan=1,sticky='news',pady=0,ipady=0)
 
         self.adjustColumnWidths()
         self.parentframe.bind("<Configure>", self.redrawVisible)
@@ -259,10 +262,10 @@ class Table(Canvas):
         self.xview("moveto", 0)
         if self.showtoolbar == True:
             self.toolbar = ToolBar(self.parentframe, self)
-            self.toolbar.grid(row=0,column=0,columnspan=2,sticky='ew')
+            self.toolbar.grid(row=0,column=1,columnspan=2,sticky='ew')
         if self.showstatusbar == True:
             self.statusbar = statusBar(self.parentframe, self)
-            self.statusbar.grid(row=3,column=0,columnspan=2,sticky='ew')
+            self.statusbar.grid(row=3,column=1,columnspan=2,sticky='ew')
         self.redraw(callback=callback)
         if hasattr(self, 'pf'):
             self.pf.updateData()
