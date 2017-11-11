@@ -17,7 +17,7 @@ https://docs.google.com/presentation/d/1kz0K0Dbt2jrnNswKCHjEv63JSkq-e8NZkxNaLzXK
 
 - The wiki will eventually contain all necessary documentation needed by a user to install/use the application.
 
-## Want to contribute to the project, or recruit us for something after we graduate? Contact us!
+## Want to contribute to the project or recruit us for something after we graduate? Contact us!
 
 [Jacob Motley](https://www.linkedin.com/in/jacob-motley-b627a1152) - BS [Computer Science](https://github.com/j-h-m): Software Systems - UTC.
 
