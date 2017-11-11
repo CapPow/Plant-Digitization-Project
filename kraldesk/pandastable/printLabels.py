@@ -8,10 +8,10 @@ from reportlab.graphics.barcode import code39 #Note, overriding a function from 
 from reportlab.lib.units import inch
 from reportlab.lib import pagesizes
 import os
-from os import startfile
-
+import sys
+import subprocess
 from tkinter import filedialog
-import pandas as pd
+
 
 
 def genPrintLabelPDFs(labelDataInput):
@@ -348,4 +348,11 @@ def genPrintLabelPDFs(labelDataInput):
     #Actually build the pdf
     build_pdf(elements)
     #Open the file after it is built (maybe change/remove this later? Idealy, a preview or something
-    startfile(labelFileName)
+
+    def open_file(filename):
+        if sys.platform == "win32":
+            os.startfile(filename)
+        else:
+            opener ="open" if sys.platform == "darwin" else "xdg-open"
+            subprocess.call([opener, filename])
+    open_file(labelFileName)
