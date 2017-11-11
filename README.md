@@ -1,7 +1,7 @@
 # Modernizing Field Collection Techniques
 
-## In leiu of proper documentation, here is a slideshow: 
-           https://docs.google.com/presentation/d/1kz0K0Dbt2jrnNswKCHjEv63JSkq-e8NZkxNaLzXK5mg/edit?usp=sharing
+## In leiu of proper documentation, here is a slideshow:
+https://docs.google.com/presentation/d/1kz0K0Dbt2jrnNswKCHjEv63JSkq-e8NZkxNaLzXK5mg/edit?usp=sharing
 
 - This is a collaboration project designed and developed by UTC students.
 
@@ -19,4 +19,6 @@
 
 ## Want to contribute to the project, or recruit us for something after we graduate? Contact us!
 
-[Caleb Powell] (https://github.com/CapPow) - Environmental Science, Graduate Student - UTC.
+[Caleb Powell](https://github.com/CapPow) - BS Environmental Science, Graduate Student - UTC.
+
+[Jacob Motley](https://www.linkedin.com/in/jacob-motley-b627a1152) - BS [Computer Science](https://github.com/j-h-m): Software Systems - UTC.
