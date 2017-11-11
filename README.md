@@ -1,12 +1,17 @@
 # Plant-Digitization-Project
-Plant Digitization Project -- Python Tkintering
--csv View contains the code for selecting and displaying a basic csv data. It also has the processing functions added in.
--kralNotePostProcessing contains initial code for api interaction functions. It presumes the user has already added a new field "scientificName". This code should be adaptable to the final GUI on a by function basis.
+- sample data has sample data
+- kraldesk contains my virtual environment and the modified pandastable source code
 
-=======
+- csv View 
+    - contains the code for selecting and displaying a basic csv data. 
+    - It also has the processing functions added in.
 
-Develop some GUI solutions:
+- kralNotePostProcessing 
+    - contains initial code for api interaction functions. It presumes the user has already added a new field "scientificName".
+    - This code should be adaptable to the final GUI on a by function basis
 
-- Opening a CSV File (Opening CSV File; display table with values from CSV)
- 
-Use Python 3.6.2, update if you haven't!
+This program is going to be released with the GPLv3 license when it is ready for testing.
+
+We'll release an "alpha" version for testing soon.
+Source code will be kept here.
+The wiki will eventually contain all necessary documentation needed by a user to install/use the application.

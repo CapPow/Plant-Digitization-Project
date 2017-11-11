@@ -1,0 +1,153 @@
+#+TITLE: notes on PD Project
+
+* DONE break the address into parts that work with the darwin core
+* DONE google api call reduction have attribute for table that is a list of dictionaries (unique key for each locality string)
+** DONE just add dictionaries to a list
+** DONE search the list with the current gps coordinate values in the same fashion as the dictionary name
+* DONE address parts need to be added to corresponding row values
+** DONE try adding these rows to the test csv (match Darwin Core)
+** DONE reverse locality string to broadest to most narrow
+** DONE add corresponding values to the appropriate cells
+*** DONE add part of the list/dict that relate to column header
+*** DONE reduce rounding of GPS coordinates to 5 decimal places
+*** DONE talk to Caleb about missing street name or street number in api return (around line 3325)
+**** just use the street name (get rid of path column inserts)
+***** if that's empty return an empty string
+***** add address to the locality string but don't create an individual column for it
+***** TODO use short name for country
+**** popup error is at line 3343
+*** DONE talk to Caleb about column header differences (should we adapt the function for capitalization)
+**** look at line 3403
+**** yes setup to compare to lowercase value from columnName()
+* TODO add function for the catalogue of life api call (in Caleb's scripts on Github)
+** TODO parse XML correctly so we get correct Scientific Name each time
+*** we want the result that has name_status='*synonym' ; accepted_name (accepted sci-name) ; name_html (authorship)
+also though, we could pull the updated scientific name from the name_html section, potentially use only one xml element
+*** links
+https://docs.python.org/3.5/library/xml.etree.elementtree.html
+http://webservice.catalogueoflife.org/col/webservice?name=Pinus+taeda
+http://webservice.catalogueoflife.org/col/webservice?name=Acer+rubrum
+http://webservice.catalogueoflife.org/col/webservice?name=Toxicodendron+radicans+orientale
+** TODO have popup ask user if they want to update the sci-name with what was returned from SERNEC
+** TODO add associated taxa in genScientificName function
+** TODO where should I place results from sci name, authorship, and associated taxonomy?
+* TODO turn both into a function for a Toolbar button
+** TODO find out how to create picture for button
+** TODO setup a function for button to call all functions and do auto run; instead of individual buttons
+* TODO Miscellaneous
+** TODO saving should default to current open file
+** TODO cleanup toolbar and popupmenu (in all cases for popupmenu, in reference to click location / event object)
+*** TODO toolbar cleanup
+*** TODO should ensure all basic functionality exists in toolbar (i.e you can do all you need to with toolbar)
+*** TODO popupmenu should be cleaned up with only necessities existing in menus for each object
+** TODO towards end start cleaning up code
+*** ALWAYS REINSTALL THE MODULE AFTER DELETING CODE TO ENSURE CHANGES DON'T BREAK OTHER THINGS
+*** TODO remove unecessary files first
+*** TODO remove unecessary functions/classes second
+*** TODO remove unecessary variables and comments last
+** TODO must add license text and author(s) to each of the source files
+** TODO build an installer for windows
+** TODO build a snap for Linux (if time permits, otherwise just distribute code/binary)
+https://snapcraft.io
+* saved errors
+** error in getRecName call
+current row: 0
+Exception in Tkinter callback
+Traceback (most recent call last):
+  File "/usr/lib/python3.5/tkinter/__init__.py", line 1562, in __call__
+    return self.func(*args)
+  File "/home/jacob/Programming/Projects/Plant_Digitization/pandas2/lib/python3.5/site-packages/pandastable-0.8.3-py3.5.egg/pandastable/core.py", line 3269, in dolittle
+    currentRecord = self.model.getRecordAtRow(currentRow)
+  File "/home/jacob/Programming/Projects/Plant_Digitization/pandas2/lib/python3.5/site-packages/pandastable-0.8.3-py3.5.egg/pandastable/data.py", line 150, in getRecordAtRow
+    name = self.getRecName(rowIndex)
+AttributeError: 'TableModel' object has no attribute 'getRecName'
+** no internet connection
+jacob@grepordie ~/P/P/P/p/code> python3 kraldesk.py
+current row: 0
+current locality is North of green briar picnic area. On land mass dividing the stream.
+Exception in Tkinter callback
+Traceback (most recent call last):
+  File "/home/jacob/Programming/Projects/Plant_Digitization/pandas2/lib/python3.5/site-packages/urllib3/connection.py", line 141, in _new_conn
+    (self.host, self.port), self.timeout, **extra_kw)
+  File "/home/jacob/Programming/Projects/Plant_Digitization/pandas2/lib/python3.5/site-packages/urllib3/util/connection.py", line 60, in create_connection
+    for res in socket.getaddrinfo(host, port, family, socket.SOCK_STREAM):
+  File "/usr/lib/python3.5/socket.py", line 733, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+socket.gaierror: [Errno -2] Name or service not known
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/jacob/Programming/Projects/Plant_Digitization/pandas2/lib/python3.5/site-packages/urllib3/connectionpool.py", line 601, in urlopen
+    chunked=chunked)
+  File "/home/jacob/Programming/Projects/Plant_Digitization/pandas2/lib/python3.5/site-packages/urllib3/connectionpool.py", line 346, in _make_request
+    self._validate_conn(conn)
+  File "/home/jacob/Programming/Projects/Plant_Digitization/pandas2/lib/python3.5/site-packages/urllib3/connectionpool.py", line 850, in _validate_conn
+    conn.connect()
+  File "/home/jacob/Programming/Projects/Plant_Digitization/pandas2/lib/python3.5/site-packages/urllib3/connection.py", line 284, in connect
+    conn = self._new_conn()
+  File "/home/jacob/Programming/Projects/Plant_Digitization/pandas2/lib/python3.5/site-packages/urllib3/connection.py", line 150, in _new_conn
+    self, "Failed to establish a new connection: %s" % e)
+urllib3.exceptions.NewConnectionError: <urllib3.connection.VerifiedHTTPSConnection object at 0x7ff65ee84cf8>: Failed to establish a new connection: [Errno -2] Name or service not known
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/jacob/Programming/Projects/Plant_Digitization/pandas2/lib/python3.5/site-packages/requests/adapters.py", line 440, in send
+    timeout=timeout
+  File "/home/jacob/Programming/Projects/Plant_Digitization/pandas2/lib/python3.5/site-packages/urllib3/connectionpool.py", line 639, in urlopen
+    _stacktrace=sys.exc_info()[2])
+  File "/home/jacob/Programming/Projects/Plant_Digitization/pandas2/lib/python3.5/site-packages/urllib3/util/retry.py", line 388, in increment
+    raise MaxRetryError(_pool, url, error or ResponseError(cause))
+urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='maps.googleapis.com', port=443): Max retries exceeded with url: /maps/api/geocode/json?latlng=35.71276,-83.38297&key=AIzaSyCwugFdGLz6QUtcYqD1z0PKKsYJhay3vIg (Caused by NewConnectionError('<urllib3.connection.VerifiedHTTPSConnection object at 0x7ff65ee84cf8>: Failed to establish a new connection: [Errno -2] Name or service not known',))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3.5/tkinter/__init__.py", line 1562, in __call__
+    return self.func(*args)
+  File "/home/jacob/Programming/Projects/Plant_Digitization/pandas2/lib/python3.5/site-packages/pandastable-0.8.3-py3.5.egg/pandastable/core.py", line 3278, in dolittle
+    address = genLocality(latitude, longitude)
+  File "/home/jacob/Programming/Projects/Plant_Digitization/pandas2/lib/python3.5/site-packages/pandastable-0.8.3-py3.5.egg/pandastable/locality.py", line 10, in genLocality
+    apiCall = requests.get(apiUrl)
+  File "/home/jacob/Programming/Projects/Plant_Digitization/pandas2/lib/python3.5/site-packages/requests/api.py", line 72, in get
+    return request('get', url, params=params, **kwargs)
+  File "/home/jacob/Programming/Projects/Plant_Digitization/pandas2/lib/python3.5/site-packages/requests/api.py", line 58, in request
+    return session.request(method=method, url=url, **kwargs)
+  File "/home/jacob/Programming/Projects/Plant_Digitization/pandas2/lib/python3.5/site-packages/requests/sessions.py", line 508, in request
+    resp = self.send(prep, **send_kwargs)
+  File "/home/jacob/Programming/Projects/Plant_Digitization/pandas2/lib/python3.5/site-packages/requests/sessions.py", line 618, in send
+    r = adapter.send(request, **kwargs)
+  File "/home/jacob/Programming/Projects/Plant_Digitization/pandas2/lib/python3.5/site-packages/requests/adapters.py", line 508, in send
+    raise ConnectionError(e, request=request)
+requests.exceptions.ConnectionError: HTTPSConnectionPool(host='maps.googleapis.com', port=443): Max retries exceeded with url: /maps/api/geocode/json?latlng=35.71276,-83.38297&key=AIzaSyCwugFdGLz6QUtcYqD1z0PKKsYJhay3vIg (Caused by NewConnectionError('<urllib3.connection.VerifiedHTTPSConnection object at 0x7ff65ee84cf8>: Failed to establish a new connection: [Errno -2] Name or service not known',))
+** capture error on modification of currentRecord
+python3 kraldesk.py -> output of this process
+--> after hitting "gen locality" button
+
+current row: 0
+current locality is North of green briar picnic area. On land mass dividing the stream.
+/home/jacob/Programming/Projects/Plant_Digitization/pandas2/lib/python3.5/site-packages/pandastable-0.8.3-py3.5.egg/pandastable/core.py:3279: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame
+
+See the caveats in the documentation: http://pandas.pydata.org/pandas-docs/stable/indexing.html#indexing-view-versus-copy
+  currentRecord['locality'] = currentLocality + ' added ' + address
+address is: Old Settlers Trail, Gatlinburg, TN 37738, USA
+currentRecord is a: <class 'pandas.core.series.Series'>
+Exception in Tkinter callback
+Traceback (most recent call last):
+  File "/usr/lib/python3.5/tkinter/__init__.py", line 1562, in __call__
+    return self.func(*args)
+  File "/home/jacob/Programming/Projects/Plant_Digitization/pandas2/lib/python3.5/site-packages/pandastable-0.8.3-py3.5.egg/pandastable/core.py", line 3282, in dolittle
+    self.gotonextRow()
+  File "/home/jacob/Programming/Projects/Plant_Digitization/pandas2/lib/python3.5/site-packages/pandastable-0.8.3-py3.5.egg/pandastable/core.py", line 1836, in gotonextRow
+    if coltype == 'text' or coltype == 'number':
+TypeError: data type "text" not understood
+* Issues
+** No GPS coordinates for site (ask user for site location)
+*** ask for locality and address components for one site (cascade data to records of same site)
+** scientific name should be editable (or ask with old/updated name)
+*** every row that has a specimen number should have a scientific names (site would not)
+*** specimen level data should always have a sci-name
+** preference menu for user name (identified by, often same as collector)
+*** preference menu could be related to a config file that stores changes
