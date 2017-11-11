@@ -239,20 +239,20 @@ class Table(Canvas):
         self.tablecolheader = ColumnHeader(self.parentframe, self)
         self.rowindexheader = IndexHeader(self.parentframe, self)
         self.Yscrollbar = AutoScrollbar(self.parentframe,orient=VERTICAL,command=self.set_yviews)
-        self.Yscrollbar.grid(row=1,column=2,rowspan=1,sticky='news',pady=0,ipady=0)
+        self.Yscrollbar.grid(row=2,column=2,rowspan=1,sticky='news',pady=0,ipady=0)
         self.Xscrollbar = AutoScrollbar(self.parentframe,orient=HORIZONTAL,command=self.set_xviews)
-        self.Xscrollbar.grid(row=2,column=1,columnspan=1,sticky='news')
+        self.Xscrollbar.grid(row=3,column=1,columnspan=1,sticky='news')
         self['xscrollcommand'] = self.Xscrollbar.set
         self['yscrollcommand'] = self.Yscrollbar.set
         self.tablecolheader['xscrollcommand'] = self.Xscrollbar.set
         self.rowheader['yscrollcommand'] = self.Yscrollbar.set
-        self.parentframe.rowconfigure(1,weight=1)
+        self.parentframe.rowconfigure(2,weight=1)
         self.parentframe.columnconfigure(1,weight=1)
 
-        self.rowindexheader.grid(row=0,column=0,rowspan=1,sticky='news')
-        self.tablecolheader.grid(row=0,column=1,rowspan=1,sticky='news')
-        self.rowheader.grid(row=1,column=0,rowspan=1,sticky='news')
-        self.grid(row=1,column=1,rowspan=1,sticky='news',pady=0,ipady=0)
+        self.rowindexheader.grid(row=1,column=0,rowspan=1,sticky='news')
+        self.tablecolheader.grid(row=1,column=1,rowspan=1,sticky='news')
+        self.rowheader.grid(row=2,column=0,rowspan=1,sticky='news')
+        self.grid(row=2,column=1,rowspan=1,sticky='news',pady=0,ipady=0)
 
         self.adjustColumnWidths()
         self.parentframe.bind("<Configure>", self.redrawVisible)
