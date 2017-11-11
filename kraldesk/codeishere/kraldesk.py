@@ -1,6 +1,5 @@
 from tkinter import *
-from tkinter import filedialog
-from pandastable import Table, TableModel
+from pandastable import Table
 import pandas as pd
 
 class TestApp(Frame):
@@ -13,8 +12,8 @@ class TestApp(Frame):
             self.main.title('Table app')
             f = Frame(self.main)
             f.pack(fill=BOTH,expand=1)
-            df = TableModel.getKralSample()
-            #df = pd.DataFrame()
+            #df = TableModel.getKralSample()
+            df = pd.DataFrame()
             self.table = pt = Table(f, dataframe=df,
                                     showtoolbar=True, showstatusbar=False)
             pt.show()
