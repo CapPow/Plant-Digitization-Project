@@ -48,6 +48,7 @@ from .catalogOfLife import *
 from .locality import *
 # caleb added imports
 from .printLabels import *
+import webbrowser
 
 
 class Table(Canvas):
@@ -3444,6 +3445,15 @@ class Table(Canvas):
         self.rowcolors = pd.DataFrame()
         return
 
+    def helpDocumentation(self):
+        link='https://github.com/CapPow/Plant-Digitization-Project'
+        webbrowser.open(link,autoraise=1)
+        return
+
+    def quit(self):
+        self.main.destroy()
+        return
+    
 class ToolBar(Frame):
     """Uses the parent instance to provide the functions"""
     def __init__(self, parent=None, parentapp=None):
@@ -3451,50 +3461,46 @@ class ToolBar(Frame):
         Frame.__init__(self, parent, width=600, height=40)
         self.parentframe = parent
         self.parentapp = parentapp
+
+        img = images.importcsv()
+        func = lambda: self.parentapp.importCSV(dialog=False)
+        addButton(self, 'Import', func, img, 'import csv', side=LEFT)
+
+        img = images.save_proj()
+        addButton(self, 'Save', self.parentapp.save, img, 'save', side=LEFT)
+
         # add an image for the button later, using existing img until this one is resized.
         #img = images.open_processRecords() 
         img = images.merge() 
         addButton(self, 'Process Records', self.parentapp.processRecords, img, 'Process Records', side=LEFT)
-        # img = images.open_proj()
-        # addButton(self, 'Load table', self.parentapp.load, img, 'load table')
-        img = images.save_proj()
-        addButton(self, 'Save', self.parentapp.save, img, 'save', side=LEFT)
-        img = images.importcsv()
-        func = lambda: self.parentapp.importCSV(dialog=False)
-        addButton(self, 'Import', func, img, 'import csv', side=LEFT)
+
         img = images.aggregate() #hijacking random image for now
         addButton(self, 'Export',self.parentapp.genLabelPDF, img, 'Export Labels to PDF', side=LEFT)
-        #img = images.excel()
-        #addButton(self, 'Load excel', self.parentapp.loadExcel, img, 'load excel file')
-        #img = images.copy()
-        # addButton(self, 'Copy', self.parentapp.copyTable, img, 'copy table to clipboard')
-        # img = images.paste()
-        # addButton(self, 'Paste', self.parentapp.pasteTable, img, 'paste table')
-        # img = images.plot()
-        # addButton(self, 'Plot', self.parentapp.plotSelected, img, 'plot selected')
-        # img = images.transpose()
-        # addButton(self, 'Transpose', self.parentapp.transpose, img, 'transpose')
-        # img = images.aggregate()
-        # addButton(self, 'Aggregate', self.parentapp.aggregate, img, 'aggregate')
-        # img = images.pivot()
-        # addButton(self, 'Pivot', self.parentapp.pivot, img, 'pivot')
-        # img = images.melt()
-        # addButton(self, 'Melt', self.parentapp.melt, img, 'melt')
-        # img = images.merge()
-        # addButton(self, 'Merge', self.parentapp.doCombine, img, 'merge, concat or join')
-        # img = images.table_multiple()
-        # addButton(self, 'Table from selection', self.parentapp.tableFromSelection,
-        #             img, 'sub-table from selection')
-        # img = images.filtering()
-        # addButton(self, 'Query', self.parentapp.queryBar, img, 'filter table')
-        # img = images.calculate()
-        # addButton(self, 'Evaluate function', self.parentapp.evalBar, img, 'calculate')
-        # img = images.fit()
-        # addButton(self, 'Stats models', self.parentapp.statsViewer, img, 'model fitting')
-        # img = images.table_delete()
-        # addButton(self, 'Clear', self.parentapp.clearTable, img, 'clear table')
+
+        img = images.cross()
+        addButton(self, 'Help', self.parentapp.helpDocumentation , img , 'Help Documentation', side=LEFT)
+
+        # List of unused button assets (for temp use before we get in our assets.
+        # img = images.open_proj()
+        #img = images.excel()        
+        #img = images.copy()        
+        # img = images.paste()        
+        # img = images.plot()        
+        # img = images.transpose()        
+        # img = images.aggregate()        
+        # img = images.pivot()        
+        # img = images.melt()        
+        # img = images.merge()        
+        # img = images.table_multiple()        
+        # img, 'sub-table from selection')
+        # img = images.filtering()        
+        # img = images.calculate()        
+        # img = images.fit()        
+        #img = images.table_delete()        
         #img = images.prefs()
-        #addButton(self, 'Prefs', self.parentapp.showPrefs, img, 'table preferences')
+        #img = images.table_delete()
+        #img = images.paste()
+        #img = images.transpose()
         return
 
 class ChildToolBar(ToolBar):
