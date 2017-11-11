@@ -39,7 +39,6 @@ import numpy as np
 import pandas as pd
 from .data import TableModel
 from .headers import ColumnHeader, RowHeader, IndexHeader
-from .plotting import MPLBaseOptions, PlotViewer
 from .prefs import Preferences
 from .dialogs import ImportDialog
 from . import images, util
@@ -127,7 +126,6 @@ class Table(Canvas):
         self.columnactions = {'text' : {"Edit":  'drawCellEntry' },
                               'number' : {"Edit": 'drawCellEntry' }}
         self.setFontSize()
-        self.plotted = False
         self.importpath = None
         self.prevdf = None
 
@@ -275,7 +273,6 @@ class Table(Canvas):
         if hasattr(self, 'parenttable'):
             self.parenttable.child.destroy()
             self.parenttable.child = None
-            self.parenttable.plotted = 'main'
         self.parentframe.destroy()
         return
 
@@ -545,21 +542,6 @@ class Table(Canvas):
             rc[colname] = clrs
         self.redraw()
         return
-
-    def values_to_colors(self, x, cmap='jet', alpha=1):
-        """Convert columnn values to colors"""
-
-        import pylab as plt
-        import matplotlib as mpl
-        cmap = plt.cm.get_cmap(cmap)
-        #if x.dtype in ['int','float64']:
-        if x.dtype in ['object']:#,'category']:
-            x = pd.Categorical(x).codes
-        x = (x-x.min())/(x.max()-x.min())
-        clrs = cmap(x)
-        clrs = mpl.colors.to_rgba_array(clrs, alpha)
-        clrs = [mpl.colors.rgb2hex(i) for i in clrs]
-        return clrs
 
     def getScale(self):
         try:
@@ -1520,8 +1502,6 @@ class Table(Canvas):
             self.recalculateFunctions(omit=n)
         else:
             self.redraw()
-        if hasattr(self, 'pf') and self.updateplotvar.get()==1:
-            self.plotSelected()
         #update functions list in dropdown
         funclist = ['='.join(i) for i in self.formulae.items()]
         self.functionentry['values'] = funclist
@@ -1553,107 +1533,6 @@ class Table(Canvas):
         for n in list(self.formulae.keys()):
             if n not in cols:
                 del(self.formulae[n])
-        return
-
-    def functionsBar(self, evt=None):
-        """Apply python functions from a pre-defined set, this is
-        for stuff that can't be done with eval strings"""
-
-        def reset():
-            self.evalframe.destroy()
-            self.evalframe = None
-            self.showAll()
-
-        def apply():
-            self.convertNumeric()
-            f = self.funcvar.get()
-            print (f)
-            df = self.model.df
-            z = df['filename'].apply(lambda x: x.replace('fa',''))
-            print (z)
-            return
-
-        if hasattr(self, 'funcsframe') and self.funcsframe != None:
-            return
-        ef = self.funcsframe = Frame(self.parentframe)
-        ef.grid(row=self.queryrow,column=1,sticky='news')
-        #self.evalvar = StringVar()
-        #e = Entry(ef, textvariable=self.evalvar, font="Courier 13 bold")
-        #e.bind('<Return>', self.evalFunction)
-        funcs = ['replace']
-        self.funcvar = StringVar()
-        f = Combobox(ef, values=funcs,
-                       textvariable=self.funcvar)
-        f.pack(fill=BOTH,side=LEFT,expand=1,padx=2,pady=2)
-        b = Button(ef,text='apply',width=5,command=apply)
-        b.pack(fill=BOTH,side=LEFT,padx=2,pady=2)
-        b = Button(ef,text='close',width=5,command=reset)
-        b.pack(fill=BOTH,side=LEFT,padx=2,pady=2)
-
-        return
-
-    def evalBar(self, evt=None):
-        """Use pd.eval to apply a function colwise or preset funcs."""
-
-        def reset():
-            self.evalframe.destroy()
-            self.evalframe = None
-            self.showAll()
-        def clear():
-            n = messagebox.askyesno("Clear formulae",
-                                    "This will clear stored functions.\nProceed?",
-                                    parent=self.parentframe)
-            if n == None:
-                return
-            self.formulae = {}
-            self.functionentry['values'] = []
-            return
-        def addcolname(evt):
-            self.functionentry.insert(END,colvar.get())
-            return
-
-        self.estyle = Style()
-        self.estyle.configure("White.TCombobox",
-                         fieldbackground="white")
-        self.estyle.configure("Red.TCombobox",
-                         fieldbackground="#ffcccc")
-
-        if hasattr(self, 'evalframe') and self.evalframe != None:
-            return
-        if not hasattr(self, 'formulae'):
-            self.formulae = {}
-        ef = self.evalframe = Frame(self.parentframe)
-        ef.grid(row=self.queryrow,column=0,columnspan=3,sticky='news')
-        bf = Frame(ef)
-        bf.pack(side=TOP, fill=BOTH)
-        self.evalvar = StringVar()
-        funclist = ['='.join(i) for i in self.formulae.items()]
-        self.functionentry = e = Combobox(bf, values=funclist,
-                                    textvariable=self.evalvar,width=34,
-                                    font="Courier 13 bold",
-                                    style="White.TCombobox")
-        e.bind('<Return>', self.evalFunction)
-        e.pack(fill=BOTH,side=LEFT,expand=1,padx=2,pady=2)
-        addButton(bf, 'apply', self.evalFunction, images.accept(), 'apply', side=LEFT)
-        addButton(bf, 'preset', self.applyColumnWise, images.function(), 'preset function', side=LEFT)
-        addButton(bf, 'clear', clear, images.delete(), 'clear stored functions', side=LEFT)
-        addButton(bf, 'close', reset, images.cross(), 'close', side=LEFT)
-
-        bf = Frame(ef)
-        bf.pack(side=TOP, fill=BOTH)
-        columns = list(self.model.df.columns)
-        colvar = StringVar()
-        Label(bf, text='insert column:').pack(side=LEFT,fill=BOTH)
-        c = Combobox(bf, values=columns,textvariable=colvar,width=14)
-        c.bind("<<ComboboxSelected>>", addcolname)
-        c.pack(side=LEFT,fill=BOTH)
-
-        self.updateplotvar = IntVar()
-        self.placecolvar = IntVar()
-        self.recalculatevar = IntVar()
-        Checkbutton(bf, text="Update plot", variable=self.updateplotvar).pack(side=LEFT)
-        Checkbutton(bf, text="Place new columns", variable=self.placecolvar).pack(side=LEFT)
-        Checkbutton(bf, text="Recalculate all", variable=self.recalculatevar).pack(side=LEFT)
         return
 
     def resizeColumn(self, col, width):
@@ -2470,9 +2349,6 @@ class Table(Canvas):
                         "Save as": self.saveAs,
                         "Import csv": lambda: self.importCSV(dialog=True),
                         "Export": self.doExport,
-                        "Plot Selected" : self.plotSelected,
-                        "Hide plot" : self.hidePlot,
-                        "Show plot" : self.showPlot,
                         "Preferences" : self.showPrefs,
                         "Table to Text" : self.showasText,
                         "Clean Data" : self.cleanData,
@@ -2484,7 +2360,6 @@ class Table(Canvas):
                    "Show as Text", "Table Info", "Preferences"]
 
         filecommands = ['New','Load','Import csv','Save','Save as','Export']
-        plotcommands = ['Plot Selected','Hide plot','Show plot']
         tablecommands = ['Table to Text','Clean Data','Clear Formatting']
 
         def createSubMenu(parent, label, commands):
@@ -2534,7 +2409,6 @@ class Table(Canvas):
 
         popupmenu.add_separator()
         createSubMenu(popupmenu, 'File', filecommands)
-        createSubMenu(popupmenu, 'Plot', plotcommands)
         createSubMenu(popupmenu, 'Table', tablecommands)
         popupmenu.bind("<FocusOut>", popupFocusOut)
         popupmenu.focus_set()
@@ -2592,31 +2466,8 @@ class Table(Canvas):
             lists.append(x)
         return lists
 
-    def showPlotViewer(self, parent=None, layout='horizontal'):
-        """Create plot frame"""
-
-        if not hasattr(self, 'pf'):
-            self.pf = PlotViewer(table=self, parent=parent, layout=layout)
-        if hasattr(self, 'child') and self.child is not None:
-            self.child.pf = self.pf
-        return self.pf
-
-    def hidePlot(self):
-        """Hide plot frame"""
-
-        if hasattr(self, 'pf'):
-            self.pf.hide()
-            #self.pf = None
-        return
-
-    def showPlot(self):
-        if hasattr(self, 'pf'):
-            self.pf.show()
-        return
-
     def getSelectedDataFrame(self):
         """Return a sub-dataframe of the selected cells"""
-
         df = self.model.df
         rows = self.multiplerowlist
         if not type(rows) is list:
@@ -2654,43 +2505,6 @@ class Table(Canvas):
             labelDicts.append(datum)
         return labelDicts
     
-    def getPlotData(self):
-        """Plot data from selection"""
-
-        data = self.getSelectedDataFrame()
-        #data = data.convert_objects(convert_numeric='force')
-        return data
-
-    def plotSelected(self):
-        """Plot the selected data in the associated plotviewer"""
-
-        if not hasattr(self, 'pf') or self.pf == None:
-            self.pf = PlotViewer(table=self)
-        else:
-            if type(self.pf.main) is Toplevel:
-                self.pf.main.deiconify()
-        #plot could be hidden
-        self.showPlot()
-        #data = self.getPlotData()
-        #self.pf.data = data
-        self.pf.table = self
-        self.pf.replot() #calls getPlotData on the table
-        if hasattr(self, 'parenttable'):
-            self.parenttable.plotted = 'child'
-        else:
-            self.plotted = 'main'
-        return
-
-    def plot3D(self):
-
-        if not hasattr(self, 'pf'):
-            self.pf = PlotViewer(table=self)
-
-        data = self.getPlotData()
-        self.pf.data = data
-        self.pf.plot3D()
-        return
-
     #--- Drawing stuff ---
 
     def drawGrid(self, startrow, endrow):
@@ -3694,8 +3508,6 @@ class ChildToolBar(ToolBar):
         img = images.importcsv()
         func = lambda: self.parentapp.importCSV(dialog=1)
         addButton(self, 'Import', func, img, 'import csv')
-        img = images.plot()
-        addButton(self, 'Plot', self.parentapp.plotSelected, img, 'plot selected')
         img = images.transpose()
         addButton(self, 'Transpose', self.parentapp.transpose, img, 'transpose')
         img = images.copy()
