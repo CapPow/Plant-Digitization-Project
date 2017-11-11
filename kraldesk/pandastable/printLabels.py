@@ -16,16 +16,6 @@ import pandas as pd
 
 def genPrintLabelPDFs(labelDataInput):
     labelData = labelDataInput
-    if isinstance(labelDataInput, pd.Series):
-        #labelData = self.model.getRecordAtRow(currentRow).to_dict()
-        labelData = labelData.fillna('')
-        labelData = [labelDataInput.to_dict()]
-    elif isinstance(labelDataInput, pd.DataFrame):
-        labelData = labelData.fillna('')
-        labelData = labelDataInput.to_dict(orient = 'records')
-    else:
-        return
-    
 
     xPaperSize = 5.50 * inch   #These values should be user preferences! (But it'll be a PITA to do)
     yPaperSize = 3.50 * inch

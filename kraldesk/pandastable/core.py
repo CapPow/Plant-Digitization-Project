@@ -2630,7 +2630,30 @@ class Table(Canvas):
             print ('error indexing data')
             return pd.DataFrame()
         return data
+    
+    def getSelectedLabelDict(self):
+        """Returns a list of dictionaries from selected rows."""
 
+        df = self.model.df
+        rows = self.multiplerowlist
+        if not type(rows) is list:
+            rows = list(rows)
+        if len(rows)<1 or self.allrows == True:
+            rows = list(range(self.rows))
+        cols = self.multiplecollist
+        try:
+            data = df.iloc[rows,:]
+        except Exception as e:
+            print ('error indexing data')
+            return pd.DataFrame()
+        data = data.fillna(' ')
+        data = data.to_dict(orient = 'records')
+        labelDicts = []
+        for datum in data:
+            datum = {key: value.strip() for key, value in datum.items() if isinstance(value,str)} #dict comprehension!
+            labelDicts.append(datum)
+        return labelDicts
+    
     def getPlotData(self):
         """Plot data from selection"""
 
@@ -3434,7 +3457,8 @@ class Table(Canvas):
     # http://pandastable.readthedocs.io/en/latest/_modules/pandastable/core.html#Table.getSelectedDataFrame
 
     def genLabelPDF(self):
-        toPrintDataFrame = self.getSelectedDataFrame()
+        toPrintDataFrame = self.getSelectedLabelDict()
+        #toPrintDataFrame = self.getSelectedDataFrame()
         genPrintLabelPDFs(toPrintDataFrame)
         return
 
