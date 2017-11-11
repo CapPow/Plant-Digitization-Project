@@ -3,11 +3,15 @@
 ## In leiu of proper documentation, here is a slideshow:
 https://docs.google.com/presentation/d/1kz0K0Dbt2jrnNswKCHjEv63JSkq-e8NZkxNaLzXK5mg/edit?usp=sharing
 
-- This is a collaboration project designed and developed by UTC students.
+- This project is being developed to standardize and simplify collecting and processing natural history specimens.
 
-- This code is intended to be used in tandom with a mobile collection app currently in beta testing for Android.
+- It is a collaboration project designed and developed by UTC students.
 
-- The mobile was developed through MIT's App inventor II.
+- This code is intended to be used in tandom with an android mobile field app which is currently in early testing.
+
+- The user interface has been adapted from [pandastable](https://github.com/dmnfarrell/pandastable) by [Damien Farrell](https://github.com/dmnfarrell). 
+
+- The mobile application was developed by through MIT's App inventor II.
 
 - This program is going to be released with the GPLv3 license when it is ready for testing.
 
