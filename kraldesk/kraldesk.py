@@ -19,8 +19,6 @@ class TestApp(Frame):
             pt.show()
             return
 
-
-
 app = TestApp()
 #launch the app
 app.mainloop()

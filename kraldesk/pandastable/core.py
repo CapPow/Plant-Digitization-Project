@@ -260,7 +260,7 @@ class Table(Canvas):
         self.xview("moveto", 0)
         if self.showtoolbar == True:
             self.toolbar = ToolBar(self.parentframe, self)
-            self.toolbar.grid(row=0,column=3,rowspan=2,sticky='news')
+            self.toolbar.grid(row=0,column=0,columnspan=2,sticky='ew')
         if self.showstatusbar == True:
             self.statusbar = statusBar(self.parentframe, self)
             self.statusbar.grid(row=3,column=0,columnspan=2,sticky='ew')
@@ -3613,18 +3613,19 @@ class ToolBar(Frame):
         Frame.__init__(self, parent, width=600, height=40)
         self.parentframe = parent
         self.parentapp = parentapp
-        # add an image for the button later
-        img = images.open_processRecords()
-        addButton(self, 'Process Records', self.parentapp.processRecords, img, 'Process Records')
+        # add an image for the button later, using existing img until this one is resized.
+        #img = images.open_processRecords() 
+        img = images.merge() 
+        addButton(self, 'Process Records', self.parentapp.processRecords, img, 'Process Records', side=LEFT)
         # img = images.open_proj()
         # addButton(self, 'Load table', self.parentapp.load, img, 'load table')
         img = images.save_proj()
-        addButton(self, 'Save', self.parentapp.save, img, 'save')
+        addButton(self, 'Save', self.parentapp.save, img, 'save', side=LEFT)
         img = images.importcsv()
         func = lambda: self.parentapp.importCSV(dialog=False)
-        addButton(self, 'Import', func, img, 'import csv')
+        addButton(self, 'Import', func, img, 'import csv', side=LEFT)
         img = images.aggregate() #hijacking random image for now
-        addButton(self, 'Export',self.parentapp.genLabelPDF, img, 'Export Labels to PDF')
+        addButton(self, 'Export',self.parentapp.genLabelPDF, img, 'Export Labels to PDF', side=LEFT)
         #img = images.excel()
         #addButton(self, 'Load excel', self.parentapp.loadExcel, img, 'load excel file')
         #img = images.copy()
