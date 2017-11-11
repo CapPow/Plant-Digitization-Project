@@ -3318,13 +3318,10 @@ class Table(Canvas):
 
         if filename == None:
             filename = filedialog.asksaveasfilename(parent=self.master,
-                                                     #defaultextension='.mpk',
-                                                     initialdir = self.currentdir,
-                                                     filetypes=[("msgpack","*.mpk"),
-                                                                ("pickle","*.pickle"),
-                                                                ("csv","*.csv"),
-                                                                ("excel","*.xls"),
-                                                                ("All files","*.*")])
+                                                    defaultextension='.csv',
+                                                    initialfile = filename,
+                                                    initialdir = self.currentdir,
+                                                    filetypes=[("csv","*.csv")])
         if filename:
             self.model.save(filename)
             self.filename = filename
