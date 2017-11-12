@@ -488,21 +488,21 @@ class RowWidgetColumn(Canvas):
                 cols = [r]
                 xpos = [xstart]
             w = np.sum(widths)
-##        else:
-##                    
-##            #spinnerBox = Spinbox(self, from_=0, to=15)
-##            #spinnerBox.pack()
-##            rows = [i for i in v]
-##            for rowIndValue in rows:
-##                row = rowIndValue - 1
-##                print()
-##                #print(df.loc[row:0])
-##                
-##            cols = [rows]
-##            l = max([len(str(i)) for i in rows])
-##            w = l * scale + 6
-##            widths = [w]
-##            xpos = [xstart]
+        else:
+                    
+            #spinnerBox = Spinbox(self, from_=0, to=15)
+            #spinnerBox.pack()
+            rows = [i for i in v]
+            for rowIndValue in rows:
+                row = rowIndValue - 1
+                print()
+                #print(df.loc[row:0])
+                
+            cols = [rows]
+            l = max([len(str(i)) for i in rows])
+            w = l * scale + 6
+            widths = [w]
+            xpos = [xstart]
 
         if w>maxw:
             w = maxw
