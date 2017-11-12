@@ -3221,7 +3221,8 @@ class Table(Canvas):
                         tempDict = {'latitude': str(latitude), 'longitude': str(longitude), 'municipality': str(municipality), 'county': str(county), 'stateProvince': str(stateProvince), 'country': str(country), 'localityString': addressString}
 
                     self.uniqueLocality.append(tempDict)
-                    localityAddressAdded = locality + ' ' + addressString
+                    localityAddressAdded = addressString + ' ' + locality
+                    localityAddressAdded = localityAddressAdded.lstrip()
                     self.model.setValueAt(localityAddressAdded, currentRow, localityIndex)
 
                     if municipalityIndex != '':
