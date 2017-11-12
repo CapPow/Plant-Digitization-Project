@@ -8,5 +8,4 @@ setup(
     description = '',
     license='GPL v3',
     package_data={'': ['sample-data/*.csv']}
-    install_requires=['pandas>=0.18']
 )
