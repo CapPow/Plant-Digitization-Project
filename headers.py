@@ -455,7 +455,7 @@ class RowWidgetColumn(Canvas):
 
         self.height = self.table.rowheight * self.table.rows+10
         self.configure(scrollregion=(0,0, self.width, self.height))
-        self.delete('rowheader','text')
+        self.delete('rowwidgetcolumn','text')
         self.delete('rect')
 
         xstart = 1
@@ -488,13 +488,21 @@ class RowWidgetColumn(Canvas):
                 cols = [r]
                 xpos = [xstart]
             w = np.sum(widths)
-        else:
-            rows = [i+1 for i in v]
-            cols = [rows]
-            l = max([len(str(i)) for i in rows])
-            w = l * scale + 6
-            widths = [w]
-            xpos = [xstart]
+##        else:
+##                    
+##            #spinnerBox = Spinbox(self, from_=0, to=15)
+##            #spinnerBox.pack()
+##            rows = [i for i in v]
+##            for rowIndValue in rows:
+##                row = rowIndValue - 1
+##                print()
+##                #print(df.loc[row:0])
+##                
+##            cols = [rows]
+##            l = max([len(str(i)) for i in rows])
+##            w = l * scale + 6
+##            widths = [w]
+##            xpos = [xstart]
 
         if w>maxw:
             w = maxw
@@ -514,7 +522,7 @@ class RowWidgetColumn(Canvas):
                 x1,y1,x2,y2 = self.table.getCellCoords(r,0)
                 self.create_rectangle(x,y1,w-1,y2, fill=self.color,
                                         outline='white', width=1,
-                                        tag='rowheader')
+                                        tag='rowwidgetcolumn')
                 self.create_text(x+pad,y1+h/2, text=text,
                                   fill='black', font=self.table.thefont,
                                   tag='text', anchor=align)

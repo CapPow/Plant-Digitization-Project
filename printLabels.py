@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 from reportlab.platypus import Image, Table, TableStyle, Flowable, SimpleDocTemplate, BaseDocTemplate, PageTemplate, PageBreak
 from reportlab.platypus import Frame as platypusFrame   #NOTE SEE Special case import here to avoid namespace conflict with "Frame"
 from reportlab.platypus.flowables import Spacer
