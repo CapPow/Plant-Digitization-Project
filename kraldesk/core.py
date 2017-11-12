@@ -37,18 +37,18 @@ import string, copy
 import platform
 import numpy as np
 import pandas as pd
-from .data import TableModel
-from .headers import ColumnHeader, RowHeader, IndexHeader
-from .plotting import MPLBaseOptions, PlotViewer
-from .prefs import Preferences
-from .dialogs import ImportDialog
-from . import images, util
-from .dialogs import *
+from data import TableModel
+from headers import ColumnHeader, RowHeader, IndexHeader, RowWidgetColumn
+from prefs import Preferences
+from dialogs import ImportDialog
+import images, util
+from dialogs import *
 # jacob added imports
-from .catalogOfLife import *
-from .locality import *
+from catalogOfLife import *
+from locality import *
 # caleb added imports
-from .printLabels import *
+from printLabels import *
+import webbrowser
 
 
 class Table(Canvas):
@@ -127,11 +127,12 @@ class Table(Canvas):
         self.columnactions = {'text' : {"Edit":  'drawCellEntry' },
                               'number' : {"Edit": 'drawCellEntry' }}
         self.setFontSize()
-        self.plotted = False
         self.importpath = None
         self.prevdf = None
 
         # list of dictionaries that include each unique GPS and address components
+        # how should the list look (variable name of dict? or none?)
+        # empty list for now
         self.uniqueLocality = []
         return
 
@@ -150,6 +151,7 @@ class Table(Canvas):
         self.y_start=1
         self.linewidth=1.0
         self.rowheaderwidth=50
+        self.rowwidgetcolumn = 25
         self.showkeynamesinheader=False
         self.thefont = ('Arial',12)
         self.cellbackgr = '#F4F4F3'
@@ -179,11 +181,13 @@ class Table(Canvas):
         if event.num == 5 or event.delta == -120:
             event.widget.yview_scroll(1, UNITS)
             self.rowheader.yview_scroll(1, UNITS)
+            self.rowwidgetcolumn.yview_scroll(1, UNITS)
         if event.num == 4 or event.delta == 120:
             if self.canvasy(0) < 0:
                 return
             event.widget.yview_scroll(-1, UNITS)
             self.rowheader.yview_scroll(-1, UNITS)
+            self.rowwidgetcolumn.yview_scroll(-1, UNITS)
         self.redrawVisible()
         return
 
@@ -236,21 +240,25 @@ class Table(Canvas):
         self.rowheader = RowHeader(self.parentframe, self, width=self.rowheaderwidth)
         self.tablecolheader = ColumnHeader(self.parentframe, self)
         self.rowindexheader = IndexHeader(self.parentframe, self)
+        self.rowwidgetcolumn = RowWidgetColumn(self.parentframe, self)
         self.Yscrollbar = AutoScrollbar(self.parentframe,orient=VERTICAL,command=self.set_yviews)
-        self.Yscrollbar.grid(row=2,column=2,rowspan=1,sticky='news',pady=0,ipady=0)
+        self.Yscrollbar.grid(row=2,column=3,rowspan=1,sticky='news',pady=0,ipady=0)
         self.Xscrollbar = AutoScrollbar(self.parentframe,orient=HORIZONTAL,command=self.set_xviews)
-        self.Xscrollbar.grid(row=3,column=1,columnspan=1,sticky='news')
+        self.Xscrollbar.grid(row=3,column=2,columnspan=1,sticky='news')
         self['xscrollcommand'] = self.Xscrollbar.set
         self['yscrollcommand'] = self.Yscrollbar.set
         self.tablecolheader['xscrollcommand'] = self.Xscrollbar.set
         self.rowheader['yscrollcommand'] = self.Yscrollbar.set
+        self.rowwidgetcolumn['yscrollcommand'] = self.Yscrollbar.set
         self.parentframe.rowconfigure(2,weight=1)
-        self.parentframe.columnconfigure(1,weight=1)
+        self.parentframe.columnconfigure(2,weight=1)
 
-        self.rowindexheader.grid(row=1,column=0,rowspan=1,sticky='news')
-        self.tablecolheader.grid(row=1,column=1,rowspan=1,sticky='news')
-        self.rowheader.grid(row=2,column=0,rowspan=1,sticky='news')
-        self.grid(row=2,column=1,rowspan=1,sticky='news',pady=0,ipady=0)
+        self.rowwidgetcolumn.grid(row=2,column=0,rowspan=1,sticky='news')
+
+        self.rowindexheader.grid(row=1,column=1,rowspan=1,sticky='news')
+        self.tablecolheader.grid(row=1,column=2,rowspan=1,sticky='news')
+        self.rowheader.grid(row=2,column=1,rowspan=1,sticky='news')
+        self.grid(row=2,column=2,rowspan=1,sticky='news',pady=0,ipady=0)
 
         self.adjustColumnWidths()
         self.parentframe.bind("<Configure>", self.redrawVisible)
@@ -258,10 +266,10 @@ class Table(Canvas):
         self.xview("moveto", 0)
         if self.showtoolbar == True:
             self.toolbar = ToolBar(self.parentframe, self)
-            self.toolbar.grid(row=0,column=0,columnspan=2,sticky='ew')
+            self.toolbar.grid(row=0,column=1,columnspan=2,sticky='ew')
         if self.showstatusbar == True:
             self.statusbar = statusBar(self.parentframe, self)
-            self.statusbar.grid(row=3,column=0,columnspan=2,sticky='ew')
+            self.statusbar.grid(row=3,column=1,columnspan=2,sticky='ew')
         self.redraw(callback=callback)
         if hasattr(self, 'pf'):
             self.pf.updateData()
@@ -273,7 +281,6 @@ class Table(Canvas):
         if hasattr(self, 'parenttable'):
             self.parenttable.child.destroy()
             self.parenttable.child = None
-            self.parenttable.plotted = 'main'
         self.parentframe.destroy()
         return
 
@@ -356,6 +363,7 @@ class Table(Canvas):
             if self.rows == 0:
                 self.visiblerows = []
                 self.rowheader.redraw()
+                self.rowwidgetcolumn.redraw()
             return
         self.tablewidth = (self.cellwidth) * self.cols
         self.configure(bg=self.cellbackgr)
@@ -410,6 +418,7 @@ class Table(Canvas):
         self.colorRows()
         self.tablecolheader.redraw()
         self.rowheader.redraw(align=self.align)
+        self.rowwidgetcolumn.redraw(align=self.align)
         self.rowindexheader.redraw()
         self.drawSelectedRow()
         self.drawSelectedRect(self.currentrow, self.currentcol)
@@ -543,21 +552,6 @@ class Table(Canvas):
             rc[colname] = clrs
         self.redraw()
         return
-
-    def values_to_colors(self, x, cmap='jet', alpha=1):
-        """Convert columnn values to colors"""
-
-        import pylab as plt
-        import matplotlib as mpl
-        cmap = plt.cm.get_cmap(cmap)
-        #if x.dtype in ['int','float64']:
-        if x.dtype in ['object']:#,'category']:
-            x = pd.Categorical(x).codes
-        x = (x-x.min())/(x.max()-x.min())
-        clrs = cmap(x)
-        clrs = mpl.colors.to_rgba_array(clrs, alpha)
-        clrs = [mpl.colors.rgb2hex(i) for i in clrs]
-        return clrs
 
     def getScale(self):
         try:
@@ -723,6 +717,7 @@ class Table(Canvas):
         """Show the row index"""
 
         self.rowheader.showindex = True
+        self.rowwidgetcolumn.showindex = False
         return
 
     def update_rowcolors(self):
@@ -746,6 +741,7 @@ class Table(Canvas):
 
         self.yview(*args)
         self.rowheader.yview(*args)
+        self.rowwidgetcolumn.yview(*args)
         self.redrawVisible()
         return
 
@@ -1518,8 +1514,6 @@ class Table(Canvas):
             self.recalculateFunctions(omit=n)
         else:
             self.redraw()
-        if hasattr(self, 'pf') and self.updateplotvar.get()==1:
-            self.plotSelected()
         #update functions list in dropdown
         funclist = ['='.join(i) for i in self.formulae.items()]
         self.functionentry['values'] = funclist
@@ -1551,107 +1545,6 @@ class Table(Canvas):
         for n in list(self.formulae.keys()):
             if n not in cols:
                 del(self.formulae[n])
-        return
-
-    def functionsBar(self, evt=None):
-        """Apply python functions from a pre-defined set, this is
-        for stuff that can't be done with eval strings"""
-
-        def reset():
-            self.evalframe.destroy()
-            self.evalframe = None
-            self.showAll()
-
-        def apply():
-            self.convertNumeric()
-            f = self.funcvar.get()
-            print (f)
-            df = self.model.df
-            z = df['filename'].apply(lambda x: x.replace('fa',''))
-            print (z)
-            return
-
-        if hasattr(self, 'funcsframe') and self.funcsframe != None:
-            return
-        ef = self.funcsframe = Frame(self.parentframe)
-        ef.grid(row=self.queryrow,column=1,sticky='news')
-        #self.evalvar = StringVar()
-        #e = Entry(ef, textvariable=self.evalvar, font="Courier 13 bold")
-        #e.bind('<Return>', self.evalFunction)
-        funcs = ['replace']
-        self.funcvar = StringVar()
-        f = Combobox(ef, values=funcs,
-                       textvariable=self.funcvar)
-        f.pack(fill=BOTH,side=LEFT,expand=1,padx=2,pady=2)
-        b = Button(ef,text='apply',width=5,command=apply)
-        b.pack(fill=BOTH,side=LEFT,padx=2,pady=2)
-        b = Button(ef,text='close',width=5,command=reset)
-        b.pack(fill=BOTH,side=LEFT,padx=2,pady=2)
-
-        return
-
-    def evalBar(self, evt=None):
-        """Use pd.eval to apply a function colwise or preset funcs."""
-
-        def reset():
-            self.evalframe.destroy()
-            self.evalframe = None
-            self.showAll()
-        def clear():
-            n = messagebox.askyesno("Clear formulae",
-                                    "This will clear stored functions.\nProceed?",
-                                    parent=self.parentframe)
-            if n == None:
-                return
-            self.formulae = {}
-            self.functionentry['values'] = []
-            return
-        def addcolname(evt):
-            self.functionentry.insert(END,colvar.get())
-            return
-
-        self.estyle = Style()
-        self.estyle.configure("White.TCombobox",
-                         fieldbackground="white")
-        self.estyle.configure("Red.TCombobox",
-                         fieldbackground="#ffcccc")
-
-        if hasattr(self, 'evalframe') and self.evalframe != None:
-            return
-        if not hasattr(self, 'formulae'):
-            self.formulae = {}
-        ef = self.evalframe = Frame(self.parentframe)
-        ef.grid(row=self.queryrow,column=0,columnspan=3,sticky='news')
-        bf = Frame(ef)
-        bf.pack(side=TOP, fill=BOTH)
-        self.evalvar = StringVar()
-        funclist = ['='.join(i) for i in self.formulae.items()]
-        self.functionentry = e = Combobox(bf, values=funclist,
-                                    textvariable=self.evalvar,width=34,
-                                    font="Courier 13 bold",
-                                    style="White.TCombobox")
-        e.bind('<Return>', self.evalFunction)
-        e.pack(fill=BOTH,side=LEFT,expand=1,padx=2,pady=2)
-        addButton(bf, 'apply', self.evalFunction, images.accept(), 'apply', side=LEFT)
-        addButton(bf, 'preset', self.applyColumnWise, images.function(), 'preset function', side=LEFT)
-        addButton(bf, 'clear', clear, images.delete(), 'clear stored functions', side=LEFT)
-        addButton(bf, 'close', reset, images.cross(), 'close', side=LEFT)
-
-        bf = Frame(ef)
-        bf.pack(side=TOP, fill=BOTH)
-        columns = list(self.model.df.columns)
-        colvar = StringVar()
-        Label(bf, text='insert column:').pack(side=LEFT,fill=BOTH)
-        c = Combobox(bf, values=columns,textvariable=colvar,width=14)
-        c.bind("<<ComboboxSelected>>", addcolname)
-        c.pack(side=LEFT,fill=BOTH)
-
-        self.updateplotvar = IntVar()
-        self.placecolvar = IntVar()
-        self.recalculatevar = IntVar()
-        Checkbutton(bf, text="Update plot", variable=self.updateplotvar).pack(side=LEFT)
-        Checkbutton(bf, text="Place new columns", variable=self.placecolvar).pack(side=LEFT)
-        Checkbutton(bf, text="Recalculate all", variable=self.recalculatevar).pack(side=LEFT)
         return
 
     def resizeColumn(self, col, width):
@@ -2468,9 +2361,6 @@ class Table(Canvas):
                         "Save as": self.saveAs,
                         "Import csv": lambda: self.importCSV(dialog=True),
                         "Export": self.doExport,
-                        "Plot Selected" : self.plotSelected,
-                        "Hide plot" : self.hidePlot,
-                        "Show plot" : self.showPlot,
                         "Preferences" : self.showPrefs,
                         "Table to Text" : self.showasText,
                         "Clean Data" : self.cleanData,
@@ -2482,7 +2372,6 @@ class Table(Canvas):
                    "Show as Text", "Table Info", "Preferences"]
 
         filecommands = ['New','Load','Import csv','Save','Save as','Export']
-        plotcommands = ['Plot Selected','Hide plot','Show plot']
         tablecommands = ['Table to Text','Clean Data','Clear Formatting']
 
         def createSubMenu(parent, label, commands):
@@ -2532,7 +2421,6 @@ class Table(Canvas):
 
         popupmenu.add_separator()
         createSubMenu(popupmenu, 'File', filecommands)
-        createSubMenu(popupmenu, 'Plot', plotcommands)
         createSubMenu(popupmenu, 'Table', tablecommands)
         popupmenu.bind("<FocusOut>", popupFocusOut)
         popupmenu.focus_set()
@@ -2590,31 +2478,8 @@ class Table(Canvas):
             lists.append(x)
         return lists
 
-    def showPlotViewer(self, parent=None, layout='horizontal'):
-        """Create plot frame"""
-
-        if not hasattr(self, 'pf'):
-            self.pf = PlotViewer(table=self, parent=parent, layout=layout)
-        if hasattr(self, 'child') and self.child is not None:
-            self.child.pf = self.pf
-        return self.pf
-
-    def hidePlot(self):
-        """Hide plot frame"""
-
-        if hasattr(self, 'pf'):
-            self.pf.hide()
-            #self.pf = None
-        return
-
-    def showPlot(self):
-        if hasattr(self, 'pf'):
-            self.pf.show()
-        return
-
     def getSelectedDataFrame(self):
         """Return a sub-dataframe of the selected cells"""
-
         df = self.model.df
         rows = self.multiplerowlist
         if not type(rows) is list:
@@ -2628,44 +2493,30 @@ class Table(Canvas):
             print ('error indexing data')
             return pd.DataFrame()
         return data
+    
+    def getSelectedLabelDict(self):
+        """Returns a list of dictionaries from selected rows."""
 
-    def getPlotData(self):
-        """Plot data from selection"""
-
-        data = self.getSelectedDataFrame()
-        #data = data.convert_objects(convert_numeric='force')
-        return data
-
-    def plotSelected(self):
-        """Plot the selected data in the associated plotviewer"""
-
-        if not hasattr(self, 'pf') or self.pf == None:
-            self.pf = PlotViewer(table=self)
-        else:
-            if type(self.pf.main) is Toplevel:
-                self.pf.main.deiconify()
-        #plot could be hidden
-        self.showPlot()
-        #data = self.getPlotData()
-        #self.pf.data = data
-        self.pf.table = self
-        self.pf.replot() #calls getPlotData on the table
-        if hasattr(self, 'parenttable'):
-            self.parenttable.plotted = 'child'
-        else:
-            self.plotted = 'main'
-        return
-
-    def plot3D(self):
-
-        if not hasattr(self, 'pf'):
-            self.pf = PlotViewer(table=self)
-
-        data = self.getPlotData()
-        self.pf.data = data
-        self.pf.plot3D()
-        return
-
+        df = self.model.df
+        rows = self.multiplerowlist
+        if not type(rows) is list:
+            rows = list(rows)
+        if len(rows)<1 or self.allrows == True:
+            rows = list(range(self.rows))
+        cols = self.multiplecollist
+        try:
+            data = df.iloc[rows,:]
+        except Exception as e:
+            print ('error indexing data')
+            return pd.DataFrame()
+        data = data.fillna(' ')
+        data = data.to_dict(orient = 'records')
+        labelDicts = []
+        for datum in data:
+            datum = {key: value.strip() for key, value in datum.items() if isinstance(value,str)} #dict comprehension!
+            labelDicts.append(datum)
+        return labelDicts
+    
     #--- Drawing stuff ---
 
     def drawGrid(self, startrow, endrow):
@@ -3247,6 +3098,7 @@ class Table(Canvas):
         if hasattr(self, 'tablecolheader'):
             self.tablecolheader.destroy()
             self.rowheader.destroy()
+            self.rowwidgetcolumn.destroy()
             self.selectNone()
         self.show()
         return
@@ -3271,10 +3123,10 @@ class Table(Canvas):
     # calls genLocality and genScientificName
     def processRecords(self):
         cRow = self.currentrow
-        while cRow < int(self.model.getRowCount()-1):
+        print(cRow)
+        while cRow < int(self.model.getRowCount() -1):
             cRow = self.currentrow
             self.genLocality(cRow)
-            self.redraw()
             self.genScientificName(cRow)
             self.redraw()
             self.gotonextRow()
@@ -3283,11 +3135,10 @@ class Table(Canvas):
     # takes current row as argument
     # calls google reverse geolocation api
     # sets values in proper cells in Table
-    def genLocality(self, currentRowArg):
+    def genLocality(currentRowArg):
         currentRow = currentRowArg
         currentRecord = self.model.getRecordAtRow(currentRow)
         localityIndex = self.findColumnIndex('locality')
-        pathIndex = self.findColumnIndex('path')
         municipalityIndex = self.findColumnIndex('municipality')
         countyIndex = self.findColumnIndex('county')
         stateProvinceIndex = self.findColumnIndex('stateProvince')
@@ -3295,18 +3146,8 @@ class Table(Canvas):
 
         if localityIndex != '':
             locality = self.model.getValueAt(currentRow, localityIndex)
-            try:
-                latitude = round(float(currentRecord['decimalLatitude']), 5)
-                longitude = round(float(currentRecord['decimalLongitude']), 5)
-            # return from here, can't call API without lat/long
-            except ValueError:
-                popupError = Toplevel()
-                popupError.title("Locality Error")
-                message = Message(popupError, text="Google API call requires GPS coordinates!")
-                message.pack()
-                button = Button(popupError, text="OK", command=popupError.destroy)
-                button.pack()
-                return
+            latitude = round(float(currentRecord['decimalLatitude']), 5)
+            longitude = round(float(currentRecord['decimalLongitude']), 5)
             # filter will return a dictionary if matching lat/long exists
             # using global list uniqueLocality to hold unique gps coordinate pairs
             latMatch = list(filter(lambda elem: elem['latitude'] == str(latitude), self.uniqueLocality))
@@ -3336,6 +3177,7 @@ class Table(Canvas):
                 # reverseGeoCall will return a list of results
                 # or it will return an error/status string
                 if isinstance(address, list):
+                    print(address)
                     for addressComponent in address:
                         if addressComponent['types'][0] == 'route':
                             streetName = addressComponent['long_name']
@@ -3347,45 +3189,46 @@ class Table(Canvas):
                             municipality = addressComponent['long_name']
                         if addressComponent['types'][0] == 'country':
                             country = addressComponent['short_name']
+                            
 
-                    # a streetname is returned from reverse geolocation call
-                    # in some cases, the api will not return a street at all
-                    if 'streetName' in locals():
-                        if stateProvince and county and municipality and country:
-                            addressString = str(country) + '. ' + str(stateProvince) + '. ' + str(county) + '. ' + str(municipality) + '. ' + str(streetName) + '.'
-                            tempDict = {'latitude': str(latitude), 'longitude': str(longitude), 'path': str(streetName), 'municipality': str(municipality), 'county': str(county), 'stateProvince': str(stateProvince), 'country': str(country), 'localityString': addressString}
+                        # a streetname is returned from reverse geolocation call
+                        # in some cases, the api will not return a street at all
+                        if 'streetName' in locals():
+                            if stateProvince and county and municipality and country:
+                                addressString = str(country) + '. ' + str(stateProvince) + '. ' + str(county) + '. ' + str(municipality) + '. ' + str(streetName) + '.'
+                                tempDict = {'latitude': str(latitude), 'longitude': str(longitude), 'path': str(streetName), 'municipality': str(municipality), 'county': str(county), 'stateProvince': str(stateProvince), 'country': str(country), 'localityString': addressString}
 
-                    # no street is returned
-                    else:
-                        addressString = str(country) + '. ' + str(stateProvince) + '. ' + str(county) + '. ' + str(municipality) + '. '
-                        tempDict = {'latitude': str(latitude), 'longitude': str(longitude), 'municipality': str(municipality), 'county': str(county), 'stateProvince': str(stateProvince), 'country': str(country), 'localityString': addressString}
+                        # no street is returned
+                        else:
+                            addressString = str(country) + '. ' + str(stateProvince) + '. ' + str(county) + '. ' + str(municipality) + '. '
+                            tempDict = {'latitude': str(latitude), 'longitude': str(longitude), 'municipality': str(municipality), 'county': str(county), 'stateProvince': str(stateProvince), 'country': str(country), 'localityString': addressString}
 
-                    self.uniqueLocality.append(tempDict)
-                    localityAddressAdded = locality + ' ' + addressString
-                    self.model.setValueAt(localityAddressAdded, currentRow, localityIndex)
+                        self.uniqueLocality.append(tempDict)
+                        localityAddressAdded = locality + ' ' + addressString
+                        self.model.setValueAt(localityAddressAdded, currentRow, localityIndex)
 
-                    if municipalityIndex != '':
-                        self.model.setValueAt(tempDict['municipality'], currentRow, municipalityIndex)
-                    if countyIndex != '':
-                        self.model.setValueAt(tempDict['county'], currentRow, countyIndex)
-                    if stateProvinceIndex != '':
-                        self.model.setValueAt(tempDict['stateProvince'], currentRow, stateProvinceIndex)
-                    if countryIndex != '':
-                        self.model.setValueAt(tempDict['country'], currentRow, countryIndex)
+                        if municipalityIndex != '':
+                            self.model.setValueAt(tempDict['municipality'], currentRow, municipalityIndex)
+                        if countyIndex != '':
+                            self.model.setValueAt(tempDict['county'], currentRow, countyIndex)
+                        if stateProvinceIndex != '':
+                            self.model.setValueAt(tempDict['stateProvince'], currentRow, stateProvinceIndex)
+                        if countryIndex != '':
+                            self.model.setValueAt(tempDict['country'], currentRow, countryIndex)
 
                 # Google API call returned error/status string
                 else:
                     popupError = Toplevel()
-                    popupError.title("Locality Error")
+                    popupError.title("Error in Google API Call")
                     apiErrorMessage = address
-                    message = Message(popupError, text="Google API call error message: " + str(apiErrorMessage))
+                    message = "Google API call error message: " + str(apiErrorMessage)
                     message.pack()
                     button = Button(popupError, text="OK", command=popupError.destroy)
                     button.pack()
                     return
         else:
             popupError = Toplevel()
-            popupError.title("Locality Error")
+            popupError.title("Error in Locality Generator")
             message1 = Message(popupError, text="If there is no column with header 'locality' this function will fail.")
             message2 = Message(popupError, text="This should not be an issue if you're using Kral Mobile!")
             message1.pack()
@@ -3401,7 +3244,6 @@ class Table(Canvas):
         currentRow = currentRowArg
         sNameIndex = self.findColumnIndex('scientificName')
         authIndex = self.findColumnIndex('authorship')
-        # still need to handle adding these!
         asTaxaIndex = self.findColumnIndex('associated taxa')
 
         if sNameIndex != '':
@@ -3412,25 +3254,25 @@ class Table(Canvas):
                     self.model.setValueAt(str(results[0]), currentRow, sNameIndex)
                 elif len(results) == 2:
                     self.model.setValueAt(str(results[0]), currentRow, sNameIndex)
-                    if authIndex != '':
-                        self.model.setValueAt(str(results[1]), currentRow, authIndex)
+                    if aNameIndex != '':
+                        self.model.setValueAt(str(results[1]), currentRow, aNameIndex)
             elif isinstance(results, str):
                 if results == 'not_accepted_or_syn':
                     popupError = Toplevel()
                     popupError.title("Scientific Name Error")
-                    message = Message(popupError, text="Catalog of Life didn't find an accepted name")
+                    apiErrorMessage = address
+                    message = "Catalog of Life didn't find an accepted name"
                     message.pack()
                     button = Button(popupError, text="OK", command=popupError.destroy)
                     button.pack()
-                    return
                 elif results == 'empty_string':
                     popupError = Toplevel()
                     popupError.title("Scientific Name Error")
-                    message = Message(popupError, text="Add a Scientific Name to the specimen in this row!")
+                    apiErrorMessage = address
+                    message = "Add a Scientific Name to the specimen in this row!"
                     message.pack()
                     button = Button(popupError, text="OK", command=popupError.destroy)
                     button.pack()
-                    return
         return
 
     # causes a pdf to be saved (uses dialog to get save name.
@@ -3442,7 +3284,8 @@ class Table(Canvas):
     # http://pandastable.readthedocs.io/en/latest/_modules/pandastable/core.html#Table.getSelectedDataFrame
 
     def genLabelPDF(self):
-        toPrintDataFrame = self.getSelectedDataFrame()
+        toPrintDataFrame = self.getSelectedLabelDict()
+        #toPrintDataFrame = self.getSelectedDataFrame()
         genPrintLabelPDFs(toPrintDataFrame)
         return
 
@@ -3487,13 +3330,10 @@ class Table(Canvas):
 
         if filename == None:
             filename = filedialog.asksaveasfilename(parent=self.master,
-                                                     #defaultextension='.mpk',
-                                                     initialdir = self.currentdir,
-                                                     filetypes=[("msgpack","*.mpk"),
-                                                                ("pickle","*.pickle"),
-                                                                ("csv","*.csv"),
-                                                                ("excel","*.xls"),
-                                                                ("All files","*.*")])
+                                                    defaultextension='.csv',
+                                                    initialfile = filename,
+                                                    initialdir = self.currentdir,
+                                                    filetypes=[("csv","*.csv")])
         if filename:
             self.model.save(filename)
             self.filename = filename
@@ -3614,6 +3454,15 @@ class Table(Canvas):
         self.rowcolors = pd.DataFrame()
         return
 
+    def helpDocumentation(self):
+        link='https://github.com/CapPow/Plant-Digitization-Project'
+        webbrowser.open(link,autoraise=1)
+        return
+
+    def quit(self):
+        self.main.destroy()
+        return
+    
 class ToolBar(Frame):
     """Uses the parent instance to provide the functions"""
     def __init__(self, parent=None, parentapp=None):
@@ -3621,50 +3470,46 @@ class ToolBar(Frame):
         Frame.__init__(self, parent, width=600, height=40)
         self.parentframe = parent
         self.parentapp = parentapp
+
+        img = images.importcsv()
+        func = lambda: self.parentapp.importCSV(dialog=False)
+        addButton(self, 'Import', func, img, 'import csv', side=LEFT)
+
+        img = images.save_proj()
+        addButton(self, 'Save', self.parentapp.save, img, 'save', side=LEFT)
+
         # add an image for the button later, using existing img until this one is resized.
         #img = images.open_processRecords() 
         img = images.merge() 
         addButton(self, 'Process Records', self.parentapp.processRecords, img, 'Process Records', side=LEFT)
-        # img = images.open_proj()
-        # addButton(self, 'Load table', self.parentapp.load, img, 'load table')
-        img = images.save_proj()
-        addButton(self, 'Save', self.parentapp.save, img, 'save', side=LEFT)
-        img = images.importcsv()
-        func = lambda: self.parentapp.importCSV(dialog=False)
-        addButton(self, 'Import', func, img, 'import csv', side=LEFT)
+
         img = images.aggregate() #hijacking random image for now
         addButton(self, 'Export',self.parentapp.genLabelPDF, img, 'Export Labels to PDF', side=LEFT)
-        #img = images.excel()
-        #addButton(self, 'Load excel', self.parentapp.loadExcel, img, 'load excel file')
-        #img = images.copy()
-        # addButton(self, 'Copy', self.parentapp.copyTable, img, 'copy table to clipboard')
-        # img = images.paste()
-        # addButton(self, 'Paste', self.parentapp.pasteTable, img, 'paste table')
-        # img = images.plot()
-        # addButton(self, 'Plot', self.parentapp.plotSelected, img, 'plot selected')
-        # img = images.transpose()
-        # addButton(self, 'Transpose', self.parentapp.transpose, img, 'transpose')
-        # img = images.aggregate()
-        # addButton(self, 'Aggregate', self.parentapp.aggregate, img, 'aggregate')
-        # img = images.pivot()
-        # addButton(self, 'Pivot', self.parentapp.pivot, img, 'pivot')
-        # img = images.melt()
-        # addButton(self, 'Melt', self.parentapp.melt, img, 'melt')
-        # img = images.merge()
-        # addButton(self, 'Merge', self.parentapp.doCombine, img, 'merge, concat or join')
-        # img = images.table_multiple()
-        # addButton(self, 'Table from selection', self.parentapp.tableFromSelection,
-        #             img, 'sub-table from selection')
-        # img = images.filtering()
-        # addButton(self, 'Query', self.parentapp.queryBar, img, 'filter table')
-        # img = images.calculate()
-        # addButton(self, 'Evaluate function', self.parentapp.evalBar, img, 'calculate')
-        # img = images.fit()
-        # addButton(self, 'Stats models', self.parentapp.statsViewer, img, 'model fitting')
-        # img = images.table_delete()
-        # addButton(self, 'Clear', self.parentapp.clearTable, img, 'clear table')
+
+        img = images.cross()
+        addButton(self, 'Help', self.parentapp.helpDocumentation , img , 'Help Documentation', side=LEFT)
+
+        # List of unused button assets (for temp use before we get in our assets.
+        # img = images.open_proj()
+        #img = images.excel()        
+        #img = images.copy()        
+        # img = images.paste()        
+        # img = images.plot()        
+        # img = images.transpose()        
+        # img = images.aggregate()        
+        # img = images.pivot()        
+        # img = images.melt()        
+        # img = images.merge()        
+        # img = images.table_multiple()        
+        # img, 'sub-table from selection')
+        # img = images.filtering()        
+        # img = images.calculate()        
+        # img = images.fit()        
+        #img = images.table_delete()        
         #img = images.prefs()
-        #addButton(self, 'Prefs', self.parentapp.showPrefs, img, 'table preferences')
+        #img = images.table_delete()
+        #img = images.paste()
+        #img = images.transpose()
         return
 
 class ChildToolBar(ToolBar):
@@ -3678,8 +3523,6 @@ class ChildToolBar(ToolBar):
         img = images.importcsv()
         func = lambda: self.parentapp.importCSV(dialog=1)
         addButton(self, 'Import', func, img, 'import csv')
-        img = images.plot()
-        addButton(self, 'Plot', self.parentapp.plotSelected, img, 'plot selected')
         img = images.transpose()
         addButton(self, 'Transpose', self.parentapp.transpose, img, 'transpose')
         img = images.copy()

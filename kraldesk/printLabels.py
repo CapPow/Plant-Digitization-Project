@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 from reportlab.platypus import Image, Table, TableStyle, Flowable, SimpleDocTemplate, BaseDocTemplate, PageTemplate, PageBreak
 from reportlab.platypus import Frame as platypusFrame   #NOTE SEE Special case import here to avoid namespace conflict with "Frame"
 from reportlab.platypus.flowables import Spacer
@@ -8,23 +9,14 @@ from reportlab.graphics.barcode import code39 #Note, overriding a function from 
 from reportlab.lib.units import inch
 from reportlab.lib import pagesizes
 import os
-
+import sys
+import subprocess
 from tkinter import filedialog
-import pandas as pd
+
 
 
 def genPrintLabelPDFs(labelDataInput):
     labelData = labelDataInput
-    if isinstance(labelDataInput, pd.Series):
-        #labelData = self.model.getRecordAtRow(currentRow).to_dict()
-        labelData = labelData.fillna('')
-        labelData = [labelDataInput.to_dict()]
-    elif isinstance(labelDataInput, pd.DataFrame):
-        labelData = labelData.fillna('')
-        labelData = labelDataInput.to_dict(orient = 'records')
-    else:
-        return
-    
 
     xPaperSize = 5.50 * inch   #These values should be user preferences! (But it'll be a PITA to do)
     yPaperSize = 3.50 * inch
@@ -318,7 +310,10 @@ def genPrintLabelPDFs(labelDataInput):
         elements.append(PageBreak())
 
     #Build the base document's parameters.
-    labelFileName = filedialog.asksaveasfilename(initialdir=os.getcwd(),filetypes=(('pdf','*.pdf'),),title = 'Save Labels As')
+    labelFileName = filedialog.asksaveasfilename(
+                                            initialdir=os.getcwd(),
+                                            defaultextension='.pdf',
+                                            filetypes=(('pdf','*.pdf'),),title = 'Save Labels As')
     doc = BaseDocTemplate(labelFileName,
      pagesize=customPageSize,
      pageTemplates=[],
@@ -357,13 +352,11 @@ def genPrintLabelPDFs(labelDataInput):
     #Actually build the pdf
     build_pdf(elements)
     #Open the file after it is built (maybe change/remove this later? Idealy, a preview or something
-    system = os.uname().sysname
-    if system == "win32":
-        from os import startfile
-        startfile(labelFileName)
-    elif system == "darwin":
-        opener = "open"
-        subprocess.call([opener, labelFileName])
-    else:
-        opener = "xdg-open"
-        subprocess.call([opener, labelFileName])
+
+    def open_file(filename):
+        if sys.platform == "win32":
+            os.startfile(filename)
+        else:
+            opener ="open" if sys.platform == "darwin" else "xdg-open"
+            subprocess.call([opener, filename])
+    open_file(labelFileName)

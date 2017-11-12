@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # Author
 # License
 import requests
@@ -21,5 +22,4 @@ def reverseGeoCall(latitude, longitude):
     # some error occured
     # will be indicated by the status
     else:
-        status = str(status)
-        return status
+        return str(status)

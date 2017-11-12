@@ -1,5 +1,6 @@
 from tkinter import *
-from pandastable import Table, TableModel
+from core import Table
+import pandas as pd
 
 class TestApp(Frame):
         """Basic test frame for the table"""
@@ -11,7 +12,8 @@ class TestApp(Frame):
             self.main.title('Table app')
             f = Frame(self.main)
             f.pack(fill=BOTH,expand=1)
-            df = TableModel.getKralSample()
+            #df = TableModel.getKralSample()
+            df = pd.DataFrame()
             self.table = pt = Table(f, dataframe=df,
                                     showtoolbar=True, showstatusbar=False)
             pt.show()

@@ -95,31 +95,6 @@ def checkDict(d):
                 return 0
     return 1
 
-def getFonts():
-     """Get the current list of system fonts"""
-
-     import matplotlib.font_manager
-     #l = matplotlib.font_manager.get_fontconfig_fonts()
-     l = matplotlib.font_manager.findSystemFonts()
-     fonts = []
-     for fname in l:
-        try: fonts.append(matplotlib.font_manager.FontProperties(fname=fname).get_name())
-        except RuntimeError: pass
-     fonts = list(set(fonts))
-     fonts.sort()
-     #f = matplotlib.font_manager.FontProperties(family='monospace')
-     #print (matplotlib.font_manager.findfont(f))
-     return fonts
-
-def adjustColorMap(cmap, minval=0.0, maxval=1.0, n=100):
-    """Adjust colormap to avoid using white in plots"""
-
-    from matplotlib import colors
-    new_cmap = colors.LinearSegmentedColormap.from_list(
-        'trunc({n},{a:.2f},{b:.2f})'.format(n=cmap.name, a=minval, b=maxval),
-        cmap(np.linspace(minval, maxval, n)))
-    return new_cmap
-
 def colorScale(hex_color, brightness_offset=1):
     """ takes a color like #87c95f and produces a lighter or darker variant """
 
