@@ -433,7 +433,7 @@ class RowWidgetColumn(Canvas):
     
     def __init__(self, parent=None, table=None, width=50, otherCatalogNums = []):
 
-        print(otherCatalogNums)
+        #print(otherCatalogNums)
         #siteNumList = [item.split('-') for item in otherCatalogNums]
 
         Canvas.__init__(self, parent, bg='gray75', width=width, height=None)

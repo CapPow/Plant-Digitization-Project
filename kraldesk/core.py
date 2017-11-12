@@ -243,7 +243,7 @@ class Table(Canvas):
 
         #First draw might have no df, but we'd like to hand one off to the headers module.
         if 'df' in locals():
-            print(df.str)
+            #print(df.str)
             self.rowwidgetcolumn = RowWidgetColumn(self.parentframe, self, otherCatalogNums = df['othercatalognumbers'])
         else:
             self.rowwidgetcolumn = RowWidgetColumn(self.parentframe, self)
