@@ -3392,8 +3392,12 @@ class Table(Canvas):
             'county',
             'path'
             ]
-
+        #Excel is interpreting site numbers <12 as dates and converting them. Ex: 08-16 to Aug-16.
+        #To prevent data loss mobile app sends field numbers with a leading " ' " which we don't want.
             df = pd.read_csv(filename, usecols = column_order, encoding =  'utf-8')[column_order]
+            df['othercatalognumbers'] = df['othercatalognumbers'].apply(lambda x: x.lstrip("'"))
+            
+            
         model = TableModel(dataframe=df)
         self.updateModel(model)
         self.redraw()
