@@ -7,5 +7,6 @@ setup(
     version = '0.1dev',
     description = '',
     license='GPL v3',
-    package_data={'': ['sample-data/*.csv']}
+    packages=['kraldesk']
+    package_data={'kraldesk': ['sample-data/*.csv']}
 )
