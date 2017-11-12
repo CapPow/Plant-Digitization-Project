@@ -1,8 +1,9 @@
-from distutils.core import setup
+from setuptools import setup, find_packages
 
 setup(
     name='kraldesk',
     version='0.1dev',
-    packages=['kraldesk',],
     license='GPL v3',
+    packages=find_packages(),
+    data_files=[('sample-data',['test.csv','sampledata.csv'])]
 )
