@@ -27,7 +27,7 @@ import os, string, types, copy
 import pickle
 import numpy as np
 import pandas as pd
-from . import util
+import util
 
 class TableModel(object):
     """A data model for the Table class that uses pandas

@@ -31,8 +31,8 @@ except:
     from ttk import *
 import numpy as np
 import pandas as pd
-from . import util
-from .dialogs import *
+import util
+from dialogs import *
 
 class ColumnHeader(Canvas):
     """Class that takes it's size and rendering from a parent table

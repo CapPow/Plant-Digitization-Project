@@ -1,5 +1,5 @@
 from tkinter import *
-from pandastable import Table
+from core import Table
 import pandas as pd
 
 class TestApp(Frame):

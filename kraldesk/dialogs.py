@@ -42,8 +42,8 @@ except:
 from collections import OrderedDict
 import webbrowser
 import pandas as pd
-from .data import TableModel
-from . import util, images
+from data import TableModel
+import util, images
 
 def getParentGeometry(parent):
     x = parent.winfo_rootx()

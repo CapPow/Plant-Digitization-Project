@@ -37,17 +37,17 @@ import string, copy
 import platform
 import numpy as np
 import pandas as pd
-from .data import TableModel
-from .headers import ColumnHeader, RowHeader, IndexHeader, RowWidgetColumn
-from .prefs import Preferences
-from .dialogs import ImportDialog
-from . import images, util
-from .dialogs import *
+from data import TableModel
+from headers import ColumnHeader, RowHeader, IndexHeader, RowWidgetColumn
+from prefs import Preferences
+from dialogs import ImportDialog
+import images, util
+from dialogs import *
 # jacob added imports
-from .catalogOfLife import *
-from .locality import *
+from catalogOfLife import *
+from locality import *
 # caleb added imports
-from .printLabels import *
+from printLabels import *
 import webbrowser
 
 
