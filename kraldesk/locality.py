@@ -22,4 +22,5 @@ def reverseGeoCall(latitude, longitude):
     # some error occured
     # will be indicated by the status
     else:
-        return str(status)
+        status = str(status)
+        return status

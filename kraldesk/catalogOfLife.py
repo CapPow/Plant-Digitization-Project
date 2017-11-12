@@ -13,7 +13,7 @@ import sys
 # queries catalog of life with a scientific name
 # returns the most up-to-date, accepted, scientific name for a specimen
 # or an error message to calling function
-def CoLNameSearch(givenScientificName):
+def colNameSearch(givenScientificName):
     identification = str(givenScientificName).split()
     if givenScientificName != '':
         identQuery = [identification[0]]
@@ -24,7 +24,7 @@ def CoLNameSearch(givenScientificName):
         identQuery.append(identification[1])
         if len(identification) > 2:
             identQuery.append(identification[-1])
-    CoLQuery = ET.parse(urllib.request.urlopen('http://webservice.catalogueoflife.org/col/webservice?name=' + ('+'.join(identQuery)), timeout=30).getroot())
+    CoLQuery = ET.parse(urllib.request.urlopen('http://webservice.catalogueoflife.org/col/webservice?name=' + ('+'.join(identQuery)), timeout=30)).getroot()
     for result in CoLQuery.findall('result'):
         nameStatus = result.find('name_status').text
         if nameStatus == 'accepted name':
@@ -38,6 +38,6 @@ def CoLNameSearch(givenScientificName):
             authorityName = authorityName.strip().rstrip(',')
             return (name,authorityName)
         elif 'synonym' in nameStatus:
-            return CoLNameSearch(result.find('accepted_name/name').text)
+            return colNameSearch(result.find('accepted_name/name').text)
         else:
             return 'not_accepted_or_syn'

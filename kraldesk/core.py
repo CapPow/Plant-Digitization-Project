@@ -3130,8 +3130,8 @@ class Table(Canvas):
     # calls genLocality and genScientificName
     def processRecords(self):
         cRow = self.currentrow
-        print(cRow)
         while cRow < int(self.model.getRowCount() -1):
+            print("current row: " + str(cRow))
             cRow = self.currentrow
             self.genLocality(cRow)
             self.genScientificName(cRow)
@@ -3142,9 +3142,10 @@ class Table(Canvas):
     # takes current row as argument
     # calls google reverse geolocation api
     # sets values in proper cells in Table
-    def genLocality(currentRowArg):
+    def genLocality(self, currentRowArg):
         currentRow = currentRowArg
         currentRecord = self.model.getRecordAtRow(currentRow)
+        pathIndex = self.findColumnIndex('path')
         localityIndex = self.findColumnIndex('locality')
         municipalityIndex = self.findColumnIndex('municipality')
         countyIndex = self.findColumnIndex('county')
@@ -3153,8 +3154,18 @@ class Table(Canvas):
 
         if localityIndex != '':
             locality = self.model.getValueAt(currentRow, localityIndex)
-            latitude = round(float(currentRecord['decimalLatitude']), 5)
-            longitude = round(float(currentRecord['decimalLongitude']), 5)
+            try:
+                latitude = round(float(currentRecord['decimalLatitude']), 5)
+                longitude = round(float(currentRecord['decimalLongitude']), 5)
+            # return from here, can't call API without lat/long
+            except ValueError:
+                popupError = Toplevel()
+                popupError.title("Locality Error")
+                message = Message(popupError, text="Google API call requires GPS coordinates!")
+                message.pack()
+                button = Button(popupError, text="OK", command=popupError.destroy)
+                button.pack()
+                return
             # filter will return a dictionary if matching lat/long exists
             # using global list uniqueLocality to hold unique gps coordinate pairs
             latMatch = list(filter(lambda elem: elem['latitude'] == str(latitude), self.uniqueLocality))
@@ -3184,7 +3195,6 @@ class Table(Canvas):
                 # reverseGeoCall will return a list of results
                 # or it will return an error/status string
                 if isinstance(address, list):
-                    print(address)
                     for addressComponent in address:
                         if addressComponent['types'][0] == 'route':
                             streetName = addressComponent['long_name']
@@ -3196,46 +3206,46 @@ class Table(Canvas):
                             municipality = addressComponent['long_name']
                         if addressComponent['types'][0] == 'country':
                             country = addressComponent['short_name']
-                            
 
-                        # a streetname is returned from reverse geolocation call
-                        # in some cases, the api will not return a street at all
-                        if 'streetName' in locals():
-                            if stateProvince and county and municipality and country:
-                                addressString = str(country) + '. ' + str(stateProvince) + '. ' + str(county) + '. ' + str(municipality) + '. ' + str(streetName) + '.'
-                                tempDict = {'latitude': str(latitude), 'longitude': str(longitude), 'path': str(streetName), 'municipality': str(municipality), 'county': str(county), 'stateProvince': str(stateProvince), 'country': str(country), 'localityString': addressString}
 
-                        # no street is returned
-                        else:
-                            addressString = str(country) + '. ' + str(stateProvince) + '. ' + str(county) + '. ' + str(municipality) + '. '
-                            tempDict = {'latitude': str(latitude), 'longitude': str(longitude), 'municipality': str(municipality), 'county': str(county), 'stateProvince': str(stateProvince), 'country': str(country), 'localityString': addressString}
+                    # a streetname is returned from reverse geolocation call
+                    # in some cases, the api will not return a street at all
+                    if 'streetName' in locals():
+                        if stateProvince and county and municipality and country:
+                            addressString = str(country) + '. ' + str(stateProvince) + '. ' + str(county) + '. ' + str(municipality) + '. ' + str(streetName) + '.'
+                            tempDict = {'latitude': str(latitude), 'longitude': str(longitude), 'path': str(streetName), 'municipality': str(municipality), 'county': str(county), 'stateProvince': str(stateProvince), 'country': str(country), 'localityString': addressString}
 
-                        self.uniqueLocality.append(tempDict)
-                        localityAddressAdded = locality + ' ' + addressString
-                        self.model.setValueAt(localityAddressAdded, currentRow, localityIndex)
+                    # no street is returned
+                    else:
+                        addressString = str(country) + '. ' + str(stateProvince) + '. ' + str(county) + '. ' + str(municipality) + '. '
+                        tempDict = {'latitude': str(latitude), 'longitude': str(longitude), 'municipality': str(municipality), 'county': str(county), 'stateProvince': str(stateProvince), 'country': str(country), 'localityString': addressString}
 
-                        if municipalityIndex != '':
-                            self.model.setValueAt(tempDict['municipality'], currentRow, municipalityIndex)
-                        if countyIndex != '':
-                            self.model.setValueAt(tempDict['county'], currentRow, countyIndex)
-                        if stateProvinceIndex != '':
-                            self.model.setValueAt(tempDict['stateProvince'], currentRow, stateProvinceIndex)
-                        if countryIndex != '':
-                            self.model.setValueAt(tempDict['country'], currentRow, countryIndex)
+                    self.uniqueLocality.append(tempDict)
+                    localityAddressAdded = locality + ' ' + addressString
+                    self.model.setValueAt(localityAddressAdded, currentRow, localityIndex)
+
+                    if municipalityIndex != '':
+                        self.model.setValueAt(tempDict['municipality'], currentRow, municipalityIndex)
+                    if countyIndex != '':
+                        self.model.setValueAt(tempDict['county'], currentRow, countyIndex)
+                    if stateProvinceIndex != '':
+                        self.model.setValueAt(tempDict['stateProvince'], currentRow, stateProvinceIndex)
+                    if countryIndex != '':
+                        self.model.setValueAt(tempDict['country'], currentRow, countryIndex)
 
                 # Google API call returned error/status string
                 else:
                     popupError = Toplevel()
-                    popupError.title("Error in Google API Call")
+                    popupError.title("Locality Error")
                     apiErrorMessage = address
-                    message = "Google API call error message: " + str(apiErrorMessage)
+                    message = Message(popupError, text="Google API call error message: " + str(apiErrorMessage))
                     message.pack()
                     button = Button(popupError, text="OK", command=popupError.destroy)
                     button.pack()
                     return
         else:
             popupError = Toplevel()
-            popupError.title("Error in Locality Generator")
+            popupError.title("Locality Error")
             message1 = Message(popupError, text="If there is no column with header 'locality' this function will fail.")
             message2 = Message(popupError, text="This should not be an issue if you're using Kral Mobile!")
             message1.pack()
@@ -3251,6 +3261,7 @@ class Table(Canvas):
         currentRow = currentRowArg
         sNameIndex = self.findColumnIndex('scientificName')
         authIndex = self.findColumnIndex('authorship')
+        # still need to handle adding these!
         asTaxaIndex = self.findColumnIndex('associated taxa')
 
         if sNameIndex != '':
@@ -3261,25 +3272,25 @@ class Table(Canvas):
                     self.model.setValueAt(str(results[0]), currentRow, sNameIndex)
                 elif len(results) == 2:
                     self.model.setValueAt(str(results[0]), currentRow, sNameIndex)
-                    if aNameIndex != '':
-                        self.model.setValueAt(str(results[1]), currentRow, aNameIndex)
+                    if authIndex != '':
+                        self.model.setValueAt(str(results[1]), currentRow, authIndex)
             elif isinstance(results, str):
                 if results == 'not_accepted_or_syn':
                     popupError = Toplevel()
                     popupError.title("Scientific Name Error")
-                    apiErrorMessage = address
-                    message = "Catalog of Life didn't find an accepted name"
+                    message = Message(popupError, text="Catalog of Life didn't find an accepted name")
                     message.pack()
                     button = Button(popupError, text="OK", command=popupError.destroy)
                     button.pack()
+                    return
                 elif results == 'empty_string':
                     popupError = Toplevel()
                     popupError.title("Scientific Name Error")
-                    apiErrorMessage = address
-                    message = "Add a Scientific Name to the specimen in this row!"
+                    message = Message(popupError, text="Add a Scientific Name to the specimen in this row!")
                     message.pack()
                     button = Button(popupError, text="OK", command=popupError.destroy)
                     button.pack()
+                    return
         return
 
     # causes a pdf to be saved (uses dialog to get save name.
