@@ -240,7 +240,14 @@ class Table(Canvas):
         self.rowheader = RowHeader(self.parentframe, self, width=self.rowheaderwidth)
         self.tablecolheader = ColumnHeader(self.parentframe, self)
         self.rowindexheader = IndexHeader(self.parentframe, self)
-        self.rowwidgetcolumn = RowWidgetColumn(self.parentframe, self)
+
+        #First draw might have no df, but we'd like to hand one off to the headers module.
+        if 'df' in locals():
+            #print(df.str)
+            self.rowwidgetcolumn = RowWidgetColumn(self.parentframe, self, otherCatalogNums = df['othercatalognumbers'])
+        else:
+            self.rowwidgetcolumn = RowWidgetColumn(self.parentframe, self)
+            
         self.Yscrollbar = AutoScrollbar(self.parentframe,orient=VERTICAL,command=self.set_yviews)
         self.Yscrollbar.grid(row=2,column=3,rowspan=1,sticky='news',pady=0,ipady=0)
         self.Xscrollbar = AutoScrollbar(self.parentframe,orient=HORIZONTAL,command=self.set_xviews)

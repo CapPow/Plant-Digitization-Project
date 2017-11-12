@@ -428,9 +428,14 @@ class ColumnHeader(Canvas):
 class RowWidgetColumn(Canvas):
     """Class that holds record specific widgets.
        Takes it's size and rendering from the parent table."""
-       
+    
 
-    def __init__(self, parent=None, table=None, width=50):
+    
+    def __init__(self, parent=None, table=None, width=50, otherCatalogNums = []):
+
+        #print(otherCatalogNums)
+        #siteNumList = [item.split('-') for item in otherCatalogNums]
+
         Canvas.__init__(self, parent, bg='gray75', width=width, height=None)
         if table != None:
             self.table = table
