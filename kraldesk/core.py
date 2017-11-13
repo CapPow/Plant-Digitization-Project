@@ -241,10 +241,9 @@ class Table(Canvas):
         self.rowindexheader = IndexHeader(self.parentframe, self)
 
         #First draw might have no df, but we'd like to hand one off to the headers module.
-        if 'df' in locals():
-            #print(df.str)
-            self.rowwidgetcolumn = RowWidgetColumn(self.parentframe, self, otherCatalogNums = df['othercatalognumbers'])
-        else:
+        try:
+            self.rowwidgetcolumn = RowWidgetColumn(self.parentframe, self, otherCatalogNums = self.model.df['othercatalognumbers'].tolist())
+        except KeyError:
             self.rowwidgetcolumn = RowWidgetColumn(self.parentframe, self)
             
         self.Yscrollbar = AutoScrollbar(self.parentframe,orient=VERTICAL,command=self.set_yviews)
@@ -255,7 +254,7 @@ class Table(Canvas):
         self['yscrollcommand'] = self.Yscrollbar.set 
         self.tablecolheader['xscrollcommand'] = self.Xscrollbar.set
         self.rowheader['yscrollcommand'] = self.Yscrollbar.set
-        self.rowwidgetcolumn['yscrollcommand'] = self.Yscrollbar.set
+        #self.rowwidgetcolumn['yscrollcommand'] = self.Yscrollbar.set
         self.parentframe.rowconfigure(2,weight=1)
         self.parentframe.columnconfigure(2,weight=1)
 

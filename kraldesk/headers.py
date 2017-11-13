@@ -391,8 +391,6 @@ class ColumnHeader(Canvas):
         self.delete('resizesymbol')
         w=self.table.cellwidth
         h=self.height
-        #if x_pos > self.tablewidth:
-        #    return
         wdth=1
         hfac1=0.2
         hfac2=0.4
@@ -433,8 +431,7 @@ class RowWidgetColumn(Canvas):
     
     def __init__(self, parent=None, table=None, width=50, otherCatalogNums = []):
 
-        #print(otherCatalogNums)
-        #siteNumList = [item.split('-') for item in otherCatalogNums]
+        siteNumList = [item.split('-') for item in otherCatalogNums]
 
         Canvas.__init__(self, parent, bg='gray75', width=width, height=None)
         if table != None:
@@ -447,12 +444,7 @@ class RowWidgetColumn(Canvas):
             self.config(height = self.table.height)
             self.startrow = self.endrow = None
             self.model = self.table.model
-##            self.bind('<Button-1>',self.handle_left_click)
-##            self.bind("<ButtonRelease-1>", self.handle_left_release)
-##            self.bind("<Control-Button-1>", self.handle_left_ctrl_click)
-##            self.bind('<Button-3>',self.handle_right_click)
-##            self.bind('<B1-Motion>', self.handle_mouse_drag)
-##            self.bind('<Shift-Button-1>', self.handle_left_shift_click)
+
         return
 
     def redraw(self, align='w', showkeys=False):
@@ -474,40 +466,17 @@ class RowWidgetColumn(Canvas):
         index = self.model.df.index
         names = index.names
 
-        if self.showindex == True:
-            if util.check_multiindex(index) == 1:
-                ind = index.values[v]
-                cols = [pd.Series(i).astype('object').astype(str) for i in list(zip(*ind))]
-                nl = [len(n) if n is not None else 0 for n in names]
-                l = [c.str.len().max() for c in cols]
-                #pick higher of index names and row data
-                l = list(np.maximum(l,nl))
-                widths = [i * scale + 6 for i in l]
-                xpos = [0]+list(np.cumsum(widths))[:-1]
-            else:
-                ind = index[v]
-                dtype = ind.dtype
-                r = ind.astype('object').astype('str')
-                l = r.str.len().max()
-                widths = [l * scale + 6]
-                cols = [r]
-                xpos = [xstart]
-            w = np.sum(widths)
-        else:
-                    
-            #spinnerBox = Spinbox(self, from_=0, to=15)
-            #spinnerBox.pack()
-            rows = [i for i in v]
-            for rowIndValue in rows:
-                row = rowIndValue - 1
-                print()
-                #print(df.loc[row:0])
-                
-            cols = [rows]
-            l = max([len(str(i)) for i in rows])
-            w = l * scale + 6
-            widths = [w]
-            xpos = [xstart]
+        #spinnerBox = Spinbox(self, from_=0, to=15)
+        #spinnerBox.pack()
+        rows = [i for i in v]
+        for rowIndValue in rows:
+            row = rowIndValue - 1
+                            
+        cols = [rows]
+        l = max([len(str(i)) for i in rows])
+        w = l * scale + 6
+        widths = [w]
+        xpos = [xstart]
 
         if w>maxw:
             w = maxw
