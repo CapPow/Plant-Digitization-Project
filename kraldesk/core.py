@@ -3272,23 +3272,28 @@ class Table(Canvas):
     def genScientificName(self, currentRowArg):
         currentRow = currentRowArg
         sNameIndex = self.findColumnIndex('scientificName')
-        authIndex = self.findColumnIndex('authorship')
+        authIndex = self.findColumnIndex('scientificNameAuthorship')
 
         if sNameIndex != '':
             currentSciName = self.model.getValueAt(currentRow, sNameIndex)
             results = colNameSearch(currentSciName)
             if isinstance(results, tuple):
+                print(str(results))
                 if len(results) == 1:
                     sciName = results[0]
-                    if messagebox.askyesno("Sci-Name", "Would you like to change " + str(currentSciName) + " to " + str(sciName)):
+                    if messagebox.askyesno("Sci-Name", "(row " + str(currentRow+1) + ") " + " Would you like to change " + str(currentSciName) + " to " + str(sciName) + "?"):
                         self.model.setValueAt(str(results[0]), currentRow, sNameIndex)
+                    else:
+                        return
                 elif len(results) == 2:
                     sciName = results[0]
                     auth = results[1]
                     if authIndex != '':
-                        if messagebox.askyesno("Sci-Name", "Would you like to change " + str(currentSciName) + " to " + str(sciName)):
+                        if messagebox.askyesno("Sci-Name", "(row " + str(currentRow+1) + ") " + " Would you like to change " + str(currentSciName) + " to " + str(sciName) + "? This will also update authority!"):
                             self.model.setValueAt(str(sciName), currentRow, sNameIndex)
-                            self.model.setValueAt(str(auth), currentRow, sNameIndex)
+                            self.model.setValueAt(str(auth), currentRow, authIndex)
+                        else:
+                            return
             elif isinstance(results, str):
                 if results == 'not_accepted_or_syn':
                     messagebox.showinfo("Scientific Name Error", "No scientific name update!")
