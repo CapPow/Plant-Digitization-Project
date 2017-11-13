@@ -43,10 +43,9 @@ from prefs import Preferences
 from dialogs import ImportDialog
 import images, util
 from dialogs import *
-# jacob added imports
+# kraldesk added imports
 from catalogOfLife import *
 from locality import *
-# caleb added imports
 from printLabels import *
 import webbrowser
 
@@ -253,14 +252,14 @@ class Table(Canvas):
         self.Xscrollbar = AutoScrollbar(self.parentframe,orient=HORIZONTAL,command=self.set_xviews)
         self.Xscrollbar.grid(row=3,column=2,columnspan=1,sticky='news')
         self['xscrollcommand'] = self.Xscrollbar.set
-        self['yscrollcommand'] = self.Yscrollbar.set
-        self.tablecolheader['xscrollcommand'] = self.Xscrollbar.set
+        self['yscrollcommand'] = self.Yscrollbar.set 
+       self.tablecolheader['xscrollcommand'] = self.Xscrollbar.set
         self.rowheader['yscrollcommand'] = self.Yscrollbar.set
         self.rowwidgetcolumn['yscrollcommand'] = self.Yscrollbar.set
         self.parentframe.rowconfigure(2,weight=1)
         self.parentframe.columnconfigure(2,weight=1)
 
-        self.rowwidgetcolumn.grid(row=2,column=0,rowspan=1,sticky='news')
+        # self.rowwidgetcolumn.grid(row=2,column=0,rowspan=1,sticky='news')
 
         self.rowindexheader.grid(row=1,column=1,rowspan=1,sticky='news')
         self.tablecolheader.grid(row=1,column=2,rowspan=1,sticky='news')
@@ -3134,9 +3133,12 @@ class Table(Canvas):
             print("current row: " + str(cRow))
             cRow = self.currentrow
             self.genLocality(cRow)
-            self.genScientificName(cRow)
-            self.redraw()
-            self.gotonextRow()
+            resSci = self.genScientificName(cRow)
+            if resSci == "user_set_sciname":
+                return
+            else:
+                self.redraw()
+                self.gotonextRow()
         return
 
     # takes current row as argument
@@ -3159,10 +3161,9 @@ class Table(Canvas):
                 longitude = (currentRecord['decimalLongitude'])
             # return from here, can't call API without lat/long
             except ValueError:
-                if messagebox.askyesno("Locality Error", "Row " + str(currentRow) + " has no GPS coordinates!"):
-                    return
-                else:
-                    return
+                messagebox.showinfo("Locality Error", "Row " + str(currentRow) + " has no GPS coordinates!")
+                messagebox.showinfo("Locality Error", "Locality generation requires GPS coordinates!")
+                return
             # filter will return a dictionary if matching lat/long exists
             # using global list uniqueLocality to hold unique gps coordinate pairs
             latMatch = list(filter(lambda elem: elem['latitude'] == str(latitude), self.uniqueLocality))
@@ -3204,7 +3205,6 @@ class Table(Canvas):
                         if addressComponent['types'][0] == 'country':
                             country = addressComponent['short_name']
 
-
                     # a streetname is returned from reverse geolocation call
                     # in some cases, the api will not return a street at all
                     if 'streetName' in locals():
@@ -3234,15 +3234,13 @@ class Table(Canvas):
                 # Google API call returned error/status string
                 else:
                     apiErrorMessage = address
-                    if messagebox.askyesno("Locality Error", "Row " + str(currentRow) + " API Error: " + str(apiErrorMessage)):
-                        return
+                    messagebox.showinfo("Locality Error", "Row " + str(currentRow) + " API Error: " + str(apiErrorMessage))
+                    if messagebox.askyesno("Locality Error", "This function requires an internet connection, would you like to retry?"):
+                        genLocality(currentRow)
                     else:
-                        return
+                        return "loc_apierr_no_retry"
         else:
-            if messagebox.askyesno("Locality Error", "Row " + str(currentRow) + " has no locality column"):
-                return
-            else:
-                return
+            messagebox.showinfo("Locality Error", "Locality generation requires GPS coordinates and a column named locality!")
             return
         return
 
@@ -3252,32 +3250,31 @@ class Table(Canvas):
         currentRow = currentRowArg
         sNameIndex = self.findColumnIndex('scientificName')
         authIndex = self.findColumnIndex('authorship')
-        # still need to handle adding these!
-        asTaxaIndex = self.findColumnIndex('associated taxa')
 
         if sNameIndex != '':
             currentSciName = self.model.getValueAt(currentRow, sNameIndex)
             results = colNameSearch(currentSciName)
             if isinstance(results, tuple):
                 if len(results) == 1:
-                    self.model.setValueAt(str(results[0]), currentRow, sNameIndex)
+                    sciName = results[0]
+                    if messagebox.askyesno("Sci-Name", "Would you like to change " + str(currentSciName) + " to " + str(sciName)):
+                        self.model.setValueAt(str(results[0]), currentRow, sNameIndex)
                 elif len(results) == 2:
-                    self.model.setValueAt(str(results[0]), currentRow, sNameIndex)
+                    sciName = results[0]
+                    auth = results[1]
                     if authIndex != '':
-                        self.model.setValueAt(str(results[1]), currentRow, authIndex)
+                        if messagebox.askyesno("Sci-Name", "Would you like to change " + str(currentSciName) + " to " + str(sciName)):
+                            self.model.setValueAt(str(sciName), currentRow, sNameIndex)
+                            self.model.setValueAt(str(auth), currentRow, sNameIndex)
             elif isinstance(results, str):
                 if results == 'not_accepted_or_syn':
-                    if messagebox.askyesno("Scientific Name Error", "Row " + str(currentRow) + " CoL no accepted name."):
-                        return
-                    else:
-                        return
-                    return
+                    messagebox.showinfo("Scientific Name Error", "No scientific name update!")
                 elif results == 'empty_string':
-                    if messagebox.askyesno("Scientific Name Error", "Row " + str(currentRow) + " has no scientific name."):
-                        return
-                    else:
-                        return
-                    return
+                    messagebox.showinfo("Scientific Name Error", "Row " + str(currentRow) + " has no scientific name.")
+                    if messagebox.askyesno("Sci-Name", "Would you like to add scientific name to " + str(currentRow)):
+                        self.setSelectedRow(currentRow)
+                        self.setSelectedCol(sNameIndex)
+                        return "user_set_sciname"
         return
 
     # causes a pdf to be saved (uses dialog to get save name.
