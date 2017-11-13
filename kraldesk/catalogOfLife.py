@@ -24,7 +24,7 @@ def colNameSearch(givenScientificName):
         identQuery.append(identification[1])
         if len(identification) > 2:
             identQuery.append(identification[-1])
-    CoLQuery = ET.parse(urllib.request.urlopen('http://webservice.catalogueoflife.org/col/webservice?name={}&response=terse'.format('+'.join(identQuery)), timeout=5)).getroot()
+    CoLQuery = ET.parse(urllib.request.urlopen('http://webservice.catalogueoflife.org/col/webservice?name={}&response=terse'.format('+'.join(identQuery)), timeout=30)).getroot()
 
     #<status>accepted name|ambiguous synonym|misapplied name|privisionally acceptedname|synomym</status>  List of potential name status
     for result in CoLQuery.findall('result'):
