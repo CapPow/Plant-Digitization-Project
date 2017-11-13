@@ -3464,7 +3464,7 @@ class Table(Canvas):
         return
 
     def helpDocumentation(self):
-        link='https://github.com/CapPow/Plant-Digitization-Project'
+        link='https://github.com/j-h-m/Plant-Digitization-Project/wiki'
         webbrowser.open(link,autoraise=1)
         return
 
