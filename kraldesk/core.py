@@ -239,13 +239,7 @@ class Table(Canvas):
         self.rowheader = RowHeader(self.parentframe, self, width=self.rowheaderwidth)
         self.tablecolheader = ColumnHeader(self.parentframe, self)
         self.rowindexheader = IndexHeader(self.parentframe, self)
-
-        #First draw might have no df, but we'd like to hand one off to the headers module.
-        try:
-            self.rowwidgetcolumn = RowWidgetColumn(self.parentframe, self, otherCatalogNums = self.model.df['othercatalognumbers'].tolist())
-        except KeyError:
-            self.rowwidgetcolumn = RowWidgetColumn(self.parentframe, self)
-            
+        self.rowwidgetcolumn = RowWidgetColumn(self.parentframe, self)
         self.Yscrollbar = AutoScrollbar(self.parentframe,orient=VERTICAL,command=self.set_yviews)
         self.Yscrollbar.grid(row=2,column=3,rowspan=1,sticky='news',pady=0,ipady=0)
         self.Xscrollbar = AutoScrollbar(self.parentframe,orient=HORIZONTAL,command=self.set_xviews)
@@ -258,7 +252,7 @@ class Table(Canvas):
         self.parentframe.rowconfigure(2,weight=1)
         self.parentframe.columnconfigure(2,weight=1)
 
-        # self.rowwidgetcolumn.grid(row=2,column=0,rowspan=1,sticky='news')
+        #self.rowwidgetcolumn.grid(row=2,column=0,rowspan=1,sticky='news')
 
         self.rowindexheader.grid(row=1,column=1,rowspan=1,sticky='news')
         self.tablecolheader.grid(row=1,column=2,rowspan=1,sticky='news')
@@ -563,7 +557,7 @@ class Table(Canvas):
             fontsize = self.thefont[1]
         except:
             fontsize = self.fontsize
-        scale = 8.5 * float(fontsize)/9
+        scale = 10.5 * float(fontsize)/9
         return scale
 
     def adjustColumnWidths(self):

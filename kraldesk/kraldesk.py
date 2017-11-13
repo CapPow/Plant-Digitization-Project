@@ -8,8 +8,8 @@ class TestApp(Frame):
             self.parent = parent
             Frame.__init__(self)
             self.main = self.master
-            self.main.geometry('600x400+200+100')
-            self.main.title('Table app')
+            self.main.geometry('800x400+200+100')
+            self.main.title('kralDesk')
             f = Frame(self.main)
             f.pack(fill=BOTH,expand=1)
             df = pd.DataFrame()
