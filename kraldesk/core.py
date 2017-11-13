@@ -3159,13 +3159,10 @@ class Table(Canvas):
                 longitude = (currentRecord['decimalLongitude'])
             # return from here, can't call API without lat/long
             except ValueError:
-                popupError = Toplevel()
-                popupError.title("Locality Error")
-                message = Message(popupError, text="Google API call requires GPS coordinates!")
-                message.pack()
-                button = Button(popupError, text="OK", command=popupError.destroy)
-                button.pack()
-                return
+                if messagebox.askyesno("Locality Error", "Row " + str(currentRow) + " has no GPS coordinates!"):
+                    return
+                else:
+                    return
             # filter will return a dictionary if matching lat/long exists
             # using global list uniqueLocality to hold unique gps coordinate pairs
             latMatch = list(filter(lambda elem: elem['latitude'] == str(latitude), self.uniqueLocality))
@@ -3236,23 +3233,16 @@ class Table(Canvas):
 
                 # Google API call returned error/status string
                 else:
-                    popupError = Toplevel()
-                    popupError.title("Locality Error")
                     apiErrorMessage = address
-                    message = Message(popupError, text="Google API call error message: " + str(apiErrorMessage))
-                    message.pack()
-                    button = Button(popupError, text="OK", command=popupError.destroy)
-                    button.pack()
-                    return
+                    if messagebox.askyesno("Locality Error", "Row " + str(currentRow) + " API Error: " + str(apiErrorMessage)):
+                        return
+                    else:
+                        return
         else:
-            popupError = Toplevel()
-            popupError.title("Locality Error")
-            message1 = Message(popupError, text="If there is no column with header 'locality' this function will fail.")
-            message2 = Message(popupError, text="This should not be an issue if you're using Kral Mobile!")
-            message1.pack()
-            message2.pack()
-            button = Button(popupError, text="OK", command=popupError.destroy)
-            button.pack()
+            if messagebox.askyesno("Locality Error", "Row " + str(currentRow) + " has no locality column"):
+                return
+            else:
+                return
             return
         return
 
@@ -3277,20 +3267,16 @@ class Table(Canvas):
                         self.model.setValueAt(str(results[1]), currentRow, authIndex)
             elif isinstance(results, str):
                 if results == 'not_accepted_or_syn':
-                    popupError = Toplevel()
-                    popupError.title("Scientific Name Error")
-                    message = Message(popupError, text="Catalog of Life didn't find an accepted name")
-                    message.pack()
-                    button = Button(popupError, text="OK", command=popupError.destroy)
-                    button.pack()
+                    if messagebox.askyesno("Scientific Name Error", "Row " + str(currentRow) + " CoL no accepted name."):
+                        return
+                    else:
+                        return
                     return
                 elif results == 'empty_string':
-                    popupError = Toplevel()
-                    popupError.title("Scientific Name Error")
-                    message = Message(popupError, text="Add a Scientific Name to the specimen in this row!")
-                    message.pack()
-                    button = Button(popupError, text="OK", command=popupError.destroy)
-                    button.pack()
+                    if messagebox.askyesno("Scientific Name Error", "Row " + str(currentRow) + " has no scientific name."):
+                        return
+                    else:
+                        return
                     return
         return
 
