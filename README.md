@@ -5,7 +5,9 @@ https://docs.google.com/presentation/d/1kz0K0Dbt2jrnNswKCHjEv63JSkq-e8NZkxNaLzXK
 
 ## Check out the Wiki for more info!
 [Wiki Home](https://github.com/j-h-m/Plant-Digitization-Project/wiki)
+
 [KralDesk](https://github.com/j-h-m/Plant-Digitization-Project/wiki/KralDesk)
+
 [KralMobile](https://github.com/j-h-m/Plant-Digitization-Project/wiki/KralMobile)
 
 ## Want to contribute to the project or recruit us for something after we graduate? Contact us!
