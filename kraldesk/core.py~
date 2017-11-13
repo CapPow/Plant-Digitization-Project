@@ -239,7 +239,13 @@ class Table(Canvas):
         self.rowheader = RowHeader(self.parentframe, self, width=self.rowheaderwidth)
         self.tablecolheader = ColumnHeader(self.parentframe, self)
         self.rowindexheader = IndexHeader(self.parentframe, self)
-        self.rowwidgetcolumn = RowWidgetColumn(self.parentframe, self)
+
+        #First draw might have no df, but we'd like to hand one off to the headers module.
+        try:
+            self.rowwidgetcolumn = RowWidgetColumn(self.parentframe, self, otherCatalogNums = self.model.df['othercatalognumbers'].tolist())
+        except KeyError:
+            self.rowwidgetcolumn = RowWidgetColumn(self.parentframe, self)
+            
         self.Yscrollbar = AutoScrollbar(self.parentframe,orient=VERTICAL,command=self.set_yviews)
         self.Yscrollbar.grid(row=2,column=3,rowspan=1,sticky='news',pady=0,ipady=0)
         self.Xscrollbar = AutoScrollbar(self.parentframe,orient=HORIZONTAL,command=self.set_xviews)
@@ -252,7 +258,7 @@ class Table(Canvas):
         self.parentframe.rowconfigure(2,weight=1)
         self.parentframe.columnconfigure(2,weight=1)
 
-        #self.rowwidgetcolumn.grid(row=2,column=0,rowspan=1,sticky='news')
+        # self.rowwidgetcolumn.grid(row=2,column=0,rowspan=1,sticky='news')
 
         self.rowindexheader.grid(row=1,column=1,rowspan=1,sticky='news')
         self.tablecolheader.grid(row=1,column=2,rowspan=1,sticky='news')
@@ -557,7 +563,7 @@ class Table(Canvas):
             fontsize = self.thefont[1]
         except:
             fontsize = self.fontsize
-        scale = 10.5 * float(fontsize)/9
+        scale = 8.5 * float(fontsize)/9
         return scale
 
     def adjustColumnWidths(self):
@@ -3117,35 +3123,21 @@ class Table(Canvas):
             self.updateModel(model)
         return
     
+    # no args
     # runs through table automatically
     # calls genLocality and genScientificName
     def processRecords(self):
         cRow = self.currentrow
-        self.parentframe.master.title("KralDesk (Processing Records...)")
-        while cRow < int(self.model.getRowCount()):
-            cRow = self.currentrow
+        while cRow < int(self.model.getRowCount() -1):
             print("current row: " + str(cRow))
-            resLoc = self.genLocality(cRow)
-            # missing gps coordinates
-            if resLoc == "loc_error_no_gps":
-                self.redraw()
-            elif resLoc == "user_set_gps":
-                self.parentframe.master.title("KralDesk")
-                self.redraw()
-                return
+            cRow = self.currentrow
+            self.genLocality(cRow)
             resSci = self.genScientificName(cRow)
-            # missing scientific name
             if resSci == "user_set_sciname":
-                self.parentframe.master.title("KralDesk")
-                self.redraw()
                 return
-            self.redraw()
-            if cRow < int(self.model.getRowCount()-1):
-                self.gotonextRow()
             else:
-                self.parentframe.master.title("KralDesk")
                 self.redraw()
-                return
+                self.gotonextRow()
         return
 
     # takes current row as argument
@@ -3160,25 +3152,17 @@ class Table(Canvas):
         countyIndex = self.findColumnIndex('county')
         stateProvinceIndex = self.findColumnIndex('stateProvince')
         countryIndex = self.findColumnIndex('country')
-        latitudeIndex = self.findColumnIndex('decimalLatitude')
-        longitudeIndex = self.findColumnIndex('decimalLongitude')
 
         if localityIndex != '':
             locality = self.model.getValueAt(currentRow, localityIndex)
             try:
                 latitude = (currentRecord['decimalLatitude'])
                 longitude = (currentRecord['decimalLongitude'])
-                if latitude == '' or longitude == '':
-                    raise ValueError("Latitude/Longitude have no values")
             # return from here, can't call API without lat/long
             except ValueError:
-                messagebox.showinfo("Locality Error", "Row " + str(currentRow+1) + " has no GPS coordinates!")
-                if messagebox.askyesno("Locality Error", "Would you like to manually enter GPS coordinates for row " + str(currentRow+1)):
-                    self.setSelectedRow(currentRow)
-                    self.setSelectedCol(latitudeIndex)
-                    return "user_set_gps"
-                else:
-                    return "loc_error_no_gps"
+                messagebox.showinfo("Locality Error", "Row " + str(currentRow) + " has no GPS coordinates!")
+                messagebox.showinfo("Locality Error", "Locality generation requires GPS coordinates!")
+                return
             # filter will return a dictionary if matching lat/long exists
             # using global list uniqueLocality to hold unique gps coordinate pairs
             latMatch = list(filter(lambda elem: elem['latitude'] == str(latitude), self.uniqueLocality))
@@ -3200,7 +3184,7 @@ class Table(Canvas):
                     self.model.setValueAt(latMatch[0]['stateProvince'], currentRow, stateProvinceIndex)
                 if countryIndex != '':
                     self.model.setValueAt(latMatch[0]['country'], currentRow, countryIndex)
-
+                    
             # call the reverse geolocation function
             # function defined in locality.py
             else:
@@ -3226,8 +3210,6 @@ class Table(Canvas):
                         if stateProvince and county and municipality and country:
                             addressString = str(country) + '. ' + str(stateProvince) + '. ' + str(county) + '. ' + str(municipality) + '. ' + str(streetName) + '.'
                             tempDict = {'latitude': str(latitude), 'longitude': str(longitude), 'path': str(streetName), 'municipality': str(municipality), 'county': str(county), 'stateProvince': str(stateProvince), 'country': str(country), 'localityString': addressString}
-                        if pathIndex != '':
-                            self.model.setValueAt(str(streetName), currentRow, pathIndex)
 
                     # no street is returned
                     else:
@@ -3238,7 +3220,7 @@ class Table(Canvas):
                     localityAddressAdded = addressString + ' ' + locality
                     localityAddressAdded = localityAddressAdded.lstrip()
                     self.model.setValueAt(localityAddressAdded, currentRow, localityIndex)
-                    
+
                     if municipalityIndex != '':
                         self.model.setValueAt(tempDict['municipality'], currentRow, municipalityIndex)
                     if countyIndex != '':
@@ -3251,9 +3233,9 @@ class Table(Canvas):
                 # Google API call returned error/status string
                 else:
                     apiErrorMessage = address
-                    messagebox.showinfo("Locality Error", "Row " + str(currentRow+1) + " API Error: " + str(apiErrorMessage))
+                    messagebox.showinfo("Locality Error", "Row " + str(currentRow) + " API Error: " + str(apiErrorMessage))
                     if messagebox.askyesno("Locality Error", "This function requires an internet connection, would you like to retry?"):
-                        self.genLocality(currentRow)
+                        genLocality(currentRow)
                     else:
                         return "loc_apierr_no_retry"
         else:
@@ -3287,8 +3269,8 @@ class Table(Canvas):
                 if results == 'not_accepted_or_syn':
                     messagebox.showinfo("Scientific Name Error", "No scientific name update!")
                 elif results == 'empty_string':
-                    messagebox.showinfo("Scientific Name Error", "Row " + str(currentRow+1) + " has no scientific name.")
-                    if messagebox.askyesno("Sci-Name", "Would you like to add scientific name to row " + str(currentRow+1)):
+                    messagebox.showinfo("Scientific Name Error", "Row " + str(currentRow) + " has no scientific name.")
+                    if messagebox.askyesno("Sci-Name", "Would you like to add scientific name to " + str(currentRow)):
                         self.setSelectedRow(currentRow)
                         self.setSelectedCol(sNameIndex)
                         return "user_set_sciname"

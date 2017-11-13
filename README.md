@@ -1,5 +1,9 @@
 # Modernizing Field Collection Techniques
 
+## Email Us with Suggestions or Issues!
+
+plantdigitizationprojectutc@gmail.com
+
 ## In leiu of proper documentation, here is a slideshow:
 https://docs.google.com/presentation/d/1kz0K0Dbt2jrnNswKCHjEv63JSkq-e8NZkxNaLzXK5mg/edit?usp=sharing
 
