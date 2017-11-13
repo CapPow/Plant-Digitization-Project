@@ -3155,8 +3155,8 @@ class Table(Canvas):
         if localityIndex != '':
             locality = self.model.getValueAt(currentRow, localityIndex)
             try:
-                latitude = round(float(currentRecord['decimalLatitude']), 5)
-                longitude = round(float(currentRecord['decimalLongitude']), 5)
+                latitude = (currentRecord['decimalLatitude'])
+                longitude = (currentRecord['decimalLongitude'])
             # return from here, can't call API without lat/long
             except ValueError:
                 popupError = Toplevel()
@@ -3175,7 +3175,7 @@ class Table(Canvas):
             if latMatch and longMatch and latMatch != [] and longMatch != []:
                 # use old locality string from dictionary
                 addressString = latMatch[0]['localityString']
-                localityAddressAdded = locality + ' ' + addressString
+                localityAddressAdded = addressString + ' ' + locality
                 self.model.setValueAt(localityAddressAdded, currentRow, localityIndex)
                 if pathIndex != '':
                     self.model.setValueAt(latMatch[0]['path'], currentRow, pathIndex)
@@ -3413,7 +3413,7 @@ class Table(Canvas):
             ]
         #Excel is interpreting site numbers <12 as dates and converting them. Ex: 08-16 to Aug-16.
         #To prevent data loss mobile app sends field numbers with a leading " ' " which we don't want.
-            df = pd.read_csv(filename, usecols = column_order, encoding =  'utf-8')[column_order]
+            df = pd.read_csv(filename, usecols = column_order, encoding =  'utf-8',keep_default_na=False)[column_order]
             df['othercatalognumbers'] = df['othercatalognumbers'].apply(lambda x: x.lstrip("'"))
             
             
