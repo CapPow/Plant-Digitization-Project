@@ -24,7 +24,9 @@ def colNameSearch(givenScientificName):
         identQuery.append(identification[1])
         if len(identification) > 2:
             identQuery.append(identification[-1])
-    CoLQuery = ET.parse(urllib.request.urlopen('http://webservice.catalogueoflife.org/col/webservice?name=' + ('+'.join(identQuery)), timeout=30)).getroot()
+    CoLQuery = ET.parse(urllib.request.urlopen('http://webservice.catalogueoflife.org/col/webservice?name={}&response=terse'.format('+'.join(identQuery)), timeout=30)).getroot()
+
+    #<status>accepted name|ambiguous synonym|misapplied name|privisionally acceptedname|synomym</status>  List of potential name status
     for result in CoLQuery.findall('result'):
         nameStatus = result.find('name_status').text
         if nameStatus == 'accepted name':
@@ -34,7 +36,7 @@ def colNameSearch(givenScientificName):
             except AttributeError:
                 authorityName = html.unescape(result.find('name_html').text)
                 authorityName = authorityName.split('</i> ')[1]
-            authorityName = re.sub(r'\d+','',authorityName)
+            authorityName = re.sub(r'\d+','',str(authorityName))
             authorityName = authorityName.strip().rstrip(',')
             return (name,authorityName)
         elif 'synonym' in nameStatus:

@@ -239,16 +239,22 @@ class Table(Canvas):
         self.rowheader = RowHeader(self.parentframe, self, width=self.rowheaderwidth)
         self.tablecolheader = ColumnHeader(self.parentframe, self)
         self.rowindexheader = IndexHeader(self.parentframe, self)
-        self.rowwidgetcolumn = RowWidgetColumn(self.parentframe, self)
+
+        #First draw might have no df, but we'd like to hand one off to the headers module.
+        try:
+            self.rowwidgetcolumn = RowWidgetColumn(self.parentframe, self, otherCatalogNums = self.model.df['othercatalognumbers'].tolist())
+        except KeyError:
+            self.rowwidgetcolumn = RowWidgetColumn(self.parentframe, self)
+            
         self.Yscrollbar = AutoScrollbar(self.parentframe,orient=VERTICAL,command=self.set_yviews)
         self.Yscrollbar.grid(row=2,column=3,rowspan=1,sticky='news',pady=0,ipady=0)
         self.Xscrollbar = AutoScrollbar(self.parentframe,orient=HORIZONTAL,command=self.set_xviews)
         self.Xscrollbar.grid(row=3,column=2,columnspan=1,sticky='news')
         self['xscrollcommand'] = self.Xscrollbar.set
         self['yscrollcommand'] = self.Yscrollbar.set 
-       self.tablecolheader['xscrollcommand'] = self.Xscrollbar.set
+        self.tablecolheader['xscrollcommand'] = self.Xscrollbar.set
         self.rowheader['yscrollcommand'] = self.Yscrollbar.set
-        self.rowwidgetcolumn['yscrollcommand'] = self.Yscrollbar.set
+        #self.rowwidgetcolumn['yscrollcommand'] = self.Yscrollbar.set
         self.parentframe.rowconfigure(2,weight=1)
         self.parentframe.columnconfigure(2,weight=1)
 
@@ -3150,8 +3156,8 @@ class Table(Canvas):
         if localityIndex != '':
             locality = self.model.getValueAt(currentRow, localityIndex)
             try:
-                latitude = round(float(currentRecord['decimalLatitude']), 5)
-                longitude = round(float(currentRecord['decimalLongitude']), 5)
+                latitude = (currentRecord['decimalLatitude'])
+                longitude = (currentRecord['decimalLongitude'])
             # return from here, can't call API without lat/long
             except ValueError:
                 messagebox.showinfo("Locality Error", "Row " + str(currentRow) + " has no GPS coordinates!")
@@ -3166,7 +3172,7 @@ class Table(Canvas):
             if latMatch and longMatch and latMatch != [] and longMatch != []:
                 # use old locality string from dictionary
                 addressString = latMatch[0]['localityString']
-                localityAddressAdded = locality + ' ' + addressString
+                localityAddressAdded = addressString + ' ' + locality
                 self.model.setValueAt(localityAddressAdded, currentRow, localityIndex)
                 if pathIndex != '':
                     self.model.setValueAt(latMatch[0]['path'], currentRow, pathIndex)
@@ -3211,7 +3217,8 @@ class Table(Canvas):
                         tempDict = {'latitude': str(latitude), 'longitude': str(longitude), 'municipality': str(municipality), 'county': str(county), 'stateProvince': str(stateProvince), 'country': str(country), 'localityString': addressString}
 
                     self.uniqueLocality.append(tempDict)
-                    localityAddressAdded = locality + ' ' + addressString
+                    localityAddressAdded = addressString + ' ' + locality
+                    localityAddressAdded = localityAddressAdded.lstrip()
                     self.model.setValueAt(localityAddressAdded, currentRow, localityIndex)
 
                     if municipalityIndex != '':
@@ -3386,8 +3393,12 @@ class Table(Canvas):
             'county',
             'path'
             ]
-
-            df = pd.read_csv(filename, usecols = column_order, encoding =  'utf-8')[column_order]
+        #Excel is interpreting site numbers <12 as dates and converting them. Ex: 08-16 to Aug-16.
+        #To prevent data loss mobile app sends field numbers with a leading " ' " which we don't want.
+            df = pd.read_csv(filename, usecols = column_order, encoding =  'utf-8',keep_default_na=False)[column_order]
+            df['othercatalognumbers'] = df['othercatalognumbers'].apply(lambda x: x.lstrip("'"))
+            
+            
         model = TableModel(dataframe=df)
         self.updateModel(model)
         self.redraw()
@@ -3449,7 +3460,7 @@ class Table(Canvas):
         return
 
     def helpDocumentation(self):
-        link='https://github.com/CapPow/Plant-Digitization-Project'
+        link='https://github.com/j-h-m/Plant-Digitization-Project/wiki'
         webbrowser.open(link,autoraise=1)
         return
 
