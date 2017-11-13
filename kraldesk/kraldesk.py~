@@ -9,7 +9,7 @@ class TestApp(Frame):
             Frame.__init__(self)
             self.main = self.master
             self.main.geometry('600x400+200+100')
-            self.main.title('KralDesk')
+            self.main.title('Table app')
             f = Frame(self.main)
             f.pack(fill=BOTH,expand=1)
             df = pd.DataFrame()
