@@ -482,34 +482,31 @@ class RowWidgetColumn(Canvas):
             self.width = w
 
         i=0
+
+        fieldColIndex = self.table.findColumnIndex('othercatalognumbers')
+
         for col in cols:
 
             r=v[0]
             x = xpos[i]
             i+=1
             for row in col:
-                fieldNum = self.model.getValueAt(row,0).split('-')
+                fieldNum = self.model.getValueAt(row,fieldColIndex).split('-')
                 x1,y1,x2,y2 = self.table.getCellCoords(r,0)
                 self.create_rectangle(x,y1,w-1,y2, fill=self.color,
                                         outline='white', width=1,
                                         tag='rowwidgetcolumn')
              
-##                if fieldNum[1] != '#':
-##                    spinnerBox = Spinbox(self, from_=0, to=15, width = 4,justify=RIGHT)
-##                    spinnerBox.pack()
-##                if fieldNum[1] == '#':
-##                    addSpecimenButton = Button(self, text="Add Specimen", state=DISABLED)
-##                    addSpecimenButton.pack()
-
-##                
-##                self.create_text(x+pad,y1+h/2, text=text,
-##                                  fill='black', font=self.table.thefont,
-##                                  tag='text', anchor=align)
+                if len(fieldNum) > 0:
+                    #if fieldNum[1] != '#':
+                        #spinnerBox = Spinbox(self, from_=0, to=15, width = 4,justify=RIGHT, textvariable = )
+                        #spinnerBox.pack(fill=BOTH, expand=True)
+                    if fieldNum[1] == '#':
+                        addSpecimenButton = Button(self, text="Add Specimen",
+                                                   command = lambda row = row: self.model.addRowFromSite(row))
+                        addSpecimenButton.pack(fill=BOTH, expand=True)
                 r+=1
 
-##                otherCatNumList
-##                spinnerBox = Spinbox(self, from_=0, to=15)
-##                spinnerBox.pack()
                 
         return
 
