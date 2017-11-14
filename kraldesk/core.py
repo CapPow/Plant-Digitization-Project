@@ -239,13 +239,7 @@ class Table(Canvas):
         self.rowheader = RowHeader(self.parentframe, self, width=self.rowheaderwidth)
         self.tablecolheader = ColumnHeader(self.parentframe, self)
         self.rowindexheader = IndexHeader(self.parentframe, self)
-
-        #First draw might have no df, but we'd like to hand one off to the headers module.
-        try:
-            self.rowwidgetcolumn = RowWidgetColumn(self.parentframe, self, otherCatalogNums = self.model.df['othercatalognumbers'].tolist())
-        except KeyError:
-            self.rowwidgetcolumn = RowWidgetColumn(self.parentframe, self)
-            
+        self.rowwidgetcolumn = RowWidgetColumn(self.parentframe, self)
         self.Yscrollbar = AutoScrollbar(self.parentframe,orient=VERTICAL,command=self.set_yviews)
         self.Yscrollbar.grid(row=2,column=3,rowspan=1,sticky='news',pady=0,ipady=0)
         self.Xscrollbar = AutoScrollbar(self.parentframe,orient=HORIZONTAL,command=self.set_xviews)
@@ -258,7 +252,7 @@ class Table(Canvas):
         self.parentframe.rowconfigure(2,weight=1)
         self.parentframe.columnconfigure(2,weight=1)
 
-        # self.rowwidgetcolumn.grid(row=2,column=0,rowspan=1,sticky='news')
+        #self.rowwidgetcolumn.grid(row=2,column=0,rowspan=1,sticky='news')
 
         self.rowindexheader.grid(row=1,column=1,rowspan=1,sticky='news')
         self.tablecolheader.grid(row=1,column=2,rowspan=1,sticky='news')
@@ -563,7 +557,7 @@ class Table(Canvas):
             fontsize = self.thefont[1]
         except:
             fontsize = self.fontsize
-        scale = 8.5 * float(fontsize)/9
+        scale = 10.5 * float(fontsize)/9
         return scale
 
     def adjustColumnWidths(self):
@@ -3224,6 +3218,8 @@ class Table(Canvas):
                 # reverseGeoCall will return a list of results
                 # or it will return an error/status string
                 if isinstance(address, list):
+                    
+                    
                     for addressComponent in address:
                         if addressComponent['types'][0] == 'route':
                             streetName = addressComponent['long_name']
@@ -3240,14 +3236,14 @@ class Table(Canvas):
                     # in some cases, the api will not return a street at all
                     if 'streetName' in locals():
                         if stateProvince and county and municipality and country:
-                            addressString = str(country) + '. ' + str(stateProvince) + '. ' + str(county) + '. ' + str(municipality) + '. ' + str(streetName) + '.'
+                            addressString = str(country) + ', ' + str(stateProvince) + ', ' + str(county) + ', ' + str(municipality) + ', ' + str(streetName) + ','
                             tempDict = {'latitude': str(latitude), 'longitude': str(longitude), 'path': str(streetName), 'municipality': str(municipality), 'county': str(county), 'stateProvince': str(stateProvince), 'country': str(country), 'localityString': addressString}
                         if pathIndex != '':
                             self.model.setValueAt(str(streetName), currentRow, pathIndex)
 
                     # no street is returned
                     else:
-                        addressString = str(country) + '. ' + str(stateProvince) + '. ' + str(county) + '. ' + str(municipality) + '. '
+                        addressString = str(country) + ', ' + str(stateProvince) + ', ' + str(county) + ', ' + str(municipality) + ', '
                         tempDict = {'latitude': str(latitude), 'longitude': str(longitude), 'municipality': str(municipality), 'county': str(county), 'stateProvince': str(stateProvince), 'country': str(country), 'localityString': addressString}
 
                     self.uniqueLocality.append(tempDict)
@@ -3300,7 +3296,7 @@ class Table(Canvas):
                     if authIndex != '':
                         if messagebox.askyesno("Sci-Name", "(row " + str(currentRow+1) + ") " + " Would you like to change " + str(currentSciName) + " to " + str(sciName) + "? This will also update authority!"):
                             self.model.setValueAt(str(sciName), currentRow, sNameIndex)
-                            if auth != 'None' and auth != 'L.':
+                            if auth != 'None':
                                 self.model.setValueAt(str(auth), currentRow, authIndex)
                             else:
                                 return
