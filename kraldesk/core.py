@@ -3296,7 +3296,7 @@ class Table(Canvas):
                     if authIndex != '':
                         if messagebox.askyesno("Sci-Name", "(row " + str(currentRow+1) + ") " + " Would you like to change " + str(currentSciName) + " to " + str(sciName) + "? This will also update authority!"):
                             self.model.setValueAt(str(sciName), currentRow, sNameIndex)
-                            if auth != 'None' and auth != 'L.':
+                            if auth != 'None':
                                 self.model.setValueAt(str(auth), currentRow, authIndex)
                             else:
                                 return
