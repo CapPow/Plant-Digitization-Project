@@ -141,7 +141,7 @@ class Table(Canvas):
         self.cellwidth = 60
         self.maxcellwidth=300
         self.mincellwidth = 30
-        self.rowheight=20
+        self.rowheight=30
         self.horizlines=1
         self.vertlines=1
         self.autoresizecols = 1
@@ -152,7 +152,7 @@ class Table(Canvas):
         self.rowheaderwidth=50
         self.rowwidgetcolumn = 25
         self.showkeynamesinheader=False
-        self.thefont = ('Arial',12)
+        self.thefont = ('Arial',14)
         self.cellbackgr = '#F4F4F3'
         self.entrybackgr = 'white'
         self.grid_color = '#ABB1AD'
@@ -2843,6 +2843,7 @@ class Table(Canvas):
         frame1.pack(side=LEFT)
         frame2=Frame(self.prefswindow)
         frame2.pack()
+        
         def close_prefsdialog():
             self.prefswindow.destroy()
         row=0
