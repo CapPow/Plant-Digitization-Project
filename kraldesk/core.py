@@ -3519,11 +3519,11 @@ class ToolBar(Frame):
         img = images.aggregate() #hijacking random image for now
         addButton(self, 'Export',self.parentapp.genLabelPDF, img, 'Export Labels to PDF', side=LEFT)
 
-        img = images.cross()
-        addButton(self, 'Help', self.parentapp.helpDocumentation , img , 'Help Documentation', side=LEFT)
-
         img = images.prefs()
         addButton(self, 'Preferences', self.parentapp.showPrefs, img, 'Show Preferences', side = LEFT)
+        
+        img = images.cross()
+        addButton(self, 'Help', self.parentapp.helpDocumentation , img , 'Help Documentation', side=LEFT)
 
         # List of unused button assets (for temp use before we get in our assets.
         # img = images.open_proj()
