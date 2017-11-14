@@ -265,10 +265,10 @@ class Table(Canvas):
         self.xview("moveto", 0)
         if self.showtoolbar == True:
             self.toolbar = ToolBar(self.parentframe, self)
-            self.toolbar.grid(row=0,column=1,columnspan=2,sticky='ew')
+            self.toolbar.grid(row=0,column=0,columnspan=3,sticky='ew')
         if self.showstatusbar == True:
             self.statusbar = statusBar(self.parentframe, self)
-            self.statusbar.grid(row=3,column=1,columnspan=2,sticky='ew')
+            self.statusbar.grid(row=3,column=0,columnspan=3,sticky='ew')
         self.redraw(callback=callback)
         if hasattr(self, 'pf'):
             self.pf.updateData()
@@ -2974,7 +2974,7 @@ class Table(Canvas):
                         'autoresizecols': self.autoresizecols,
                         'align': 'w',
                         'floatprecision': self.floatprecision,
-                        'celltextsize':10, 'celltextfont':'Arial',
+                        'celltextsize':14, 'celltextfont':'Arial',
                         'cellbackgr': self.cellbackgr, 'grid_color': self.grid_color,
                         'linewidth' : self.linewidth,
                         'rowselectedcolor': self.rowselectedcolor,
@@ -3521,6 +3521,9 @@ class ToolBar(Frame):
 
         img = images.cross()
         addButton(self, 'Help', self.parentapp.helpDocumentation , img , 'Help Documentation', side=LEFT)
+
+        img = images.prefs()
+        addButton(self, 'Preferences', self.parentapp.showPrefs, img, 'Show Preferences', side = LEFT)
 
         # List of unused button assets (for temp use before we get in our assets.
         # img = images.open_proj()
