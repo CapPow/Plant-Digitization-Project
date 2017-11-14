@@ -3366,16 +3366,11 @@ class Table(Canvas):
     def saveAs(self, filename=None):
         """Save dataframe to file"""
 
-        if filename == None:
-            filename = filedialog.asksaveasfilename(parent=self.master,
+        filename = filedialog.asksaveasfilename(parent=self.master,
                                                     defaultextension='.csv',
                                                     initialfile = filename,
                                                     initialdir = self.currentdir,
                                                     filetypes=[("csv","*.csv")])
-        if filename:
-            self.model.save(filename)
-            self.filename = filename
-            self.currentdir = os.path.basename(filename)
         return
 
     def save(self):
