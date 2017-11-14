@@ -141,7 +141,7 @@ class Table(Canvas):
         self.cellwidth = 60
         self.maxcellwidth=300
         self.mincellwidth = 30
-        self.rowheight=20
+        self.rowheight=30
         self.horizlines=1
         self.vertlines=1
         self.autoresizecols = 1
@@ -152,7 +152,7 @@ class Table(Canvas):
         self.rowheaderwidth=50
         self.rowwidgetcolumn = 25
         self.showkeynamesinheader=False
-        self.thefont = ('Arial',12)
+        self.thefont = ('Arial',14)
         self.cellbackgr = '#F4F4F3'
         self.entrybackgr = 'white'
         self.grid_color = '#ABB1AD'
@@ -265,10 +265,10 @@ class Table(Canvas):
         self.xview("moveto", 0)
         if self.showtoolbar == True:
             self.toolbar = ToolBar(self.parentframe, self)
-            self.toolbar.grid(row=0,column=1,columnspan=2,sticky='ew')
+            self.toolbar.grid(row=0,column=0,columnspan=3,sticky='ew')
         if self.showstatusbar == True:
             self.statusbar = statusBar(self.parentframe, self)
-            self.statusbar.grid(row=3,column=1,columnspan=2,sticky='ew')
+            self.statusbar.grid(row=3,column=0,columnspan=3,sticky='ew')
         self.redraw(callback=callback)
         if hasattr(self, 'pf'):
             self.pf.updateData()
@@ -2843,6 +2843,7 @@ class Table(Canvas):
         frame1.pack(side=LEFT)
         frame2=Frame(self.prefswindow)
         frame2.pack()
+        
         def close_prefsdialog():
             self.prefswindow.destroy()
         row=0
@@ -2974,7 +2975,7 @@ class Table(Canvas):
                         'autoresizecols': self.autoresizecols,
                         'align': 'w',
                         'floatprecision': self.floatprecision,
-                        'celltextsize':10, 'celltextfont':'Arial',
+                        'celltextsize':14, 'celltextfont':'Arial',
                         'cellbackgr': self.cellbackgr, 'grid_color': self.grid_color,
                         'linewidth' : self.linewidth,
                         'rowselectedcolor': self.rowselectedcolor,
@@ -3366,16 +3367,11 @@ class Table(Canvas):
     def saveAs(self, filename=None):
         """Save dataframe to file"""
 
-        if filename == None:
-            filename = filedialog.asksaveasfilename(parent=self.master,
+        filename = filedialog.asksaveasfilename(parent=self.master,
                                                     defaultextension='.csv',
                                                     initialfile = filename,
                                                     initialdir = self.currentdir,
                                                     filetypes=[("csv","*.csv")])
-        if filename:
-            self.model.save(filename)
-            self.filename = filename
-            self.currentdir = os.path.basename(filename)
         return
 
     def save(self):
@@ -3524,6 +3520,9 @@ class ToolBar(Frame):
         img = images.aggregate() #hijacking random image for now
         addButton(self, 'Export',self.parentapp.genLabelPDF, img, 'Export Labels to PDF', side=LEFT)
 
+        img = images.prefs()
+        addButton(self, 'Preferences', self.parentapp.showPrefs, img, 'Show Preferences', side = LEFT)
+        
         img = images.cross()
         addButton(self, 'Help', self.parentapp.helpDocumentation , img , 'Help Documentation', side=LEFT)
 
