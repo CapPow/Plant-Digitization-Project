@@ -494,12 +494,12 @@ class RowWidgetColumn(Canvas):
                                         outline='white', width=1,
                                         tag='rowwidgetcolumn')
              
-                if fieldNum[1] != '#':
-                    spinnerBox = Spinbox(self, from_=0, to=15, width = 4,justify=RIGHT)
-                    spinnerBox.pack()
-                if fieldNum[1] == '#':
-                    addSpecimenButton = Button(self, text="Add Specimen", state=DISABLED)
-                    addSpecimenButton.pack()
+##                if fieldNum[1] != '#':
+##                    spinnerBox = Spinbox(self, from_=0, to=15, width = 4,justify=RIGHT)
+##                    spinnerBox.pack()
+##                if fieldNum[1] == '#':
+##                    addSpecimenButton = Button(self, text="Add Specimen", state=DISABLED)
+##                    addSpecimenButton.pack()
 
 ##                
 ##                self.create_text(x+pad,y1+h/2, text=text,

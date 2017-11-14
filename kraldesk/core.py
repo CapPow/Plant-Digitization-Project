@@ -3208,6 +3208,8 @@ class Table(Canvas):
                 # reverseGeoCall will return a list of results
                 # or it will return an error/status string
                 if isinstance(address, list):
+                    
+                    
                     for addressComponent in address:
                         if addressComponent['types'][0] == 'route':
                             streetName = addressComponent['long_name']
@@ -3224,14 +3226,14 @@ class Table(Canvas):
                     # in some cases, the api will not return a street at all
                     if 'streetName' in locals():
                         if stateProvince and county and municipality and country:
-                            addressString = str(country) + '. ' + str(stateProvince) + '. ' + str(county) + '. ' + str(municipality) + '. ' + str(streetName) + '.'
+                            addressString = str(country) + ', ' + str(stateProvince) + ', ' + str(county) + ', ' + str(municipality) + ', ' + str(streetName) + ','
                             tempDict = {'latitude': str(latitude), 'longitude': str(longitude), 'path': str(streetName), 'municipality': str(municipality), 'county': str(county), 'stateProvince': str(stateProvince), 'country': str(country), 'localityString': addressString}
                         if pathIndex != '':
                             self.model.setValueAt(str(streetName), currentRow, pathIndex)
 
                     # no street is returned
                     else:
-                        addressString = str(country) + '. ' + str(stateProvince) + '. ' + str(county) + '. ' + str(municipality) + '. '
+                        addressString = str(country) + ', ' + str(stateProvince) + ', ' + str(county) + ', ' + str(municipality) + ', '
                         tempDict = {'latitude': str(latitude), 'longitude': str(longitude), 'municipality': str(municipality), 'county': str(county), 'stateProvince': str(stateProvince), 'country': str(country), 'localityString': addressString}
 
                     self.uniqueLocality.append(tempDict)
