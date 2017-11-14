@@ -3124,28 +3124,38 @@ class Table(Canvas):
         self.parentframe.master.title("KralDesk (Processing Records...)")
         while cRow < int(self.model.getRowCount()):
             cRow = self.currentrow
-            print("current row: " + str(cRow))
-            resLoc = self.genLocality(cRow)
-            # missing gps coordinates
-            if resLoc == "loc_error_no_gps":
+            catNumColumn = self.findColumnIndex('othercatalognumbers')
+            catNum = self.model.getValueAt(cRow, catNumColumn)
+            catNumList = catNum.split('-')
+            if catNumList[1] != '#':
+                resLoc = self.genLocality(cRow)
+                # missing gps coordinates
+                if resLoc == "loc_error_no_gps":
+                    self.redraw()
+                elif resLoc == "user_set_gps":
+                    self.parentframe.master.title("KralDesk")
+                    self.redraw()
+                    return
+                resSci = self.genScientificName(cRow)
+                # missing scientific name
+                if resSci == "user_set_sciname":
+                    self.parentframe.master.title("KralDesk")
+                    self.redraw()
+                    return
                 self.redraw()
-            elif resLoc == "user_set_gps":
-                self.parentframe.master.title("KralDesk")
-                self.redraw()
-                return
-            resSci = self.genScientificName(cRow)
-            # missing scientific name
-            if resSci == "user_set_sciname":
-                self.parentframe.master.title("KralDesk")
-                self.redraw()
-                return
-            self.redraw()
-            if cRow < int(self.model.getRowCount()-1):
-                self.gotonextRow()
+                if cRow < int(self.model.getRowCount()-1):
+                    self.gotonextRow()
+                else:
+                    self.parentframe.master.title("KralDesk")
+                    self.redraw()
+                    return
             else:
-                self.parentframe.master.title("KralDesk")
-                self.redraw()
-                return
+                if cRow < int(self.model.getRowCount()-1):
+                    self.gotonextRow()
+                else:
+                    self.parentframe.master.title("KralDesk")
+                    self.redraw()
+                    return
         return
 
     # takes current row as argument
@@ -3268,7 +3278,7 @@ class Table(Canvas):
     def genScientificName(self, currentRowArg):
         currentRow = currentRowArg
         sNameIndex = self.findColumnIndex('scientificName')
-        authIndex = self.findColumnIndex('authorship')
+        authIndex = self.findColumnIndex('scientificNameAuthorship')
 
         if sNameIndex != '':
             currentSciName = self.model.getValueAt(currentRow, sNameIndex)
@@ -3276,15 +3286,22 @@ class Table(Canvas):
             if isinstance(results, tuple):
                 if len(results) == 1:
                     sciName = results[0]
-                    if messagebox.askyesno("Sci-Name", "Would you like to change " + str(currentSciName) + " to " + str(sciName)):
+                    if messagebox.askyesno("Sci-Name", "(row " + str(currentRow+1) + ") " + " Would you like to change " + str(currentSciName) + " to " + str(sciName) + "?"):
                         self.model.setValueAt(str(results[0]), currentRow, sNameIndex)
+                    else:
+                        return
                 elif len(results) == 2:
                     sciName = results[0]
                     auth = results[1]
                     if authIndex != '':
-                        if messagebox.askyesno("Sci-Name", "Would you like to change " + str(currentSciName) + " to " + str(sciName)):
+                        if messagebox.askyesno("Sci-Name", "(row " + str(currentRow+1) + ") " + " Would you like to change " + str(currentSciName) + " to " + str(sciName) + "? This will also update authority!"):
                             self.model.setValueAt(str(sciName), currentRow, sNameIndex)
-                            self.model.setValueAt(str(auth), currentRow, sNameIndex)
+                            if auth != 'None' and auth != 'L.':
+                                self.model.setValueAt(str(auth), currentRow, authIndex)
+                            else:
+                                return
+                        else:
+                            return
             elif isinstance(results, str):
                 if results == 'not_accepted_or_syn':
                     messagebox.showinfo("Scientific Name Error", "No scientific name update!")
@@ -3379,6 +3396,8 @@ class Table(Canvas):
                                                           filetypes=[("csv","*.csv")])
         if not filename:
             return
+        else:
+            self.filename = filename
         if dialog == True:
             impdialog = ImportDialog(self, filename=filename)
             df = impdialog.df
@@ -3413,7 +3432,7 @@ class Table(Canvas):
             'county',
             'path'
             ]
-        #Excel is interpreting site numbers <12 as dates and converting them. Ex: 08-16 to Aug-16.
+        #Excel is interpreting site numbers < 12 as dates and converting them. Ex: 08-16 to Aug-16.
         #To prevent data loss mobile app sends field numbers with a leading " ' " which we don't want.
             df = pd.read_csv(filename, usecols = column_order, encoding =  'utf-8',keep_default_na=False)[column_order]
             df['othercatalognumbers'] = df['othercatalognumbers'].apply(lambda x: x.lstrip("'"))
@@ -3422,12 +3441,6 @@ class Table(Canvas):
         model = TableModel(dataframe=df)
         self.updateModel(model)
         self.redraw()
-        # row highlighter should be on first row when a new file is loaded
-        # if self.currentrow > 0:
-        #     print("resetting current row to 0")
-        #     while self.currentrow > 0:
-        #         self.gotoprevRow()
-        
         # set selected row to 0 on import
         self.setSelectedRow(0)
         self.drawSelectedRow()
