@@ -22,6 +22,7 @@
 """
 
 from types import *
+from copy import deepcopy
 import operator
 import os, string, types, copy
 import pickle
@@ -185,8 +186,24 @@ class TableModel(object):
             ind = len(df)+1
         new = pd.DataFrame(np.nan, index=range(ind,ind+num), columns=df.columns)
         self.df = pd.concat([df, new])
+        
         return
 
+    def addRowFromSite(self,siteRowIndex):
+        """Inserts a row below the required site by append/concat using sitedata"""
+        siteData = copy.deepcopy(self.getRecordAtRow(siteRowIndex))
+        oldOtherCatNum = siteData['othercatalognumbers'].split('-')[0]
+        specimenNumbers = self.df['othercatalognumbers'].tolist()
+        nextSpecimenNumber = max([int(y) for y in[x.split('-')[1] for x in specimenNumbers if '#' not in x]]) + 1
+        newOtherCatNumber = str(oldOtherCatNum[0]) + '-' + str(nextSpecimenNumber)
+        siteData.loc['othercatalognumbers'] = newOtherCatNumber
+        
+        df = self.df
+        a, b = df[:siteRowIndex], df[siteRowIndex:]
+        a = a.append(siteData, ignore_index=1)
+        self.df = pd.concat([a,b])      
+        return
+    
     def addRow(self, rowindex):
         """Inserts a row at the required index by append/concat"""
 

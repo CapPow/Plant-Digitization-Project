@@ -251,11 +251,11 @@ class Table(Canvas):
         self['yscrollcommand'] = self.Yscrollbar.set 
         self.tablecolheader['xscrollcommand'] = self.Xscrollbar.set
         self.rowheader['yscrollcommand'] = self.Yscrollbar.set
-        #self.rowwidgetcolumn['yscrollcommand'] = self.Yscrollbar.set
+        self.rowwidgetcolumn['yscrollcommand'] = self.Yscrollbar.set
         self.parentframe.rowconfigure(2,weight=1)
         self.parentframe.columnconfigure(2,weight=1)
 
-        #self.rowwidgetcolumn.grid(row=2,column=0,rowspan=1,sticky='news')
+        self.rowwidgetcolumn.grid(row=2,column=0,rowspan=1,sticky='news')
 
         self.rowindexheader.grid(row=1,column=1,rowspan=1,sticky='news')
         self.tablecolheader.grid(row=1,column=2,rowspan=1,sticky='news')
