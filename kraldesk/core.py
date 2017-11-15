@@ -150,7 +150,7 @@ class Table(Canvas):
         self.y_start=1
         self.linewidth=1.0
         self.rowheaderwidth=50
-        self.rowwidgetcolumn = 25
+        self.rowwidgetcolumn = 50
         self.showkeynamesinheader=False
         self.thefont = ('Arial',14)
         self.cellbackgr = '#F4F4F3'
@@ -180,13 +180,13 @@ class Table(Canvas):
         if event.num == 5 or event.delta == -120:
             event.widget.yview_scroll(1, UNITS)
             self.rowheader.yview_scroll(1, UNITS)
-            self.rowwidgetcolumn.yview_scroll(1, UNITS)
+            #self.rowwidgetcolumn.yview_scroll(1, UNITS)
         if event.num == 4 or event.delta == 120:
             if self.canvasy(0) < 0:
                 return
             event.widget.yview_scroll(-1, UNITS)
             self.rowheader.yview_scroll(-1, UNITS)
-            self.rowwidgetcolumn.yview_scroll(-1, UNITS)
+            #self.rowwidgetcolumn.yview_scroll(-1, UNITS)
         self.redrawVisible()
         return
 
@@ -239,7 +239,7 @@ class Table(Canvas):
         self.rowheader = RowHeader(self.parentframe, self, width=self.rowheaderwidth)
         self.tablecolheader = ColumnHeader(self.parentframe, self)
         self.rowindexheader = IndexHeader(self.parentframe, self)
-        self.rowwidgetcolumn = RowWidgetColumn(self.parentframe, self)
+        #self.rowwidgetcolumn = RowWidgetColumn(self.parentframe, self)
         self.Yscrollbar = AutoScrollbar(self.parentframe,orient=VERTICAL,command=self.set_yviews)
         self.Yscrollbar.grid(row=2,column=3,rowspan=1,sticky='news',pady=0,ipady=0)
         self.Xscrollbar = AutoScrollbar(self.parentframe,orient=HORIZONTAL,command=self.set_xviews)
@@ -248,15 +248,16 @@ class Table(Canvas):
         self['yscrollcommand'] = self.Yscrollbar.set 
         self.tablecolheader['xscrollcommand'] = self.Xscrollbar.set
         self.rowheader['yscrollcommand'] = self.Yscrollbar.set
-        self.rowwidgetcolumn['yscrollcommand'] = self.Yscrollbar.set
+        #self.rowwidgetcolumn['yscrollcommand'] = self.Yscrollbar.set
         self.parentframe.rowconfigure(2,weight=1)
         self.parentframe.columnconfigure(2,weight=1)
-
-        self.rowwidgetcolumn.grid(row=2,column=0,rowspan=1,sticky='news')
 
         self.rowindexheader.grid(row=1,column=1,rowspan=1,sticky='news')
         self.tablecolheader.grid(row=1,column=2,rowspan=1,sticky='news')
         self.rowheader.grid(row=2,column=1,rowspan=1,sticky='news')
+
+        #self.rowwidgetcolumn.grid(row=2,column=0,rowspan=1,sticky='news')        
+
         self.grid(row=2,column=2,rowspan=1,sticky='news',pady=0,ipady=0)
 
         self.adjustColumnWidths()
@@ -362,7 +363,7 @@ class Table(Canvas):
             if self.rows == 0:
                 self.visiblerows = []
                 self.rowheader.redraw()
-                self.rowwidgetcolumn.redraw()
+                #self.rowwidgetcolumn.redraw()
             return
         self.tablewidth = (self.cellwidth) * self.cols
         self.configure(bg=self.cellbackgr)
@@ -417,7 +418,7 @@ class Table(Canvas):
         self.colorRows()
         self.tablecolheader.redraw()
         self.rowheader.redraw(align=self.align)
-        self.rowwidgetcolumn.redraw(align=self.align)
+        #self.rowwidgetcolumn.redraw(align=self.align)
         self.rowindexheader.redraw()
         self.drawSelectedRow()
         self.drawSelectedRect(self.currentrow, self.currentcol)
@@ -716,7 +717,7 @@ class Table(Canvas):
         """Show the row index"""
 
         self.rowheader.showindex = True
-        self.rowwidgetcolumn.showindex = False
+        #self.rowwidgetcolumn.showindex = True
         return
 
     def update_rowcolors(self):
@@ -740,7 +741,7 @@ class Table(Canvas):
 
         self.yview(*args)
         self.rowheader.yview(*args)
-        self.rowwidgetcolumn.yview(*args)
+        #self.rowwidgetcolumn.yview(*args)
         self.redrawVisible()
         return
 
@@ -2979,7 +2980,7 @@ class Table(Canvas):
                         'cellbackgr': self.cellbackgr, 'grid_color': self.grid_color,
                         'linewidth' : self.linewidth,
                         'rowselectedcolor': self.rowselectedcolor,
-                        'rowheaderwidth': self.rowheaderwidth}
+                        'rowheaderwidth': self.rowheaderwidth,}
 
         for prop in list(defaultprefs.keys()):
             try:
@@ -3098,7 +3099,7 @@ class Table(Canvas):
         if hasattr(self, 'tablecolheader'):
             self.tablecolheader.destroy()
             self.rowheader.destroy()
-            self.rowwidgetcolumn.destroy()
+            #self.rowwidgetcolumn.destroy()
             self.selectNone()
         self.show()
         return

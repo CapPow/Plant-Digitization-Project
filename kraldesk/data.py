@@ -191,7 +191,7 @@ class TableModel(object):
 
     def addRowFromSite(self,siteRowIndex):
         """Inserts a row below the required site by append/concat using sitedata"""
-        siteData = copy.deepcopy(self.getRecordAtRow(siteRowIndex))
+        siteData = copy.copy(self.getRecordAtRow(siteRowIndex))
         oldOtherCatNum = siteData['othercatalognumbers'].split('-')[0]
         specimenNumbers = self.df['othercatalognumbers'].tolist()
         nextSpecimenNumber = max([int(y) for y in[x.split('-')[1] for x in specimenNumbers if '#' not in x]]) + 1
