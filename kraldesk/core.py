@@ -3142,11 +3142,13 @@ class Table(Canvas):
     # calls genLocality and genScientificName
     def processRecords(self):
         cRow = self.currentrow
+        assTaxaColumn = self.findColumnIndex('associatedTaxa')
+        catNumColumn = self.findColumnIndex('othercatalognumbers')
+        sNameColumn = self.findColumnIndex('scientificName')
         associatedTaxa = []
         self.parentframe.master.title("KralDesk (Processing Records...)")
         while cRow < int(self.model.getRowCount()):
             cRow = self.currentrow
-            catNumColumn = self.findColumnIndex('othercatalognumbers')
             catNum = self.model.getValueAt(cRow, catNumColumn)
             catNumList = catNum.split('-')
             if catNumList[1] != '#':
@@ -3165,20 +3167,29 @@ class Table(Canvas):
                     self.redraw()
                     return
                 else:
-                    associatedTaxa.append((resSci, cRow))
+                    if self.model.getValueAt(cRow, catNumColumn).split('-')[0] == self.model.getValueAt(cRow-1, catNumColumn).split('-')[0]:
+                        associatedTaxa.append((resSci, cRow))
                 if cRow < int(self.model.getRowCount()-1):
                     self.gotonextRow()
+                    self.redraw()
                 else:
                     self.parentframe.master.title("KralDesk")
                     self.redraw()
                     return
-            # site number with '#'
+            # field number with '#'
             else:
+                associatedTaxaString = ''
+                for pair in associatedTaxa:
+                    sciName = self.model.getValueAt(pair[1], sNameColumn)
+                    for pairCheck in associatedTaxa:
+                        if str(sciName) != str(pairCheck[0]):
+                            associatedTaxaString = pairCheck[0] + '. ' + associatedTaxaString
+                    self.model.setValueAt(associatedTaxaString, pair[1], assTaxaColumn)
+                    associatedTaxaString = ''
+                associatedTaxa = []
                 if cRow < int(self.model.getRowCount()-1):
-                    if len(associatedTaxa) > 0:
-                        print(str(associatedTaxa))
-                    associatedTaxa = []
                     self.gotonextRow()
+                    self.redraw()
                 else:
                     self.parentframe.master.title("KralDesk")
                     self.redraw()
@@ -3314,27 +3325,25 @@ class Table(Canvas):
             if isinstance(results, tuple):
                 if len(results) == 1:
                     sciName = results[0]
-                    if currentSciName != sciName:
-                        if messagebox.askyesno("Sci-Name", "(row " + str(currentRow+1) + ") " + " Would you like to change " + str(currentSciName) + " to " + str(sciName) + "?"):
-                            self.model.setValueAt(str(results[0]), currentRow, sNameIndex)
-                            return sciName
-                        else:
-                            return currentSciName
+                    if messagebox.askyesno("Sci-Name", "(row " + str(currentRow+1) + ") " + " Would you like to change " + str(currentSciName) + " to " + str(sciName) + "?"):
+                        self.model.setValueAt(str(results[0]), currentRow, sNameIndex)
+                        return sciName
+                    else:
+                        return currentSciName
                 elif len(results) == 2:
                     sciName = results[0]
                     auth = results[1]
                     if authIndex != '':
                         currentAuth = self.model.getValueAt(currentRow, authIndex)
-                        if currentSciName != sciName and auth != currentAuth:
-                            if messagebox.askyesno("Sci-Name", "(row " + str(currentRow+1) + ") " + " Would you like to change " + str(currentSciName) + " to " + str(sciName) + "? This will also update authority!"):
-                                self.model.setValueAt(str(sciName), currentRow, sNameIndex)
-                                if auth != 'None':
-                                    self.model.setValueAt(str(auth), currentRow, authIndex)
-                                    return sciName
+                        if messagebox.askyesno("Sci-Name", "(row " + str(currentRow+1) + ") " + " Would you like to change " + str(currentSciName) + " to " + str(sciName) + "? This will also update authority!"):
+                            self.model.setValueAt(str(sciName), currentRow, sNameIndex)
+                            if auth != 'None':
+                                self.model.setValueAt(str(auth), currentRow, authIndex)
+                                return sciName
                             else:
                                 return sciName
-                    else:
-                        return currentSciName
+                else:
+                    return currentSciName
             elif isinstance(results, str):
                 if results == 'not_accepted_or_syn':
                     messagebox.showinfo("Scientific Name Error", "No scientific name update!")
