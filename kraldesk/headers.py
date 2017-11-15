@@ -499,7 +499,7 @@ class RowWidgetColumn(Canvas):
              
                 if len(fieldNum) > 0:
                     if fieldNum[1] != '#':
-                        spacerBox = LabelFrame(self)
+                        spacerBox = LabelFrame(self, height = self.table.rowheight)
                         spacerBox.pack(fill=BOTH, expand=True)
                     if fieldNum[1] == '#':
                         addSpecimenButton = Button(self,  text="Add Specimen",
