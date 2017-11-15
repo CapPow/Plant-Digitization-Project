@@ -9,5 +9,5 @@ setup(
     license='GPL v3',
     packages=['kraldesk'],
     package_data={'kraldesk': ['sample-data/*.csv']},
-    install_requires=['reportlab','pandas','numpy','pyperclip']
+    install_requires=['reportlab','pandas','numpy']
 )

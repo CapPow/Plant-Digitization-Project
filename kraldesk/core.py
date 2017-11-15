@@ -48,7 +48,6 @@ from catalogOfLife import *
 from locality import *
 from printLabels import *
 import webbrowser
-import pyperclip
 
 
 class Table(Canvas):
@@ -861,15 +860,10 @@ class Table(Canvas):
 
     def undo(self, event=None):
         """Undo last major table change"""
-        # added event to see if this would
-        # stop arg error (getting 2, takes 1)
-        # the event arg is correctly passed from hot-key event (Ctrl-z)
-        print("event is " + str(event))
+
         if self.prevdf is None:
-            print("prevdf is None")
             return
         self.model.df = self.prevdf
-        print("setting dataframe to prevdf")
         self.redraw()
         self.prevdf = None
         return
@@ -1990,11 +1984,8 @@ class Table(Canvas):
 
     def paste(self, event=None):
         """Paste selections - not implemented"""
-        """Paste to selection - implemented with pyperclip"""
 
-        # df = pd.read_clipboard()
-        prevValue = pyperclip.paste()
-        # place this value in selected cell
+        df = pd.read_clipboard()
         return
 
     def copy(self, rows, cols=None):
@@ -2003,12 +1994,9 @@ class Table(Canvas):
         data = self.getSelectedDataFrame()
         try:
             if len(data) == 1 and len(data.columns) == 1:
-                # data.to_clipboard(index=False,header=False)
-                pyperclip.copy(str(data))
+                data.to_clipboard(index=False,header=False)
             else:
-                # data.to_clipboard()
-                # may need to modify this for multiple cell copies
-                pyperclip.copy(str(data))
+                data.to_clipboard()
         except:
             messagebox.showwarning("Warning",
                                    "No clipboard software.\nInstall xclip",
