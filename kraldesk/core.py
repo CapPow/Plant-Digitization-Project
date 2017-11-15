@@ -3081,7 +3081,7 @@ class Table(Canvas):
 
         self.savePrefs()
         self.autoResizeColumns()
-        #self.show()
+        self.show()
         self.redraw()
         return
 
@@ -3109,7 +3109,7 @@ class Table(Canvas):
 
     def updateModel(self, model):
         """Should call this method when a new table model is loaded.
-           Recreates widghets and redraws the table."""
+           Recreates widgets and redraws the table."""
 
         self.model = model
         self.rows = self.model.getRowCount()
