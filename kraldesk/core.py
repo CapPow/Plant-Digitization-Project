@@ -48,6 +48,7 @@ from catalogOfLife import *
 from locality import *
 from printLabels import *
 import webbrowser
+import pyperclip
 
 
 class Table(Canvas):
