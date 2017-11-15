@@ -48,7 +48,6 @@ from catalogOfLife import *
 from locality import *
 from printLabels import *
 import webbrowser
-import pyperclip
 
 
 class Table(Canvas):
@@ -3082,7 +3081,7 @@ class Table(Canvas):
 
         self.savePrefs()
         self.autoResizeColumns()
-        #self.show()
+        self.show()
         self.redraw()
         return
 
@@ -3110,7 +3109,7 @@ class Table(Canvas):
 
     def updateModel(self, model):
         """Should call this method when a new table model is loaded.
-           Recreates widghets and redraws the table."""
+           Recreates widgets and redraws the table."""
 
         self.model = model
         self.rows = self.model.getRowCount()
@@ -3138,15 +3137,18 @@ class Table(Canvas):
             model = TableModel(rows=rows,columns=cols)
             self.updateModel(model)
         return
-    
+
     # runs through table automatically
     # calls genLocality and genScientificName
     def processRecords(self):
         cRow = self.currentrow
+        assTaxaColumn = self.findColumnIndex('associatedTaxa')
+        catNumColumn = self.findColumnIndex('othercatalognumbers')
+        sNameColumn = self.findColumnIndex('scientificName')
+        associatedTaxa = []
         self.parentframe.master.title("KralDesk (Processing Records...)")
         while cRow < int(self.model.getRowCount()):
             cRow = self.currentrow
-            catNumColumn = self.findColumnIndex('othercatalognumbers')
             catNum = self.model.getValueAt(cRow, catNumColumn)
             catNumList = catNum.split('-')
             if catNumList[1] != '#':
@@ -3164,16 +3166,30 @@ class Table(Canvas):
                     self.parentframe.master.title("KralDesk")
                     self.redraw()
                     return
-                self.redraw()
+                else:
+                    if self.model.getValueAt(cRow, catNumColumn).split('-')[0] == self.model.getValueAt(cRow-1, catNumColumn).split('-')[0]:
+                        associatedTaxa.append((resSci, cRow))
                 if cRow < int(self.model.getRowCount()-1):
                     self.gotonextRow()
+                    self.redraw()
                 else:
                     self.parentframe.master.title("KralDesk")
                     self.redraw()
                     return
+            # field number with '#'
             else:
+                associatedTaxaString = ''
+                for pair in associatedTaxa:
+                    sciName = self.model.getValueAt(pair[1], sNameColumn)
+                    for pairCheck in associatedTaxa:
+                        if str(sciName) != str(pairCheck[0]):
+                            associatedTaxaString = pairCheck[0] + '. ' + associatedTaxaString
+                    self.model.setValueAt(associatedTaxaString, pair[1], assTaxaColumn)
+                    associatedTaxaString = ''
+                associatedTaxa = []
                 if cRow < int(self.model.getRowCount()-1):
                     self.gotonextRow()
+                    self.redraw()
                 else:
                     self.parentframe.master.title("KralDesk")
                     self.redraw()
@@ -3221,7 +3237,9 @@ class Table(Canvas):
                 # use old locality string from dictionary
                 addressString = latMatch[0]['localityString']
                 localityAddressAdded = addressString + ' ' + locality
-                self.model.setValueAt(localityAddressAdded, currentRow, localityIndex)
+                # should stop adding locality string twice through multiple runs of processRecords
+                if addressString not in locality:
+                    self.model.setValueAt(localityAddressAdded, currentRow, localityIndex)
                 if pathIndex != '':
                     self.model.setValueAt(latMatch[0]['path'], currentRow, pathIndex)
                 if municipalityIndex != '':
@@ -3240,8 +3258,6 @@ class Table(Canvas):
                 # reverseGeoCall will return a list of results
                 # or it will return an error/status string
                 if isinstance(address, list):
-                    
-                    
                     for addressComponent in address:
                         if addressComponent['types'][0] == 'route':
                             streetName = addressComponent['long_name']
@@ -3258,21 +3274,22 @@ class Table(Canvas):
                     # in some cases, the api will not return a street at all
                     if 'streetName' in locals():
                         if stateProvince and county and municipality and country:
-                            addressString = str(country) + ', ' + str(stateProvince) + ', ' + str(county) + ', ' + str(municipality) + ', ' + str(streetName) + ','
+                            addressString = str(country) + ', ' + str(stateProvince) + ', ' + str(county) + ', ' + str(municipality) + ', ' + str(streetName) + '.'
                             tempDict = {'latitude': str(latitude), 'longitude': str(longitude), 'path': str(streetName), 'municipality': str(municipality), 'county': str(county), 'stateProvince': str(stateProvince), 'country': str(country), 'localityString': addressString}
                         if pathIndex != '':
                             self.model.setValueAt(str(streetName), currentRow, pathIndex)
 
                     # no street is returned
                     else:
-                        addressString = str(country) + ', ' + str(stateProvince) + ', ' + str(county) + ', ' + str(municipality) + ', '
+                        addressString = str(country) + ', ' + str(stateProvince) + ', ' + str(county) + ', ' + str(municipality) + '.'
                         tempDict = {'latitude': str(latitude), 'longitude': str(longitude), 'municipality': str(municipality), 'county': str(county), 'stateProvince': str(stateProvince), 'country': str(country), 'localityString': addressString}
 
                     self.uniqueLocality.append(tempDict)
                     localityAddressAdded = addressString + ' ' + locality
                     localityAddressAdded = localityAddressAdded.lstrip()
-                    self.model.setValueAt(localityAddressAdded, currentRow, localityIndex)
-                    
+                    # should stop adding locality string twice through multiple runs of processRecords
+                    if addressString not in locality:
+                        self.model.setValueAt(localityAddressAdded, currentRow, localityIndex)
                     if municipalityIndex != '':
                         self.model.setValueAt(tempDict['municipality'], currentRow, municipalityIndex)
                     if countyIndex != '':
@@ -3310,20 +3327,23 @@ class Table(Canvas):
                     sciName = results[0]
                     if messagebox.askyesno("Sci-Name", "(row " + str(currentRow+1) + ") " + " Would you like to change " + str(currentSciName) + " to " + str(sciName) + "?"):
                         self.model.setValueAt(str(results[0]), currentRow, sNameIndex)
+                        return sciName
                     else:
-                        return
+                        return currentSciName
                 elif len(results) == 2:
                     sciName = results[0]
                     auth = results[1]
                     if authIndex != '':
+                        currentAuth = self.model.getValueAt(currentRow, authIndex)
                         if messagebox.askyesno("Sci-Name", "(row " + str(currentRow+1) + ") " + " Would you like to change " + str(currentSciName) + " to " + str(sciName) + "? This will also update authority!"):
                             self.model.setValueAt(str(sciName), currentRow, sNameIndex)
                             if auth != 'None':
                                 self.model.setValueAt(str(auth), currentRow, authIndex)
+                                return sciName
                             else:
-                                return
-                        else:
-                            return
+                                return sciName
+                else:
+                    return currentSciName
             elif isinstance(results, str):
                 if results == 'not_accepted_or_syn':
                     messagebox.showinfo("Scientific Name Error", "No scientific name update!")
