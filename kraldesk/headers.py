@@ -597,7 +597,7 @@ class RowHeader(Canvas):
                 self.create_rectangle(x,y1,w-1,y2, fill=self.color,
                                         outline='white', width=1,
                                         tag='rowwidgetcolumn')
-             
+
                 if len(fieldNum) > 0:
                     if fieldNum[1] != '#':
                         spacerBox = LabelFrame(self, height = self.table.rowheight)
