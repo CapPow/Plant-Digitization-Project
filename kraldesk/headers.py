@@ -498,11 +498,11 @@ class RowWidgetColumn(Canvas):
                                         tag='rowwidgetcolumn')
              
                 if len(fieldNum) > 0:
-                    #if fieldNum[1] != '#':
-                        #spinnerBox = Spinbox(self, from_=0, to=15, width = 4,justify=RIGHT, textvariable = )
-                        #spinnerBox.pack(fill=BOTH, expand=True)
+                    if fieldNum[1] != '#':
+                        spacerBox = LabelFrame(self)
+                        spacerBox.pack(fill=BOTH, expand=True)
                     if fieldNum[1] == '#':
-                        addSpecimenButton = Button(self, text="Add Specimen",
+                        addSpecimenButton = Button(self,  text="Add Specimen",
                                                    command = lambda row = row: self.model.addRowFromSite(row))
                         addSpecimenButton.pack(fill=BOTH, expand=True)
                 r+=1
