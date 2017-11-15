@@ -48,6 +48,7 @@ from catalogOfLife import *
 from locality import *
 from printLabels import *
 import webbrowser
+import pyperclip
 
 
 class Table(Canvas):
@@ -214,6 +215,8 @@ class Table(Canvas):
         #self.bind_all("<Control-n>", self.addRow)
         self.bind("<Delete>", self.clearData)
         self.bind("<Control-v>", self.paste)
+        # bind undo to ctrl-z
+        self.bind("<Control-z>", self.undo)
         self.bind("<Control-a>", self.selectAll)
 
         self.bind("<Right>", self.handle_arrow_keys)
@@ -855,12 +858,17 @@ class Table(Canvas):
         self.prevdf = self.model.df.copy()
         return
 
-    def undo(self):
+    def undo(self, event=None):
         """Undo last major table change"""
-
+        # added event to see if this would
+        # stop arg error (getting 2, takes 1)
+        # the event arg is correctly passed from hot-key event (Ctrl-z)
+        print("event is " + str(event))
         if self.prevdf is None:
+            print("prevdf is None")
             return
         self.model.df = self.prevdf
+        print("setting dataframe to prevdf")
         self.redraw()
         self.prevdf = None
         return
@@ -1981,8 +1989,11 @@ class Table(Canvas):
 
     def paste(self, event=None):
         """Paste selections - not implemented"""
+        """Paste to selection - implemented with pyperclip"""
 
-        #df = pd.read_clipboard()
+        # df = pd.read_clipboard()
+        prevValue = pyperclip.paste()
+        # place this value in selected cell
         return
 
     def copy(self, rows, cols=None):
@@ -1990,16 +2001,20 @@ class Table(Canvas):
 
         data = self.getSelectedDataFrame()
         try:
-            if len(data) == 1 and len(data.columns)==1:
-                data.to_clipboard(index=False,header=False)
+            if len(data) == 1 and len(data.columns) == 1:
+                # data.to_clipboard(index=False,header=False)
+                pyperclip.copy(str(data))
             else:
-                data.to_clipboard()
+                # data.to_clipboard()
+                # may need to modify this for multiple cell copies
+                pyperclip.copy(str(data))
         except:
             messagebox.showwarning("Warning",
                                    "No clipboard software.\nInstall xclip",
                                    parent=self.parentframe)
         return
 
+    # don't need this
     def transpose(self):
         """Transpose table"""
 
@@ -2339,8 +2354,8 @@ class Table(Canvas):
 
         defaultactions = {
                         "Copy" : lambda: self.copy(rows, cols),
-                        "Undo" : lambda: self.undo(),
-                        #"Paste" : lambda: self.paste(rows, cols),
+                        "Undo" : lambda: self.undo(event),
+                        "Paste" : lambda: self.paste(rows, cols),
                         "Fill Down" : lambda: self.fillDown(rows, cols),
                         #"Fill Right" : lambda: self.fillAcross(cols, rows),
                         "Add Row(s)" : lambda: self.addRows(),
@@ -2617,11 +2632,16 @@ class Table(Canvas):
         return
 
     def drawCellEntry(self, row, col, text=None):
-        """When the user single/double clicks on a text/number cell,
-          bring up entry window and allow edits."""
+        """
+        When the user single/double clicks on a text/number cell,
+        bring up entry window and allow edits. Also, call
+        storeCurrent to store the dataframe state prior to a cell edit.
+        """
 
         if self.editable == False:
             return
+        # storeCurrent df before cell edit
+        self.storeCurrent()
         h = self.rowheight
         model = self.model
         text = self.model.getValueAt(row, col)
@@ -3016,7 +3036,7 @@ class Table(Canvas):
         self.grid_color = self.prefs.get('grid_color')
         self.rowselectedcolor = self.prefs.get('rowselectedcolor')
         self.fontsize = self.celltextsizevar.get()
-        self.thefont = (self.prefs.get('celltextfont'), self.prefs.get('celltextsize'))
+        # self.thefont = (self.prefs.get('celltextfont'), self.prefs.get('celltextsize'))
         self.rowheaderwidthvar = IntVar()
         self.rowheaderwidthvar.set(self.prefs.get('rowheaderwidth'))
         self.rowheaderwidth = self.rowheaderwidthvar.get()
@@ -3048,7 +3068,7 @@ class Table(Canvas):
             self.prefs.set('rowselectedcolor', self.rowselectedcolor)
             self.prefs.set('rowheaderwidth', self.rowheaderwidth)
             self.rowheaderwidth = self.rowheaderwidthvar.get()
-            self.thefont = (self.prefs.get('celltextfont'), self.prefs.get('celltextsize'))
+            # self.thefont = (self.prefs.get('celltextfont'), self.prefs.get('celltextsize'))
             self.fontsize = self.prefs.get('celltextsize')
 
         except ValueError:
