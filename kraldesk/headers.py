@@ -501,14 +501,15 @@ class RowWidgetColumn(Canvas):
                 if len(fieldNum) > 0:
                     if fieldNum[1] != '#':
                         spacerBox = LabelFrame(self, height = self.table.rowheight)
-                        spacerBox.grid(row=row, column=0,sticky='e')
+                        spacerBox.grid(row=row, column=0,sticky='news')
                     if fieldNum[1] == '#':
+                        def func(self):
+                            self.model.addRowFromSite(row)
+                            self.redraw()
                         addSpecimenButton = Button(self,  text="Add Specimen",
-                                                   command = lambda row = row: self.model.addRowFromSite(row))
-                        addSpecimenButton.grid(row=row, column=0)
+                                                   command = func(self))
+                        addSpecimenButton.grid(row=row, column=0, sticky='news')
                 r+=1
-
-                
         return
 
     def setWidth(self, w):
@@ -552,7 +553,6 @@ class RowHeader(Canvas):
         self.delete('rect')
 
         xstart = 1
-        xstart = 1
         pad = 5
         maxw = self.maxwidth
         v = self.table.visiblerows
@@ -563,51 +563,58 @@ class RowHeader(Canvas):
         index = self.model.df.index
         names = index.names
 
-        rows = [i for i in v]
-        for rowIndValue in rows:
-            row = rowIndValue - 1
-                            
-        cols = [rows]
-        l = max([len(str(i)) for i in rows])
-        w = l * scale + 6
-        widths = [w]
-        xpos = [xstart]
+        if self.showindex == True:
+            if util.check_multiindex(index) == 1:
+                ind = index.values[v]
+                cols = [pd.Series(i).astype('object').astype(str) for i in list(zip(*ind))]
+                nl = [len(n) if n is not None else 0 for n in names]
+                l = [c.str.len().max() for c in cols]
+                #pick higher of index names and row data
+                l = list(np.maximum(l,nl))
+                widths = [i * scale + 6 for i in l]
+                xpos = [0]+list(np.cumsum(widths))[:-1]
+            else:
+                ind = index[v]
+                dtype = ind.dtype
+                r = ind.astype('object').astype('str')
+                l = r.str.len().max()
+                widths = [l * scale + 6]
+                cols = [r]
+                xpos = [xstart]
+            w = np.sum(widths)
+        else:
+            rows = [i+1 for i in v]
+            cols = [rows]
+            l = max([len(str(i)) for i in rows])
+            w = l * scale + 6
+            widths = [w]
+            xpos = [xstart]
 
         if w>maxw:
             w = maxw
-        elif w<80:
-            w = 85
+        elif w<45:
+            w = 45
         if self.width != w:
             self.config(width=w)
             self.width = w
 
         i=0
-
-        fieldColIndex = self.table.findColumnIndex('othercatalognumbers')
-
         for col in cols:
-
             r=v[0]
             x = xpos[i]
             i+=1
             for row in col:
-                
-                fieldNum = self.model.getValueAt(row,fieldColIndex).split('-')
+                text = row
                 x1,y1,x2,y2 = self.table.getCellCoords(r,0)
                 self.create_rectangle(x,y1,w-1,y2, fill=self.color,
                                         outline='white', width=1,
-                                        tag='rowwidgetcolumn')
-
-                if len(fieldNum) > 0:
-                    if fieldNum[1] != '#':
-                        spacerBox = LabelFrame(self, height = self.table.rowheight)
-                        spacerBox.grid(row=row, column=0, sticky=N+S+E+W)
-                    if fieldNum[1] == '#':
-                        addSpecimenButton = Button(self,  text="Add Specimen",
-                                                   command = lambda row = row: self.model.addRowFromSite(row))
-                        addSpecimenButton.grid(row=row, column=0, sticky=N+S+E+W)
+                                        tag='rowheader')
+                self.create_text(x+pad,y1+h/2, text=text,
+                                  fill='black', font=self.table.thefont,
+                                  tag='text', anchor=align)
                 r+=1
         return
+
 
     def setWidth(self, w):
         """Set width"""

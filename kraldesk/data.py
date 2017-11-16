@@ -29,6 +29,7 @@ import pickle
 import numpy as np
 import pandas as pd
 import util
+import core
 
 class TableModel(object):
     """A data model for the Table class that uses pandas
@@ -201,7 +202,7 @@ class TableModel(object):
         df = self.df
         a, b = df[:siteRowIndex], df[siteRowIndex:]
         a = a.append(siteData, ignore_index=1)
-        self.df = pd.concat([a,b])      
+        self.df = pd.concat([a,b])
         return
     
     def addRow(self, rowindex):

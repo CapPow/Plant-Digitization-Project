@@ -47,8 +47,7 @@ def genPrintLabelPDFs(labelDataInput):
                 bulletFontSize=10,
                 bulletIndent=0,
                 backColor=None,
-                #wordWrap='CJK',
-                #wordWrap=(xPaperSize,yPaperSize),
+                wordWrap=(xPaperSize,yPaperSize),
                 borderWidth= 0,
                 borderPadding= 0,
                 borderColor= None,
@@ -105,7 +104,8 @@ def genPrintLabelPDFs(labelDataInput):
             'rightSTY',
             parent=styles['default'],
             alignment=TA_RIGHT,
-            spaceAfter = 1
+            spaceAfter = 1,
+            wordWrap=None
         )
         styles['prefixLeftSTY'] = ParagraphStyle(
             'prefixLeftSTY',
@@ -194,14 +194,14 @@ def genPrintLabelPDFs(labelDataInput):
     ######Barcode work(Catalog Number)######
 
     def newHumanText(self):
-        return self.stop and self.encoded[1:-2] or self.encoded
+        return self.stop and self.encoded[1:-1] or self.encoded
 
     def createBarCodes():   #Unsure of the benefits downsides of using extended vs standard?
         if len(dfl('catalogNumber')) > 0:
             barcodeValue = dfl('catalogNumber')
             code39._Code39Base._humanText = newHumanText  #Note, overriding the human text from this library to omit the stopcode ('+')
-            barcode39Std = code39.Standard39(barcodeValue,barHeight=(yPaperSize * .10  ), barWidth=((xPaperSize * 0.10)/72 ), humanReadable=True, quiet = False, checksum=0)
-                                             #^^^Note width is automatically (?) in in? adjusting to x/72 seems to make it rational.
+            barcode39Std = code39.Standard39(barcodeValue,barHeight=(yPaperSize * .10  ), barWidth=((xPaperSize * 0.28)/(len(barcodeValue)*11+35)), humanReadable=True, quiet = False, checksum=0)
+                                             #^^^Note width is dynamic, but I don't know the significance of *11+35 beyond making it work.
             return barcode39Std
         else:
             return ''
@@ -219,11 +219,11 @@ def genPrintLabelPDFs(labelDataInput):
                 Para('collectionName','collectionNameSTY'),
                 createBarCodes()
                           ]],
-            colWidths = (xPaperSize * .68,xPaperSize * .30), rowHeights = None,
+            colWidths = (xPaperSize * .67,xPaperSize * .29), rowHeights = None,
 
             style = [
                     ('VALIGN',(0,0),(0,-1),'TOP'),
-                    ('ALIGN',(0,0),(0,0),'CENTER'),
+                    ('ALIGN',(0,0),(0,0),'LEFT'),
                     ('ALIGN',(1,0),(1,0),'RIGHT'),
                      ])
         else:
@@ -268,7 +268,7 @@ def genPrintLabelPDFs(labelDataInput):
             Para('othercatalognumbers','default','Field Number: '),
             gpsCoordStringer('decimalLatitude', 'decimalLongitude', 'coordinateUncertaintyInMeters', 'minimumElevationInMeters','rightSTY')]],
             
-            colWidths = (xPaperSize * .33,xPaperSize * .65), rowHeights = None,
+            colWidths = (xPaperSize * .27,xPaperSize * .71), rowHeights = None,
             style=tableSty)
 
 

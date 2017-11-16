@@ -150,7 +150,7 @@ class Table(Canvas):
         self.y_start=1
         self.linewidth=1.0
         self.rowheaderwidth=50
-        self.rowwidgetcolumn = 50
+        #self.rowwidgetcolumn = 50
         self.showkeynamesinheader=False
         self.thefont = ('Arial',14)
         self.cellbackgr = '#F4F4F3'
@@ -257,7 +257,7 @@ class Table(Canvas):
         self.tablecolheader.grid(row=3,column=2,rowspan=1,sticky='news')
         self.rowheader.grid(row=4,column=1,rowspan=1,sticky='news')
 
-        #self.rowwidgetcolumn.grid(row=2,column=0,rowspan=1,sticky='news')        
+        #self.rowwidgetcolumn.grid(row=4,column=0,rowspan=1,sticky='news')        
 
         self.grid(row=4,column=2,rowspan=1,sticky='news',pady=0,ipady=0)
 
@@ -3021,7 +3021,15 @@ class Table(Canvas):
                         'cellbackgr': self.cellbackgr, 'grid_color': self.grid_color,
                         'linewidth' : self.linewidth,
                         'rowselectedcolor': self.rowselectedcolor,
-                        'rowheaderwidth': self.rowheaderwidth,}
+                        'rowheaderwidth': self.rowheaderwidth
+                        #'collName': self.collectiondataentrybar.collName.get(),
+                        #'detName':self.collectiondataentrybar.detName.get(),
+                        #'useDetDate':self.collectiondataentrybar.useDetDateVar.get(),
+                        #'catPrefix':self.catnumberbar.catPrefix.get(),
+                        #'catDigits':self.catnumberbar.catDigits.get(),
+                        #'catStart':self.catnumberbar.catStartEntryBox.get()
+                        }
+     
 
         for prop in list(defaultprefs.keys()):
             try:
@@ -3092,6 +3100,13 @@ class Table(Canvas):
             self.rowheaderwidth = self.rowheaderwidthvar.get()
             # self.thefont = (self.prefs.get('celltextfont'), self.prefs.get('celltextsize'))
             self.fontsize = self.prefs.get('celltextsize')
+
+            self.prefs.set('collName', self.collectiondataentrybar.collName.get())
+            self.prefs.set('detName',self.collectiondataentrybar.detName.get())
+            self.prefs.set('useDetDate',self.collectiondataentrybar.useDetDateVar.get())
+            self.prefs.set('catPrefix',self.catnumberbar.catPrefix.get())
+            self.prefs.set('catDigits',self.catnumberbar.catDigits.get())
+            self.prefs.set('catStart',self.catnumberbar.catStartEntryBox.get())
 
         except ValueError:
             pass
@@ -3357,13 +3372,13 @@ class Table(Canvas):
                     auth = results[1]
                     if authIndex != '':
                         currentAuth = self.model.getValueAt(currentRow, authIndex)
-                        if messagebox.askyesno("Sci-Name", "(row " + str(currentRow+1) + ") " + " Would you like to change " + str(currentSciName) + " to " + str(sciName) + "? This will also update authority!"):
-                            self.model.setValueAt(str(sciName), currentRow, sNameIndex)
-                            if auth != 'None':
-                                self.model.setValueAt(str(auth), currentRow, authIndex)
-                                return sciName
-                            else:
-                                return sciName
+                        if sciName != currentSciName:
+                            if messagebox.askyesno("Sci-Name", "(row " + str(currentRow+1) + ") " + " Would you like to change " + str(currentSciName) + " to " + str(sciName) + "? This will also update authority!"):
+                                self.model.setValueAt(str(sciName), currentRow, sNameIndex)
+                                if auth != 'None':
+                                    self.model.setValueAt(str(auth), currentRow, authIndex)
+                        elif auth not in [currentAuth, 'None']:
+                            self.model.setValueAt(str(auth), currentRow, authIndex)
                 else:
                     return currentSciName
             elif isinstance(results, str):
@@ -3680,7 +3695,8 @@ class CatNumberBar(Frame):
             self.labelCatStartText.set('Start:')
             self.labelCatStart = Label(self, textvariable=self.labelCatStartText)
             self.labelCatStart.grid(row=1, column=5, rowspan = 1, sticky='news', pady=1, ipady=1)
-            self.catStart = IntVar(0) #Variable for catalog number prefix
+            self.catStart = IntVar(0) #Variable for catalog starting number
+            self.catStart.set(1)
             self.catStartEntryBox = Entry(self,textvariable=self.catStart, width=5, state=catStatus)
             self.catStartEntryBox.grid(row=1, column=6, rowspan = 1, sticky='news', pady=1, ipady=1)
             
@@ -3706,8 +3722,8 @@ class CatNumberBar(Frame):
     def genCatNumPreview(self):
         prefix = self.catPrefix.get()
         digits = self.catDigits.get()
-        start = str(self.catStart.get()).zfill(digits)
-        if len(str(start)) > digits:
+        start = str(self.catStartEntryBox.get()).zfill(digits)
+        if len(start) > digits:
             messagebox.showwarning("Starting Value Error", "Starting Catalog Number Value Exceeds Entered The Max Digits")
         else:
             self.catPreviewText.set(prefix+start)
@@ -3716,12 +3732,12 @@ class CatNumberBar(Frame):
     def addCatalogNumbers(self):
         prefix = self.catPrefix.get()
         digits = self.catDigits.get()
-        start = self.catStart.get()
-        if len(str(start)) > digits:
+        start = self.catStartEntryBox.get()
+        if len(start) > digits:
             messagebox.showwarning("Starting Value Error", "Starting Catalog Number Value Exceeds Entered The Max Digits")
         else:
-            catalogValues = [prefix + str(x + start).zfill(digits) for x in range(len(self.parentapp.getOnlySpecimenRecords()))]
-            self.catStart.set(start + len(catalogValues))
+            catalogValues = [prefix + str(x + int(start)).zfill(digits) for x in range(len(self.parentapp.getOnlySpecimenRecords()))]
+            self.catStart.set(len(catalogValues) + int(start))
             self.parentapp.model.df['catalogNumber'] = ''
             self.parentapp.model.df.iloc[self.parentapp.getOnlySpecimenRecords(),self.parentapp.model.df.columns.get_loc('catalogNumber')] = catalogValues
             self.parentapp.redraw()
@@ -3730,7 +3746,7 @@ class CatNumberBar(Frame):
         try:
             self.parentapp.model.df.drop('catalogNumber', axis=1, inplace=True)
             if messagebox.askyesno("Roll Back Starting Catalog Number?", "Would you like to reduce the starting catalog value by the quantity removed from the table?"):
-                self.catStart.set(self.catStart.get() - len(self.parentapp.getOnlySpecimenRecords()))
+                self.catStartEntryBox.set(str(self.catStartEntryBox.get() - len(self.parentapp.getOnlySpecimenRecords())))
         except ValueError:
             pass
         self.parentapp.redraw()
