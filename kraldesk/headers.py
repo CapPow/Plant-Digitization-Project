@@ -720,7 +720,6 @@ class RowHeader(Canvas):
     def popupMenu(self, event, rows=None, cols=None, outside=None):
         """Add left and right click behaviour for canvas, should not have to override
             this function, it will take its values from defined dicts in constructor"""
-
         defaultactions = {"Sort by index" : lambda: self.table.sortTable(index=True),
                          "Reset index" : lambda: self.table.resetIndex(),
                          "Toggle index" : lambda: self.toggleIndex(),
@@ -730,11 +729,12 @@ class RowHeader(Canvas):
                          "Select All" : self.table.selectAll,
                          "Add Row(s)" : lambda: self.table.addRows(),
                          "Delete Row(s)" : lambda: self.table.deleteRow(),
-                         "Set Row Color" : lambda: self.table.setRowColors()}
+                         "Set Row Color" : lambda: self.table.setRowColors(),
+                          "Add Row From Site" : lambda: self.table.addRowFromSite()}
         # main = ["Sort by index","Reset index","Toggle index",
         #         "Rename index","Sort columns by row","Copy index to column",
         #         "Add Row(s)","Delete Row(s)", "Set Row Color"]
-        main = ["Add Row(s)","Delete Row(s)"]
+        main = ["Add Row From Site","Add Row(s)", "Delete Row(s)"]
 
         popupmenu = Menu(self, tearoff = 0)
         def popupFocusOut(event):
