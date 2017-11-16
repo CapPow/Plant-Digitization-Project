@@ -150,7 +150,7 @@ class Table(Canvas):
         self.y_start=1
         self.linewidth=1.0
         self.rowheaderwidth=50
-        self.rowwidgetcolumn = 50
+        #self.rowwidgetcolumn = 50
         self.showkeynamesinheader=False
         self.thefont = ('Arial',14)
         self.cellbackgr = '#F4F4F3'
@@ -257,7 +257,7 @@ class Table(Canvas):
         self.tablecolheader.grid(row=3,column=2,rowspan=1,sticky='news')
         self.rowheader.grid(row=4,column=1,rowspan=1,sticky='news')
 
-        #self.rowwidgetcolumn.grid(row=2,column=0,rowspan=1,sticky='news')        
+        #self.rowwidgetcolumn.grid(row=4,column=0,rowspan=1,sticky='news')        
 
         self.grid(row=4,column=2,rowspan=1,sticky='news',pady=0,ipady=0)
 

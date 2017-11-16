@@ -501,14 +501,15 @@ class RowWidgetColumn(Canvas):
                 if len(fieldNum) > 0:
                     if fieldNum[1] != '#':
                         spacerBox = LabelFrame(self, height = self.table.rowheight)
-                        spacerBox.grid(row=row, column=0,sticky='e')
+                        spacerBox.grid(row=row, column=0,sticky='news')
                     if fieldNum[1] == '#':
+                        def func(self):
+                            self.model.addRowFromSite(row)
+                            self.redraw()
                         addSpecimenButton = Button(self,  text="Add Specimen",
-                                                   command = lambda row = row: self.model.addRowFromSite(row))
-                        addSpecimenButton.grid(row=row, column=0)
+                                                   command = func(self))
+                        addSpecimenButton.grid(row=row, column=0, sticky='news')
                 r+=1
-
-                
         return
 
     def setWidth(self, w):
