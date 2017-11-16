@@ -3021,7 +3021,15 @@ class Table(Canvas):
                         'cellbackgr': self.cellbackgr, 'grid_color': self.grid_color,
                         'linewidth' : self.linewidth,
                         'rowselectedcolor': self.rowselectedcolor,
-                        'rowheaderwidth': self.rowheaderwidth,}
+                        'rowheaderwidth': self.rowheaderwidth
+                        #'collName': self.collectiondataentrybar.collName.get(),
+                        #'detName':self.collectiondataentrybar.detName.get(),
+                        #'useDetDate':self.collectiondataentrybar.useDetDateVar.get(),
+                        #'catPrefix':self.catnumberbar.catPrefix.get(),
+                        #'catDigits':self.catnumberbar.catDigits.get(),
+                        #'catStart':self.catnumberbar.catStartEntryBox.get()
+                        }
+     
 
         for prop in list(defaultprefs.keys()):
             try:
@@ -3092,6 +3100,13 @@ class Table(Canvas):
             self.rowheaderwidth = self.rowheaderwidthvar.get()
             # self.thefont = (self.prefs.get('celltextfont'), self.prefs.get('celltextsize'))
             self.fontsize = self.prefs.get('celltextsize')
+
+            self.prefs.set('collName', self.collectiondataentrybar.collName.get())
+            self.prefs.set('detName',self.collectiondataentrybar.detName.get())
+            self.prefs.set('useDetDate',self.collectiondataentrybar.useDetDateVar.get())
+            self.prefs.set('catPrefix',self.catnumberbar.catPrefix.get())
+            self.prefs.set('catDigits',self.catnumberbar.catDigits.get())
+            self.prefs.set('catStart',self.catnumberbar.catStartEntryBox.get())
 
         except ValueError:
             pass
