@@ -242,24 +242,24 @@ class Table(Canvas):
         self.rowindexheader = IndexHeader(self.parentframe, self)
         #self.rowwidgetcolumn = RowWidgetColumn(self.parentframe, self)
         self.Yscrollbar = AutoScrollbar(self.parentframe,orient=VERTICAL,command=self.set_yviews)
-        self.Yscrollbar.grid(row=3,column=3,rowspan=1,sticky='news',pady=0,ipady=0)
+        self.Yscrollbar.grid(row=4,column=3,rowspan=1,sticky='news',pady=0,ipady=0)
         self.Xscrollbar = AutoScrollbar(self.parentframe,orient=HORIZONTAL,command=self.set_xviews)
-        self.Xscrollbar.grid(row=4,column=2,columnspan=1,sticky='news')
+        self.Xscrollbar.grid(row=5,column=2,columnspan=1,sticky='news')
         self['xscrollcommand'] = self.Xscrollbar.set
         self['yscrollcommand'] = self.Yscrollbar.set 
         self.tablecolheader['xscrollcommand'] = self.Xscrollbar.set
         self.rowheader['yscrollcommand'] = self.Yscrollbar.set
         #self.rowwidgetcolumn['yscrollcommand'] = self.Yscrollbar.set
-        self.parentframe.rowconfigure(3,weight=1)
+        self.parentframe.rowconfigure(4,weight=1)
         self.parentframe.columnconfigure(2,weight=1)
 
-        self.rowindexheader.grid(row=2,column=1,rowspan=1,sticky='news')
-        self.tablecolheader.grid(row=2,column=2,rowspan=1,sticky='news')
-        self.rowheader.grid(row=3,column=1,rowspan=1,sticky='news')
+        self.rowindexheader.grid(row=3,column=1,rowspan=1,sticky='news')
+        self.tablecolheader.grid(row=3,column=2,rowspan=1,sticky='news')
+        self.rowheader.grid(row=4,column=1,rowspan=1,sticky='news')
 
         #self.rowwidgetcolumn.grid(row=2,column=0,rowspan=1,sticky='news')        
 
-        self.grid(row=3,column=2,rowspan=1,sticky='news',pady=0,ipady=0)
+        self.grid(row=4,column=2,rowspan=1,sticky='news',pady=0,ipady=0)
 
         self.adjustColumnWidths()
         self.parentframe.bind("<Configure>", self.redrawVisible)
@@ -274,6 +274,9 @@ class Table(Canvas):
 
         self.collectiondataentrybar = CollectionDataEntryBar(self.parentframe,self)
         self.collectiondataentrybar.grid(row=1, column=0, columnspan=3, sticky='we')
+
+        self.catnumberbar = CatNumberBar(self.parentframe,self)
+        self.catnumberbar.grid(row=2, column=0, columnspan=3, sticky='we')
         
         self.redraw(callback=callback)
         if hasattr(self, 'pf'):
@@ -432,7 +435,21 @@ class Table(Canvas):
             self.drawMultipleRows(self.multiplerowlist)
             self.drawMultipleCells()
 
+        #This should be an up to date list of specimen records, refreshed each time we redraw()
+        #Call it by self.model.specimenRecordGroup
+        self.specimenRecordGroup = [i for i, x in enumerate(self.model.df['othercatalognumbers'].str.split('-').str[1]) if x != '#']
+
         return
+    def getOnlySpecimenRecords(self):
+        #Returns a list of indices which are specimen records. Use it as such:
+        #self.parentapp.model.df.iloc[self.parentapp.getOnlySpecimenRecords(),:]
+        #or perhaps, depending on the tkinter frames:
+        #self.model.df.iloc[self.parentapp.getOnlySpecimenRecords(),:]
+        #Also see the function called:  self.parentapp.model.df.get_loc('catalogNumber') for use case.
+        
+        return [i for i, x in enumerate(self.model.df['othercatalognumbers'].str.split('-').str[1]) if x != '#']
+        
+
 
     def redraw(self, event=None, callback=None):
         """Redraw table"""
@@ -3547,76 +3564,174 @@ class CollectionDataEntryBar(Frame):
 
     def __init__(self, parent=None, parentapp=None):
 
-#self.Yscrollbar = AutoScrollbar(self.parentframe,orient=VERTICAL,command=self.set_yviews)
-#self.Yscrollbar.grid(row=3,column=3,rowspan=1,sticky='news',pady=0,ipady=0)
 
             Frame.__init__(self, parent, width=600, height=40)
             self.parentframe = parent
             self.parentapp = parentapp
-            #Collection Name bunch
-            self.labelText = StringVar()
-            self.labelText.set("Collection Name:")
-            self.labelColl = Label(self, textvariable=self.labelText)
+            #Collection Name Stuff
+            
+            self.labelCollText = StringVar()
+            self.labelCollText.set("Collection Name:")
+            self.labelColl = Label(self, textvariable=self.labelCollText)
             self.labelColl.grid(row=0, column=1, rowspan = 1, sticky='news', pady=1, ipady=1)
             self.collName = StringVar(None) #Variable for collection name
             self.collEntryBox = Entry(self,textvariable=self.collName, width=40)
             self.collEntryBox.grid(row=0, column=2, rowspan = 2, sticky='news', pady=1, ipady=1)
 
-            self.addCollNameButton = Button(self, text = 'Add', command = self.addCollectionName)
-            ToolTip.createToolTip(self.addCollNameButton,'Add Collection Name To All Records')
+            self.addCollNameButton = Button(self, text = 'Add', command = self.addCollectionName, width = 5)
+            ToolTip.createToolTip(self.addCollNameButton,'Add collection name to all records')
             self.addCollNameButton.grid(row=0, column=3, rowspan =1, sticky ='news', pady=1, ipady=1)
-            self.delCollNameButton = Button(self, text = 'Del', command = self.delCollectionName)
-            ToolTip.createToolTip(self.delCollNameButton,'Remove Collection Name From All Records')
+            self.delCollNameButton = Button(self, text = 'Del', command = self.delCollectionName, width = 5)
+            ToolTip.createToolTip(self.delCollNameButton,'Remove collection name from all records')
             self.delCollNameButton.grid(row=0, column=4, rowspan =1, sticky ='news', pady=1, ipady=1)
-
-            self.labelText = StringVar()
-            self.labelText.set("Determined By:")
-            self.labelDet = Label(self, textvariable=self.labelText)
+            #Determined By Stuff
+            
+            self.labelDetText = StringVar()
+            self.labelDetText.set("Determined By:")
+            self.labelDet = Label(self, textvariable=self.labelDetText)
             self.labelDet.grid(row=0, column=5, rowspan = 1, sticky='news', pady=1, ipady=1)
             self.detName = StringVar(None) #Variable for collection name
             self.detEntryBox = Entry(self,textvariable=self.detName, width=20)
             self.detEntryBox.grid(row=0, column=6, rowspan = 2, sticky='news', pady=1, ipady=1)
 
-            self.addDetByNameButton = Button(self, text = 'Add', command = self.addDetByName)
-            ToolTip.createToolTip(self.addDetByNameButton,'Add Determined By Name To All Records')
-            self.addDetByNameButton.grid(row=0, column=7, rowspan =1, sticky ='news', pady=1, ipady=1)
-            self.delDetByNameButton = Button(self, text = 'Del', command = self.delDetByName)
-            ToolTip.createToolTip(self.delDetByNameButton,'Remove Determined By From All Records')
-            self.delDetByNameButton.grid(row=0, column=8, rowspan =1, sticky ='news', pady=1, ipady=1)
             self.useDetDateVar = IntVar(0) #Variable for Determination date Preference
-            self.useDetDateCheckButton = Checkbutton(self, text="Add Det! Date", variable=self.useDetDateVar)
-            self.useDetDateCheckButton.grid(row=0, column=9, rowspan=1, sticky ='news', pady=1, ipady=1)
+            self.useDetDateCheckButton = Checkbutton(self, text="Date", variable=self.useDetDateVar)
+            ToolTip.createToolTip(self.useDetDateCheckButton,"Add today's date as the determination date")
+            self.useDetDateCheckButton.grid(row=0, column=7, rowspan=1, sticky ='news', pady=1, ipady=1)
+            self.addDetByNameButton = Button(self, text = 'Add', command = self.addDetByName, width = 5)
+            ToolTip.createToolTip(self.addDetByNameButton,'Add determined by name to all records')
+            self.addDetByNameButton.grid(row=0, column=8, rowspan =1, sticky ='news', pady=1, ipady=1)
+            self.delDetByNameButton = Button(self, text = 'Del', command = self.delDetByName, width = 5)
+            ToolTip.createToolTip(self.delDetByNameButton,'Remove determined by from all records')
+            self.delDetByNameButton.grid(row=0, column=9, rowspan =1, sticky ='news', pady=1, ipady=1)
 
 #Functions to operate within the CollectionDataEntryBar's tkinter space.
+
     def addCollectionName(self):
-            collName = self.collName.get()
-            self.parentapp.model.df['collectionName'] = collName
-            self.parentapp.redraw()
+        collName = self.collName.get()
+        self.parentapp.model.df['collectionName'] = collName
+        self.parentapp.redraw()
 
     def delCollectionName(self):
-            try:
-                self.parentapp.model.df.drop('collectionName', axis=1, inplace=True)
-            except ValueError:
-                pass
-            self.parentapp.redraw()
+        try:
+            self.parentapp.model.df.drop('collectionName', axis=1, inplace=True)
+        except ValueError:
+            pass
+        self.parentapp.redraw()
 
     def addDetByName(self):
-            detName = self.detName.get()
-            self.parentapp.model.df['identifiedBy'] = detName
-            if self.useDetDateVar.get() == 1:
-                from datetime import date
-                isoDate = date.today().isoformat()
-                self.parentapp.model.df['dateIdentified'] = isoDate
-            self.parentapp.redraw()
+        detName = self.detName.get()
+        self.parentapp.model.df['identifiedBy'] = detName
+        if self.useDetDateVar.get() == 1:
+            from datetime import date
+            isoDate = date.today().isoformat()
+            self.parentapp.model.df['dateIdentified'] = isoDate
+        self.parentapp.redraw()
 
     def delDetByName(self):
-            try:
-                self.parentapp.model.df.drop('identifiedBy', axis=1, inplace=True)
-                self.parentapp.model.df.drop('dateIdentified', axis=1, inplace=True)
-            except ValueError:
-                pass
-            self.parentapp.redraw()
+        try:
+            self.parentapp.model.df.drop('identifiedBy', axis=1, inplace=True)
+            self.parentapp.model.df.drop('dateIdentified', axis=1, inplace=True)
+        except ValueError:
+            pass
+        self.parentapp.redraw()
+
+
+class CatNumberBar(Frame):
+    """Uses the parent instance to store collection specific data and application functions"""
+
+    def __init__(self, parent=None, parentapp=None):
+
+            Frame.__init__(self, parent, width=600, height=40)
+            self.parentframe = parent
+            self.parentapp = parentapp
+
+            #Catalog Number Stuff
+
+            self.useCatNumVar = IntVar(0) #Variable for Determination date Preference
+            self.useCatNumCheckButton = Checkbutton(self, text='Catalog Numbers', variable=self.useCatNumVar)
+            ToolTip.createToolTip(self.useCatNumCheckButton,'Generate catalog numbers for records')
+            self.useCatNumCheckButton.grid(row=1, column=0, rowspan=1, sticky ='news', pady=1, ipady=1)
+            if self.useCatNumVar.get() == 1:
+                catStatus = 'DISABLED'
+            else:
+                catStatus = 'NORMAL'
+                
+            self.labelCatNumText = StringVar()
+            self.labelCatNumText.set('Catalog Number Prefix:')
+            self.labelCatPrefix = Label(self, textvariable=self.labelCatNumText)
+            self.labelCatPrefix.grid(row=1, column=1, rowspan = 1, sticky='news', pady=1, ipady=1)
+            self.catPrefix = StringVar('') #Variable for catalog number prefix
+            self.catPrefixEntryBox = Entry(self,textvariable=self.catPrefix, width=12, state=catStatus)
+            self.catPrefixEntryBox.grid(row=1, column=2, rowspan = 1, sticky='news', pady=1, ipady=1)
+
+            self.labelCatDigitsText = StringVar()
+            self.labelCatDigitsText.set('Digits:')
+            self.labelCatDigits = Label(self, textvariable=self.labelCatDigitsText)
+            self.labelCatDigits.grid(row=1, column=3, rowspan = 1, sticky='news', pady=1, ipady=1)
+            self.catDigits = IntVar(0) #Variable for catalog number prefix
+            self.catDigitsEntryBox = Entry(self,textvariable=self.catDigits, width=3, state=catStatus)
+            self.catDigitsEntryBox.grid(row=1, column=4, rowspan = 1, sticky='news', pady=1, ipady=1)
+
+            self.labelCatStartText = StringVar()
+            self.labelCatStartText.set('Start:')
+            self.labelCatStart = Label(self, textvariable=self.labelCatStartText)
+            self.labelCatStart.grid(row=1, column=5, rowspan = 1, sticky='news', pady=1, ipady=1)
+            self.catStart = IntVar(0) #Variable for catalog number prefix
+            self.catStartEntryBox = Entry(self,textvariable=self.catStart, width=5, state=catStatus)
+            self.catStartEntryBox.grid(row=1, column=6, rowspan = 1, sticky='news', pady=1, ipady=1)
             
+            self.catPreviewText = StringVar()
+            self.catPreviewText.set('')
+            self.labelCatPreview = Label(self, textvariable=self.catPreviewText, state=catStatus, foreground ="gray25",  width = 20)
+            self.labelCatPreview.grid(row=1, column=7, rowspan = 1, sticky='news', pady=1, ipady=1)
+            
+            self.previewCatButton = Button(self, text = 'Preview', command = self.genCatNumPreview, width = 7)
+            ToolTip.createToolTip(self.previewCatButton,'Preview catalog number format')
+            self.previewCatButton.grid(row=1, column=8, rowspan = 1, sticky='news', pady=1, ipady=1)
+
+            
+            self.addCatNumButton = Button(self, text = 'Add', command = self.addCatalogNumbers, width = 5)
+            ToolTip.createToolTip(self.addCatNumButton,'Assign catalog numbers to each record')
+            self.addCatNumButton.grid(row=1, column=9, rowspan =1, sticky ='news', pady=1, ipady=1)
+            self.delCatNumButton = Button(self, text = 'Del', command = self.delCatalogNumbers, width = 5)
+            ToolTip.createToolTip(self.delCatNumButton,'Remove catalog numbers from all records')
+            self.delCatNumButton.grid(row=1, column=10, rowspan =1, sticky ='news', pady=1, ipady=1)
+
+#Functions to operate within the CatNumberBar's tkinter space.
+
+    def genCatNumPreview(self):
+        prefix = self.catPrefix.get()
+        digits = self.catDigits.get()
+        start = str(self.catStart.get()).zfill(digits)
+        if len(str(start)) > digits:
+                    if not messagebox.askyesno("Starting Value Error", "Starting Value Exceeds Your Catalog Number's Max Digits, Proceed?"):
+                        return
+        self.catPreviewText.set(prefix+start)
+        self.parentapp.redraw()
+
+    def addCatalogNumbers(self):
+        prefix = self.catPrefix.get()
+        digits = self.catDigits.get()
+        start = self.catStart.get()
+        if len(str(start)) > digits:
+            if not messagebox.askyesno("Starting Value Error", "Starting Value Exceeds Your Catalog Number's Max Digits, Proceed?"):
+                return
+        catalogValues = [prefix + str(x + start).zfill(digits) for x in range(len(self.parentapp.getOnlySpecimenRecords()))]
+        self.catStart.set(start + len(catalogValues))
+        self.parentapp.model.df['catalogNumber'] = ''
+        self.parentapp.model.df.iloc[self.parentapp.getOnlySpecimenRecords(),self.parentapp.model.df.columns.get_loc('catalogNumber')] = catalogValues
+        self.parentapp.redraw()
+                
+    def delCatalogNumbers(self):
+        try:
+            self.parentapp.model.df.drop('catalogNumber', axis=1, inplace=True)
+            if messagebox.askyesno("Roll Back Starting Catalog Number?", "Would you like to reduce the starting catalog value by the quantity removed from the table?"):
+                self.catStart.set(self.catStart.get() - len(self.parentapp.getOnlySpecimenRecords()))
+        except ValueError:
+            pass
+        self.parentapp.redraw()
+
 
 class ToolBar(Frame):
     """Uses the parent instance to provide the functions"""
