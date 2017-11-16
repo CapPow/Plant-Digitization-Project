@@ -3372,13 +3372,13 @@ class Table(Canvas):
                     auth = results[1]
                     if authIndex != '':
                         currentAuth = self.model.getValueAt(currentRow, authIndex)
-                        if messagebox.askyesno("Sci-Name", "(row " + str(currentRow+1) + ") " + " Would you like to change " + str(currentSciName) + " to " + str(sciName) + "? This will also update authority!"):
-                            self.model.setValueAt(str(sciName), currentRow, sNameIndex)
-                            if auth != 'None':
-                                self.model.setValueAt(str(auth), currentRow, authIndex)
-                                return sciName
-                            else:
-                                return sciName
+                        if sciName != currentSciName:
+                            if messagebox.askyesno("Sci-Name", "(row " + str(currentRow+1) + ") " + " Would you like to change " + str(currentSciName) + " to " + str(sciName) + "? This will also update authority!"):
+                                self.model.setValueAt(str(sciName), currentRow, sNameIndex)
+                                if auth != 'None':
+                                    self.model.setValueAt(str(auth), currentRow, authIndex)
+                        elif auth not in [currentAuth, 'None']:
+                            self.model.setValueAt(str(auth), currentRow, authIndex)
                 else:
                     return currentSciName
             elif isinstance(results, str):
