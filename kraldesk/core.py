@@ -3563,13 +3563,58 @@ class CollectionDataEntryBar(Frame):
             self.collEntryBox.grid(row=0, column=2, rowspan = 2, sticky='news', pady=1, ipady=1)
 
             self.addCollNameButton = Button(self, text = 'Add', command = self.addCollectionName)
-            ToolTip.createToolTip(self.addCollNameButton,'Add Collection Name To Records')
+            ToolTip.createToolTip(self.addCollNameButton,'Add Collection Name To All Records')
             self.addCollNameButton.grid(row=0, column=3, rowspan =1, sticky ='news', pady=1, ipady=1)
+            self.delCollNameButton = Button(self, text = 'Del', command = self.delCollectionName)
+            ToolTip.createToolTip(self.delCollNameButton,'Remove Collection Name From All Records')
+            self.delCollNameButton.grid(row=0, column=4, rowspan =1, sticky ='news', pady=1, ipady=1)
+
+            self.labelText = StringVar()
+            self.labelText.set("Determined By:")
+            self.labelDet = Label(self, textvariable=self.labelText)
+            self.labelDet.grid(row=0, column=5, rowspan = 1, sticky='news', pady=1, ipady=1)
+            self.detName = StringVar(None) #Variable for collection name
+            self.detEntryBox = Entry(self,textvariable=self.detName, width=20)
+            self.detEntryBox.grid(row=0, column=6, rowspan = 2, sticky='news', pady=1, ipady=1)
+
+            self.addDetByNameButton = Button(self, text = 'Add', command = self.addDetByName)
+            ToolTip.createToolTip(self.addDetByNameButton,'Add Determined By Name To All Records')
+            self.addDetByNameButton.grid(row=0, column=7, rowspan =1, sticky ='news', pady=1, ipady=1)
+            self.delDetByNameButton = Button(self, text = 'Del', command = self.delDetByName)
+            ToolTip.createToolTip(self.delDetByNameButton,'Remove Determined By From All Records')
+            self.delDetByNameButton.grid(row=0, column=8, rowspan =1, sticky ='news', pady=1, ipady=1)
+            self.useDetDateVar = IntVar(0) #Variable for Determination date Preference
+            self.useDetDateCheckButton = Checkbutton(self, text="Add Det! Date", variable=self.useDetDateVar)
+            self.useDetDateCheckButton.grid(row=0, column=9, rowspan=1, sticky ='news', pady=1, ipady=1)
 
 #Functions to operate within the CollectionDataEntryBar's tkinter space.
     def addCollectionName(self):
             collName = self.collName.get()
             self.parentapp.model.df['collectionName'] = collName
+            self.parentapp.redraw()
+
+    def delCollectionName(self):
+            try:
+                self.parentapp.model.df.drop('collectionName', axis=1, inplace=True)
+            except ValueError:
+                pass
+            self.parentapp.redraw()
+
+    def addDetByName(self):
+            detName = self.detName.get()
+            self.parentapp.model.df['identifiedBy'] = detName
+            if self.useDetDateVar.get() == 1:
+                from datetime import date
+                isoDate = date.today().isoformat()
+                self.parentapp.model.df['dateIdentified'] = isoDate
+            self.parentapp.redraw()
+
+    def delDetByName(self):
+            try:
+                self.parentapp.model.df.drop('identifiedBy', axis=1, inplace=True)
+                self.parentapp.model.df.drop('dateIdentified', axis=1, inplace=True)
+            except ValueError:
+                pass
             self.parentapp.redraw()
             
 
