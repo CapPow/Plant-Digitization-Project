@@ -214,7 +214,6 @@ class Table(Canvas):
         #self.bind_all("<Control-n>", self.addRow)
         self.bind("<Delete>", self.clearData)
         self.bind("<Control-v>", self.paste)
-        # bind undo to ctrl-z
         self.bind("<Control-z>", self.undo)
         self.bind("<Control-a>", self.selectAll)
 
@@ -866,6 +865,7 @@ class Table(Canvas):
         self.model.df = self.prevdf
         self.redraw()
         self.prevdf = None
+        self.storeCurrent()
         return
 
     def deleteCells(self, rows, cols, answer=None):
@@ -1982,10 +1982,22 @@ class Table(Canvas):
         self.updateModel(model)
         return
 
-    def paste(self, event=None):
-        """Paste selections - not implemented"""
+    def paste(self, row=None, column=None):
+        """Paste contents from clipboard"""
 
+        self.storeCurrent()
         df = pd.read_clipboard()
+        dfList = df.astype(list)
+        copiedValue = ''
+        for elem in dfList:
+            copiedValue = copiedValue + str(elem) + ' '
+        if isinstance(row, list):
+            self.model.setValueAt(copiedValue,row[0],column[0])
+        else:
+            row = self.getSelectedRow()
+            column = self.getSelectedColumn()
+            self.model.setValueAt(copiedValue,row,column)
+        self.redraw()
         return
 
     def copy(self, rows, cols=None):
@@ -2346,14 +2358,14 @@ class Table(Canvas):
                         "Undo" : lambda: self.undo(event),
                         "Paste" : lambda: self.paste(rows, cols),
                         "Fill Down" : lambda: self.fillDown(rows, cols),
-                        #"Fill Right" : lambda: self.fillAcross(cols, rows),
+                        "Fill Right" : lambda: self.fillAcross(cols, rows),
                         "Add Row(s)" : lambda: self.addRows(),
-                        #"Delete Row(s)" : lambda: self.deleteRow(),
+                        "Delete Row(s)" : lambda: self.deleteRow(),
                         "Add Column(s)" : lambda: self.addColumn(),
                         "Delete Column(s)" : lambda: self.deleteColumn(),
                         "Clear Data" : lambda: self.deleteCells(rows, cols),
                         "Select All" : self.selectAll,
-                        #"Auto Fit Columns" : self.autoResizeColumns,
+                        "Auto Fit Columns" : self.autoResizeColumns,
                         "Table Info" : self.showInfo,
                         "Set Color" : self.setRowColors,
                         "Show as Text" : self.showasText,
@@ -2369,13 +2381,12 @@ class Table(Canvas):
                         "Clean Data" : self.cleanData,
                         "Clear Formatting" : self.clearFormatting}
 
-        main = ["Copy", "Undo", "Fill Down", #"Fill Right",
-                "Clear Data", "Set Color"]
-        general = ["Select All", "Filter Rows",
-                   "Show as Text", "Table Info", "Preferences"]
+        main = ["Copy", "Paste", "Undo", "Clear Data"]
+        general = ["Select All", "Preferences"]
 
-        filecommands = ['New','Load','Import csv','Save','Save as','Export']
-        tablecommands = ['Table to Text','Clean Data','Clear Formatting']
+        # filecommands = ['New','Load','Import csv','Save','Save as']
+        filecommands = ['New','Import csv','Save','Save as']
+        # tablecommands = ['Table to Text','Clean Data','Clear Formatting']
 
         def createSubMenu(parent, label, commands):
             menu = Menu(parent, tearoff = 0)
@@ -2424,7 +2435,7 @@ class Table(Canvas):
 
         popupmenu.add_separator()
         createSubMenu(popupmenu, 'File', filecommands)
-        createSubMenu(popupmenu, 'Table', tablecommands)
+        # createSubMenu(popupmenu, 'Table', tablecommands)
         popupmenu.bind("<FocusOut>", popupFocusOut)
         popupmenu.focus_set()
         popupmenu.post(event.x_root, event.y_root)

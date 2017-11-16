@@ -345,21 +345,21 @@ class ColumnHeader(Canvas):
                     command=lambda : self.table.sortTable(ascending=[1 for i in multicols]))
         popupmenu.add_command(label="Sort by " + colnames + ' \u2191',
             command=lambda : self.table.sortTable(ascending=[0 for i in multicols]))
-        popupmenu.add_command(label="Set %s as Index" %colnames, command=self.table.setindex)
+        # popupmenu.add_command(label="Set %s as Index" %colnames, command=self.table.setindex)
         popupmenu.add_command(label="Rename Column", command=self.renameColumn)
-        if ismulti == True:
-            popupmenu.add_command(label="Flatten Index", command=self.table.flattenIndex)
+        # if ismulti == True:
+        #     popupmenu.add_command(label="Flatten Index", command=self.table.flattenIndex)
         popupmenu.add_command(label="Add Column(s)" , command=self.table.addColumn)
         popupmenu.add_command(label="Delete Column(s)", command=self.table.deleteColumn)
-        popupmenu.add_command(label="Fill With Data", command=self.table.fillColumn)
-        popupmenu.add_command(label="Set Column Type", command=self.table.setColumnType)
-        popupmenu.add_command(label="Create Categorical", command=self.table.createCategorical)
-        popupmenu.add_command(label="Apply Function", command=self.table.applyFunction)
-        popupmenu.add_command(label="Apply Function Col-wise", command=self.table.applyColumnWise)
-        popupmenu.add_command(label="String Operation", command=self.table.applyStringMethod)
-        popupmenu.add_command(label="Date/Time Conversion", command=self.table.convertDates)
-        popupmenu.add_command(label="Set Color", command=self.table.setColumnColors)
-        popupmenu.add_command(label="Color by Value", command=self.table.setColorbyValue)
+        # popupmenu.add_command(label="Fill With Data", command=self.table.fillColumn)
+        # popupmenu.add_command(label="Set Column Type", command=self.table.setColumnType)
+        # popupmenu.add_command(label="Create Categorical", command=self.table.createCategorical)
+        # popupmenu.add_command(label="Apply Function", command=self.table.applyFunction)
+        # popupmenu.add_command(label="Apply Function Col-wise", command=self.table.applyColumnWise)
+        # popupmenu.add_command(label="String Operation", command=self.table.applyStringMethod)
+        # popupmenu.add_command(label="Date/Time Conversion", command=self.table.convertDates)
+        # popupmenu.add_command(label="Set Color", command=self.table.setColumnColors)
+        # popupmenu.add_command(label="Color by Value", command=self.table.setColorbyValue)
         popupmenu.bind("<FocusOut>", popupFocusOut)
         #self.bind("<Button-3>", popupFocusOut)
         popupmenu.focus_set()
@@ -724,9 +724,10 @@ class RowHeader(Canvas):
                          "Add Row(s)" : lambda: self.table.addRows(),
                          "Delete Row(s)" : lambda: self.table.deleteRow(),
                          "Set Row Color" : lambda: self.table.setRowColors()}
-        main = ["Sort by index","Reset index","Toggle index",
-                "Rename index","Sort columns by row","Copy index to column",
-                "Add Row(s)","Delete Row(s)", "Set Row Color"]
+        # main = ["Sort by index","Reset index","Toggle index",
+        #         "Rename index","Sort columns by row","Copy index to column",
+        #         "Add Row(s)","Delete Row(s)", "Set Row Color"]
+        main = ["Add Row(s)","Delete Row(s)"]
 
         popupmenu = Menu(self, tearoff = 0)
         def popupFocusOut(event):
