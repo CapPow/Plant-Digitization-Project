@@ -3547,18 +3547,31 @@ class CollectionDataEntryBar(Frame):
 
     def __init__(self, parent=None, parentapp=None):
 
+#self.Yscrollbar = AutoScrollbar(self.parentframe,orient=VERTICAL,command=self.set_yviews)
+#self.Yscrollbar.grid(row=3,column=3,rowspan=1,sticky='news',pady=0,ipady=0)
+
             Frame.__init__(self, parent, width=600, height=40)
             self.parentframe = parent
             self.parentapp = parentapp
+            #Collection Name bunch
+            self.labelText = StringVar()
+            self.labelText.set("Collection Name:")
+            self.labelColl = Label(self, textvariable=self.labelText)
+            self.labelColl.grid(row=0, column=1, rowspan = 1, sticky='news', pady=1, ipady=1)
+            self.collName = StringVar(None) #Variable for collection name
+            self.collEntryBox = Entry(self,textvariable=self.collName, width=40)
+            self.collEntryBox.grid(row=0, column=2, rowspan = 2, sticky='news', pady=1, ipady=1)
 
-            labelText=StringVar()
-            labelText.set("Collection Name:")
-            labelDir=Label(self, textvariable=labelText)
-            labelDir.pack(side="left")
+            self.addCollNameButton = Button(self, text = 'Add', command = self.addCollectionName)
+            ToolTip.createToolTip(self.addCollNameButton,'Add Collection Name To Records')
+            self.addCollNameButton.grid(row=0, column=3, rowspan =1, sticky ='news', pady=1, ipady=1)
 
-            directory=StringVar(None)
-            dirname=Entry(self,textvariable=directory,width=20)
-            dirname.pack(side="left")
+#Functions to operate within the CollectionDataEntryBar's tkinter space.
+    def addCollectionName(self):
+            collName = self.collName.get()
+            self.parentapp.model.df['collectionName'] = collName
+            self.parentapp.redraw()
+            
 
 class ToolBar(Frame):
     """Uses the parent instance to provide the functions"""
