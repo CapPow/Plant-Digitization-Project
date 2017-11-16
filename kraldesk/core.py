@@ -435,9 +435,10 @@ class Table(Canvas):
             self.drawMultipleRows(self.multiplerowlist)
             self.drawMultipleCells()
 
-        #This should be an up to date list of specimen records, refreshed each time we redraw()
-        #Call it by self.model.specimenRecordGroup
-        self.specimenRecordGroup = [i for i, x in enumerate(self.model.df['othercatalognumbers'].str.split('-').str[1]) if x != '#']
+        try:
+            self.model.df.sort_values('othercatalognumbers', inplace = True, na_position = 'first')
+        except:
+            pass
 
         return
     def getOnlySpecimenRecords(self):
@@ -3648,14 +3649,15 @@ class CatNumberBar(Frame):
 
             #Catalog Number Stuff
 
-            self.useCatNumVar = IntVar(0) #Variable for Determination date Preference
-            self.useCatNumCheckButton = Checkbutton(self, text='Catalog Numbers', variable=self.useCatNumVar)
-            ToolTip.createToolTip(self.useCatNumCheckButton,'Generate catalog numbers for records')
-            self.useCatNumCheckButton.grid(row=1, column=0, rowspan=1, sticky ='news', pady=1, ipady=1)
-            if self.useCatNumVar.get() == 1:
-                catStatus = 'DISABLED'
-            else:
-                catStatus = 'NORMAL'
+            #self.useCatNumVar = IntVar(0) #Variable for Determination date Preference
+            #self.useCatNumCheckButton = Checkbutton(self, text='Catalog Numbers',command = self.parentapp.redraw, variable=self.useCatNumVar)
+            #ToolTip.createToolTip(self.useCatNumCheckButton,'Generate catalog numbers for records')
+            #self.useCatNumCheckButton.grid(row=1, column=0, rowspan=1, sticky ='news', pady=1, ipady=1)
+            #if self.useCatNumVar.get() == 1:
+            #    catStatus = NORMAL
+            #else:
+            #    catStatus = DISABLED
+            catStatus = NORMAL
                 
             self.labelCatNumText = StringVar()
             self.labelCatNumText.set('Catalog Number Prefix:')
@@ -3670,6 +3672,7 @@ class CatNumberBar(Frame):
             self.labelCatDigits = Label(self, textvariable=self.labelCatDigitsText)
             self.labelCatDigits.grid(row=1, column=3, rowspan = 1, sticky='news', pady=1, ipady=1)
             self.catDigits = IntVar(0) #Variable for catalog number prefix
+            self.catDigits.set(1)
             self.catDigitsEntryBox = Entry(self,textvariable=self.catDigits, width=3, state=catStatus)
             self.catDigitsEntryBox.grid(row=1, column=4, rowspan = 1, sticky='news', pady=1, ipady=1)
 
@@ -3684,17 +3687,17 @@ class CatNumberBar(Frame):
             self.catPreviewText = StringVar()
             self.catPreviewText.set('')
             self.labelCatPreview = Label(self, textvariable=self.catPreviewText, state=catStatus, foreground ="gray25",  width = 20)
-            self.labelCatPreview.grid(row=1, column=7, rowspan = 1, sticky='news', pady=1, ipady=1)
+            self.labelCatPreview.grid(row=1, column=7, rowspan = 1, sticky='e', pady=1, ipady=1)
             
-            self.previewCatButton = Button(self, text = 'Preview', command = self.genCatNumPreview, width = 7)
+            self.previewCatButton = Button(self, text = 'Preview', command = self.genCatNumPreview, width = 7, state=catStatus)
             ToolTip.createToolTip(self.previewCatButton,'Preview catalog number format')
             self.previewCatButton.grid(row=1, column=8, rowspan = 1, sticky='news', pady=1, ipady=1)
 
             
-            self.addCatNumButton = Button(self, text = 'Add', command = self.addCatalogNumbers, width = 5)
+            self.addCatNumButton = Button(self, text = 'Add', command = self.addCatalogNumbers, width = 5, state=catStatus)
             ToolTip.createToolTip(self.addCatNumButton,'Assign catalog numbers to each record')
             self.addCatNumButton.grid(row=1, column=9, rowspan =1, sticky ='news', pady=1, ipady=1)
-            self.delCatNumButton = Button(self, text = 'Del', command = self.delCatalogNumbers, width = 5)
+            self.delCatNumButton = Button(self, text = 'Del', command = self.delCatalogNumbers, width = 5, state=catStatus)
             ToolTip.createToolTip(self.delCatNumButton,'Remove catalog numbers from all records')
             self.delCatNumButton.grid(row=1, column=10, rowspan =1, sticky ='news', pady=1, ipady=1)
 
@@ -3705,23 +3708,23 @@ class CatNumberBar(Frame):
         digits = self.catDigits.get()
         start = str(self.catStart.get()).zfill(digits)
         if len(str(start)) > digits:
-                    if not messagebox.askyesno("Starting Value Error", "Starting Value Exceeds Your Catalog Number's Max Digits, Proceed?"):
-                        return
-        self.catPreviewText.set(prefix+start)
-        self.parentapp.redraw()
+            messagebox.showwarning("Starting Value Error", "Starting Catalog Number Value Exceeds Entered The Max Digits")
+        else:
+            self.catPreviewText.set(prefix+start)
+            self.parentapp.redraw()
 
     def addCatalogNumbers(self):
         prefix = self.catPrefix.get()
         digits = self.catDigits.get()
         start = self.catStart.get()
         if len(str(start)) > digits:
-            if not messagebox.askyesno("Starting Value Error", "Starting Value Exceeds Your Catalog Number's Max Digits, Proceed?"):
-                return
-        catalogValues = [prefix + str(x + start).zfill(digits) for x in range(len(self.parentapp.getOnlySpecimenRecords()))]
-        self.catStart.set(start + len(catalogValues))
-        self.parentapp.model.df['catalogNumber'] = ''
-        self.parentapp.model.df.iloc[self.parentapp.getOnlySpecimenRecords(),self.parentapp.model.df.columns.get_loc('catalogNumber')] = catalogValues
-        self.parentapp.redraw()
+            messagebox.showwarning("Starting Value Error", "Starting Catalog Number Value Exceeds Entered The Max Digits")
+        else:
+            catalogValues = [prefix + str(x + start).zfill(digits) for x in range(len(self.parentapp.getOnlySpecimenRecords()))]
+            self.catStart.set(start + len(catalogValues))
+            self.parentapp.model.df['catalogNumber'] = ''
+            self.parentapp.model.df.iloc[self.parentapp.getOnlySpecimenRecords(),self.parentapp.model.df.columns.get_loc('catalogNumber')] = catalogValues
+            self.parentapp.redraw()
                 
     def delCatalogNumbers(self):
         try:
