@@ -19,5 +19,3 @@ https://docs.google.com/presentation/d/1kz0K0Dbt2jrnNswKCHjEv63JSkq-e8NZkxNaLzXK
 [Jacob Motley](https://www.linkedin.com/in/jacob-motley-b627a1152) - BS [Computer Science](https://github.com/j-h-m): Software Systems - UTC.
 
 [Caleb Powell](https://github.com/CapPow) - BS Environmental Science, Graduate Student - UTC.
-
-[Stewart Chunn](https://www.linkedin.com/in/stewart-chunn-1aa686106) - Computer Science Undergraduate Student - UTC.
