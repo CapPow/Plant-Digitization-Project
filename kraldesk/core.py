@@ -3680,7 +3680,8 @@ class CatNumberBar(Frame):
             self.labelCatStartText.set('Start:')
             self.labelCatStart = Label(self, textvariable=self.labelCatStartText)
             self.labelCatStart.grid(row=1, column=5, rowspan = 1, sticky='news', pady=1, ipady=1)
-            self.catStart = IntVar(0) #Variable for catalog number prefix
+            self.catStart = IntVar(0) #Variable for catalog starting number
+            self.catStart.set(1)
             self.catStartEntryBox = Entry(self,textvariable=self.catStart, width=5, state=catStatus)
             self.catStartEntryBox.grid(row=1, column=6, rowspan = 1, sticky='news', pady=1, ipady=1)
             
@@ -3706,8 +3707,8 @@ class CatNumberBar(Frame):
     def genCatNumPreview(self):
         prefix = self.catPrefix.get()
         digits = self.catDigits.get()
-        start = str(self.catStart.get()).zfill(digits)
-        if len(str(start)) > digits:
+        start = str(self.catStartEntryBox.get()).zfill(digits)
+        if len(start) > digits:
             messagebox.showwarning("Starting Value Error", "Starting Catalog Number Value Exceeds Entered The Max Digits")
         else:
             self.catPreviewText.set(prefix+start)
@@ -3716,12 +3717,12 @@ class CatNumberBar(Frame):
     def addCatalogNumbers(self):
         prefix = self.catPrefix.get()
         digits = self.catDigits.get()
-        start = self.catStart.get()
-        if len(str(start)) > digits:
+        start = self.catStartEntryBox.get()
+        if len(start) > digits:
             messagebox.showwarning("Starting Value Error", "Starting Catalog Number Value Exceeds Entered The Max Digits")
         else:
-            catalogValues = [prefix + str(x + start).zfill(digits) for x in range(len(self.parentapp.getOnlySpecimenRecords()))]
-            self.catStart.set(start + len(catalogValues))
+            catalogValues = [prefix + str(x + int(start)).zfill(digits) for x in range(len(self.parentapp.getOnlySpecimenRecords()))]
+            self.catStart.set(len(catalogValues) + int(start))
             self.parentapp.model.df['catalogNumber'] = ''
             self.parentapp.model.df.iloc[self.parentapp.getOnlySpecimenRecords(),self.parentapp.model.df.columns.get_loc('catalogNumber')] = catalogValues
             self.parentapp.redraw()
@@ -3730,7 +3731,7 @@ class CatNumberBar(Frame):
         try:
             self.parentapp.model.df.drop('catalogNumber', axis=1, inplace=True)
             if messagebox.askyesno("Roll Back Starting Catalog Number?", "Would you like to reduce the starting catalog value by the quantity removed from the table?"):
-                self.catStart.set(self.catStart.get() - len(self.parentapp.getOnlySpecimenRecords()))
+                self.catStartEntryBox.set(str(self.catStartEntryBox.get() - len(self.parentapp.getOnlySpecimenRecords())))
         except ValueError:
             pass
         self.parentapp.redraw()
