@@ -105,7 +105,6 @@ def genPrintLabelPDFs(labelDataInput):
             parent=styles['default'],
             alignment=TA_RIGHT,
             spaceAfter = 1,
-            wordWrap=None
         )
         styles['prefixLeftSTY'] = ParagraphStyle(
             'prefixLeftSTY',
@@ -264,24 +263,45 @@ def genPrintLabelPDFs(labelDataInput):
 
         row7 = [collectedByPara('recordedBy','associatedCollectors','default','Collected by: ')]
 
+
         row8 = Table([[
-            Para('othercatalognumbers','default','Field Number: '),
-            gpsCoordStringer('decimalLatitude', 'decimalLongitude', 'coordinateUncertaintyInMeters', 'minimumElevationInMeters','rightSTY')]],
+            Para('othercatalognumbers','default','Field Number: '),        
+            gpsCoordStringer('decimalLatitude', 'decimalLongitude', 'coordinateUncertaintyInMeters', 'minimumElevationInMeters','rightSTY')]],            
+            colWidths = (xPaperSize * .27, xPaperSize * .71), rowHeights = None,style=tableSty)
+
+#Testing if there is enough width to combine bottom row. If not split it.
+        
+        row8Test = Table([[row8]])
+        r8wid, r8hei = row8Test.wrap(0,0)
+
+        if (r8wid * inch) > xPaperSize * .98:
             
-            colWidths = (xPaperSize * .27,xPaperSize * .71), rowHeights = None,
-            style=tableSty)
+            row8 = Table([[Para('othercatalognumbers','default','Field Number: ')]], style = tableSty)
 
+            row9 = Table([[gpsCoordStringer('decimalLatitude', 'decimalLongitude', 'coordinateUncertaintyInMeters', 'minimumElevationInMeters','rightSTY')]],style = tableSty)
 
-        tableList = [[row0],
-                          [row1],
-                          [row2],
-                          [row3],
-                          [row4],
-                          [row5],
-                          [row6],
-                          [row7],
-                          [row8],
-                        ]
+            tableList = [[row0],
+                              [row1],
+                              [row2],
+                              [row3],
+                              [row4],
+                              [row5],
+                              [row6],
+                              [row7],
+                              [row8],
+                              [row9]]
+            
+        else:
+            tableList = [[row0],
+                              [row1],
+                              [row2],
+                              [row3],
+                              [row4],
+                              [row5],
+                              [row6],
+                              [row7],
+                              [row8]]
+                   
         docTableStyle = [                           #Cell alignment and padding settings (not text align within cells)
                 ('VALIGN',(0,3),(0,-1),'BOTTOM'),     #Rows 4-end align to bottom
                 ('ALIGN',(0,0),(-1,-1),'CENTER'),     #All rows align to center
