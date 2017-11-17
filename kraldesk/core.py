@@ -3335,8 +3335,10 @@ class Table(Canvas):
                             addressString = country + ' ' + addressString
 
                     # self.uniqueLocality.append(tempDict)
+                    addressString = ', '.join(addressString.strip().split(' '))
                     localityAddressAdded = addressString + ' ' + locality
-                    localityAddressAdded = localityAddressAdded.lstrip()
+                    localityAddressAdded = localityAddressAdded.strip()
+
                     # ensure we don't add locality string twice
                     if addressString not in locality:
                         self.model.setValueAt(localityAddressAdded, currentRow, localityIndex)
@@ -3522,7 +3524,7 @@ class Table(Canvas):
             ]
         #Excel is interpreting site numbers < 12 as dates and converting them. Ex: 08-16 to Aug-16.
         #To prevent data loss mobile app sends field numbers with a leading " ' " which we don't want.
-            df = pd.read_csv(filename, usecols = column_order, encoding =  'utf-8',keep_default_na=False)[column_order]
+            df = pd.read_csv(filename, usecols = column_order, encoding =  'utf-8',keep_default_na=False, dtype=str,)[column_order]
             df['othercatalognumbers'] = df['othercatalognumbers'].apply(lambda x: x.lstrip("'"))
             
             
