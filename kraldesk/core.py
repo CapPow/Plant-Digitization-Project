@@ -3376,8 +3376,13 @@ class Table(Canvas):
 
         if sNameIndex != '':
             sciNameAtRow = self.model.getValueAt(currentRow, sNameIndex)
-            if 'sp.' in sciNameAtRow or 'Sp.' in sciNameAtRow or 'Sp' in sciNameAtRow 'sp' in sciNameAtRow:
-                currentSciName = sciNameAtRow.split(' ')[0]
+            exceptionList = ['sp.','sp','Sp.','Sp','var.','var','Var.','Var']
+            if exceptionList in sciNameAtRow:
+                currentSciName = sciNameAtRow.split(' ')
+                for badWord in currentSciName:
+                    if currentSciName in exceptionList:
+                        currentSciName.remove(badWord)
+                print(currentSciName)
             else:
                 currentSciName = sciNameAtRow
             results = colNameSearch(currentSciName)
