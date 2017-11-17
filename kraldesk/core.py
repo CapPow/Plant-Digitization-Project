@@ -3314,46 +3314,40 @@ class Table(Canvas):
                 # reverseGeoCall will return a list of results
                 # or it will return an error/status string
                 if isinstance(address, list):
+                    # no tempDict temporarily
+                    tempDict = {}
+                    addressString = ''
                     for addressComponent in address:
                         if addressComponent['types'][0] == 'route':
                             streetName = addressComponent['long_name']
+                            addressString = streetName + ' ' + addressString
                         if addressComponent['types'][0] == 'administrative_area_level_1':
                             stateProvince = addressComponent['long_name']
+                            addressString = stateProvince + ' ' + addressString
                         if addressComponent['types'][0] == 'administrative_area_level_2':
                             county = addressComponent['long_name']
+                            addressString = county + ' ' + addressString
                         if addressComponent['types'][0] == 'locality':
                             municipality = addressComponent['long_name']
+                            addressString = municipality + ' ' + addressString
                         if addressComponent['types'][0] == 'country':
                             country = addressComponent['short_name']
+                            addressString = country + ' ' + addressString
 
-                    # a streetname is returned from reverse geolocation call
-                    # in some cases, the api will not return a street at all
-                    if 'streetName' in locals():
-                        if stateProvince and county and municipality and country:
-                            addressString = str(country) + ', ' + str(stateProvince) + ', ' + str(county) + ', ' + str(municipality) + ', ' + str(streetName) + '.'
-                            tempDict = {'latitude': str(latitude), 'longitude': str(longitude), 'path': str(streetName), 'municipality': str(municipality), 'county': str(county), 'stateProvince': str(stateProvince), 'country': str(country), 'localityString': addressString}
-                        if pathIndex != '':
-                            self.model.setValueAt(str(streetName), currentRow, pathIndex)
-
-                    # no street is returned
-                    else:
-                        addressString = str(country) + ', ' + str(stateProvince) + ', ' + str(county) + ', ' + str(municipality) + '.'
-                        tempDict = {'latitude': str(latitude), 'longitude': str(longitude), 'municipality': str(municipality), 'county': str(county), 'stateProvince': str(stateProvince), 'country': str(country), 'localityString': addressString}
-
-                    self.uniqueLocality.append(tempDict)
+                    # self.uniqueLocality.append(tempDict)
                     localityAddressAdded = addressString + ' ' + locality
                     localityAddressAdded = localityAddressAdded.lstrip()
-                    # should stop adding locality string twice through multiple runs of processRecords
+                    # ensure we don't add locality string twice
                     if addressString not in locality:
                         self.model.setValueAt(localityAddressAdded, currentRow, localityIndex)
-                    if municipalityIndex != '':
-                        self.model.setValueAt(tempDict['municipality'], currentRow, municipalityIndex)
-                    if countyIndex != '':
-                        self.model.setValueAt(tempDict['county'], currentRow, countyIndex)
-                    if stateProvinceIndex != '':
-                        self.model.setValueAt(tempDict['stateProvince'], currentRow, stateProvinceIndex)
-                    if countryIndex != '':
-                        self.model.setValueAt(tempDict['country'], currentRow, countryIndex)
+                    if municipalityIndex != '' and 'municipality' in locals():
+                        self.model.setValueAt(municipality, currentRow, municipalityIndex)
+                    if countyIndex != '' and 'county' in locals():
+                        self.model.setValueAt(county, currentRow, countyIndex)
+                    if stateProvinceIndex != '' and 'stateProvince' in locals():
+                        self.model.setValueAt(stateProvince, currentRow, stateProvinceIndex)
+                    if countryIndex != '' and 'country' in locals():
+                        self.model.setValueAt(country, currentRow, countryIndex)
 
                 # Google API call returned error/status string
                 else:
