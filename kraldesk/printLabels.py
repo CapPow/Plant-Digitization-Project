@@ -200,7 +200,7 @@ def genPrintLabelPDFs(labelDataInput):
         if len(dfl('catalogNumber')) > 0:
             barcodeValue = dfl('catalogNumber')
             code39._Code39Base._humanText = newHumanText  #Note, overriding the human text from this library to omit the stopcode ('+')
-            barcode39Std = code39.Standard39(barcodeValue,barHeight=(yPaperSize * .10  ), barWidth=((xPaperSize * 0.28)/(len(barcodeValue)*11+35)), humanReadable=True, quiet = False, checksum=0)
+            barcode39Std = code39.Standard39(barcodeValue,barHeight=(yPaperSize * .10  ), barWidth=((xPaperSize * 0.28)/(len(barcodeValue)*13+35)), humanReadable=True, quiet = False, checksum=0)
                                              #^^^Note width is dynamic, but I don't know the significance of *11+35 beyond making it work.
             return barcode39Std
         else:
