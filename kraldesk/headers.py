@@ -675,8 +675,8 @@ class RowHeader(Canvas):
             self.rightmenu.destroy()
         rowclicked = self.table.get_row_clicked(event)
         self.table.setSelectedRow(rowclicked)
+        self.table.drawSelectedRect(self.table.currentrow, 0)
         self.table.drawSelectedRow()
-        self.drawSelectedRows(self.table.currentrow)
         self.rightmenu = self.popupMenu(event, outside=1)
         return
 
