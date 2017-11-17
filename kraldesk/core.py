@@ -768,6 +768,25 @@ class Table(Canvas):
         self.redrawVisible()
         return
 
+    def addRowFromSite(self, event=None):
+        """Helper function to pass row and column to addRowFromSite
+           in data.py"""
+        
+        row = self.getSelectedRow()
+        siteNumber = self.model.getValueAt(row,0).split('-')
+        siteData = copy.copy(self.model.getRecordAtRow(row))
+        oldOtherCatNum = siteData['othercatalognumbers'].split('-')[0]
+        specimenNumbers = self.model.df['othercatalognumbers'].tolist()
+        nextSpecimenNumber = max([int(y) for y in[x.split('-')[1] for x in specimenNumbers if '#' not in x]]) + 1
+        newOtherCatNumber = str(oldOtherCatNum[0]) + '-' + str(nextSpecimenNumber)
+        siteData.loc['othercatalognumbers'] = newOtherCatNumber
+        df = self.model.df
+        a, b = df[:row], df[row:]
+        a = a.append(siteData, ignore_index=1)
+        self.model.df = pd.concat([a,b])
+        self.redraw()
+        return
+
     def addRow(self):
         """Insert a new row"""
 
