@@ -3370,12 +3370,16 @@ class Table(Canvas):
         authIndex = self.findColumnIndex('scientificNameAuthorship')
 
         if sNameIndex != '':
-            currentSciName = self.model.getValueAt(currentRow, sNameIndex)
+            sciNameAtRow = self.model.getValueAt(currentRow, sNameIndex)
+            if 'sp.' in sciNameAtRow or 'Sp.' in sciNameAtRow or 'Sp' in sciNameAtRow 'sp' in sciNameAtRow:
+                currentSciName = sciNameAtRow.split(' ')[0]
+            else:
+                currentSciName = sciNameAtRow
             results = colNameSearch(currentSciName)
             if isinstance(results, tuple):
                 if len(results) == 1:
                     sciName = results[0]
-                    if messagebox.askyesno("Sci-Name", "(row " + str(currentRow+1) + ") " + " Would you like to change " + str(currentSciName) + " to " + str(sciName) + "?"):
+                    if messagebox.askyesno("Sci-Name", "(row " + str(currentRow+1) + ") " + " Would you like to change " + str(sciNameAtRow) + " to " + str(sciName) + "?"):
                         self.model.setValueAt(str(results[0]), currentRow, sNameIndex)
                         return sciName
                     else:
@@ -3385,13 +3389,10 @@ class Table(Canvas):
                     auth = results[1]
                     if authIndex != '':
                         currentAuth = self.model.getValueAt(currentRow, authIndex)
-                        if sciName != currentSciName:
-                            if messagebox.askyesno("Sci-Name", "(row " + str(currentRow+1) + ") " + " Would you like to change " + str(currentSciName) + " to " + str(sciName) + "? This will also update authority!"):
-                                self.model.setValueAt(str(sciName), currentRow, sNameIndex)
-                                if auth != 'None':
-                                    self.model.setValueAt(str(auth), currentRow, authIndex)
-                        elif auth not in [currentAuth, 'None']:
-                            self.model.setValueAt(str(auth), currentRow, authIndex)
+                        if messagebox.askyesno("Sci-Name", "(row " + str(currentRow+1) + ") " + " Would you like to change " + str(sciNameAtRow) + " to " + str(sciName) + "? This will also update authority!"):
+                            self.model.setValueAt(str(sciName), currentRow, sNameIndex)
+                            if auth != 'None':
+                                self.model.setValueAt(str(auth), currentRow, authIndex)
                 else:
                     return currentSciName
             elif isinstance(results, str):
