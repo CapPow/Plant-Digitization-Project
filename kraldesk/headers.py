@@ -673,6 +673,10 @@ class RowHeader(Canvas):
         self.delete('tooltip')
         if hasattr(self, 'rightmenu'):
             self.rightmenu.destroy()
+        rowclicked = self.table.get_row_clicked(event)
+        self.table.setSelectedRow(rowclicked)
+        self.table.drawSelectedRow()
+        self.drawSelectedRows(self.table.currentrow)
         self.rightmenu = self.popupMenu(event, outside=1)
         return
 
@@ -730,11 +734,11 @@ class RowHeader(Canvas):
                          "Add Row(s)" : lambda: self.table.addRows(),
                          "Delete Row(s)" : lambda: self.table.deleteRow(),
                          "Set Row Color" : lambda: self.table.setRowColors(),
-                          "Add Row From Site" : lambda: self.table.addRowFromSite()}
+                         "Add Record From This Site Site" : lambda: self.table.addRowFromSite()}
         # main = ["Sort by index","Reset index","Toggle index",
         #         "Rename index","Sort columns by row","Copy index to column",
         #         "Add Row(s)","Delete Row(s)", "Set Row Color"]
-        main = ["Add Row From Site","Add Row(s)", "Delete Row(s)"]
+        main = ["Add Record From This Site Site","Add Row(s)", "Delete Row(s)"]
 
         popupmenu = Menu(self, tearoff = 0)
         def popupFocusOut(event):

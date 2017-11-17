@@ -773,12 +773,12 @@ class Table(Canvas):
            in data.py"""
         
         row = self.getSelectedRow()
-        siteNumber = self.model.getValueAt(row,0).split('-')
-        siteData = copy.copy(self.model.getRecordAtRow(row))
+        #siteNumber = self.model.getValueAt(row,0).split('-')
+        siteData = copy.deepcopy(self.model.getRecordAtRow(row))
         oldOtherCatNum = siteData['othercatalognumbers'].split('-')[0]
         specimenNumbers = self.model.df['othercatalognumbers'].tolist()
         nextSpecimenNumber = max([int(y) for y in[x.split('-')[1] for x in specimenNumbers if '#' not in x]]) + 1
-        newOtherCatNumber = str(oldOtherCatNum[0]) + '-' + str(nextSpecimenNumber)
+        newOtherCatNumber = str(oldOtherCatNum) + '-' + str(nextSpecimenNumber)
         siteData.loc['othercatalognumbers'] = newOtherCatNumber
         df = self.model.df
         a, b = df[:row], df[row:]
