@@ -3371,7 +3371,7 @@ class Table(Canvas):
 
         if sNameIndex != '':
             sciNameAtRow = self.model.getValueAt(currentRow, sNameIndex)
-            if 'sp.' in sciNameAtRow or 'Sp.' in sciNameAtRow or 'Sp' in sciNameAtRow 'sp' in sciNameAtRow:
+            if 'sp.' in sciNameAtRow or 'Sp.' in sciNameAtRow or 'Sp' in sciNameAtRow or 'sp' in sciNameAtRow:
                 currentSciName = sciNameAtRow.split(' ')[0]
             else:
                 currentSciName = sciNameAtRow
