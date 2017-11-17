@@ -677,7 +677,12 @@ class RowHeader(Canvas):
         self.table.setSelectedRow(rowclicked)
         self.table.drawSelectedRect(self.table.currentrow, 0)
         self.table.drawSelectedRow()
-        self.rightmenu = self.popupMenu(event, outside=1)
+        fieldNumIndex = self.table.findColumnIndex('othercatalognumbers')
+        fieldNum = self.model.getValueAt(rowclicked, fieldNumIndex)
+        if '#' in fieldNum:
+            self.rightmenu = self.popupMenu(event, outside=1, addRecord='yes')
+        else:
+            self.rightmenu = self.popupMenu(event, outside=1)
         return
 
     def handle_mouse_drag(self, event):
@@ -721,7 +726,7 @@ class RowHeader(Canvas):
         self.redraw()
         return
 
-    def popupMenu(self, event, rows=None, cols=None, outside=None):
+    def popupMenu(self, event, rows=None, cols=None, outside=None, addRecord=None):
         """Add left and right click behaviour for canvas, should not have to override
             this function, it will take its values from defined dicts in constructor"""
         defaultactions = {"Sort by index" : lambda: self.table.sortTable(index=True),
@@ -738,7 +743,10 @@ class RowHeader(Canvas):
         # main = ["Sort by index","Reset index","Toggle index",
         #         "Rename index","Sort columns by row","Copy index to column",
         #         "Add Row(s)","Delete Row(s)", "Set Row Color"]
-        main = ["Add Record From This Site Site","Add Row(s)", "Delete Row(s)"]
+        if addRecord == None:
+            main = ["Add Row(s)", "Delete Row(s)"]
+        elif addRecord == 'yes':
+            main = ["Add Record From This Site Site","Add Row(s)", "Delete Row(s)"]
 
         popupmenu = Menu(self, tearoff = 0)
         def popupFocusOut(event):
