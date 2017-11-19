@@ -3256,10 +3256,8 @@ class Table(Canvas):
     # calls google reverse geolocation api
     # sets values in proper cells in Table
     def genLocality(self, currentRowArg):
-        print('currentRow in genLocality is ',currentRowArg)
         currentRow = currentRowArg
-        currentRecord = self.model.getRecordAtRow(currentRow -1)
-        print('currentRecord called in genLocality function returns at: ', currentRecord)
+        currentRecord = self.model.getRecordAtRow(currentRow -1)    #Altered to fix the locality matching problems.
         pathIndex = self.findColumnIndex('path')
         localityIndex = self.findColumnIndex('locality')
         municipalityIndex = self.findColumnIndex('municipality')
@@ -3274,7 +3272,6 @@ class Table(Canvas):
             try:
                 latitude = (currentRecord['decimalLatitude'])
                 longitude = (currentRecord['decimalLongitude'])
-                print('lat, lon for ', currentRow, ' is ', latitude, longitude)
                 if latitude == '' or longitude == '':
                     raise ValueError("Latitude/Longitude have no values")
             # return from here, can't call API without lat/long
