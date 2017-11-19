@@ -3,6 +3,7 @@
 # License
 
 import urllib.request
+from urllib.error import HTTPError
 import re
 import xml.etree.ElementTree as ET
 import html
@@ -27,9 +28,12 @@ def colNameSearch(givenScientificName):
             if identification[-1] in exclusionList:
                 identification.remove(identification[-1])                   
             identQuery.append(identification[-1])
-    CoLQuery = ET.parse(urllib.request.urlopen('http://webservice.catalogueoflife.org/col/webservice?name={}&response=terse'.format('+'.join(identQuery)), timeout=30)).getroot()
-
+    try:
+        CoLQuery = ET.parse(urllib.request.urlopen('http://webservice.catalogueoflife.org/col/webservice?name={}&response=terse'.format('+'.join(identQuery)), timeout=30)).getroot()
+    except HTTPError:
+        return 'http_Error'
     #<status>accepted name|ambiguous synonym|misapplied name|privisionally acceptedname|synomym</status>  List of potential name status
+
     for result in CoLQuery.findall('result'):
         nameStatus = result.find('name_status').text
         if nameStatus == 'accepted name':
@@ -44,5 +48,3 @@ def colNameSearch(givenScientificName):
             return (name,authorityName)
         elif 'synonym' in nameStatus:
             return colNameSearch(result.find('accepted_name/name').text)
-        else:
-            return 'not_accepted_or_syn'
