@@ -3258,7 +3258,7 @@ class Table(Canvas):
     def genLocality(self, currentRowArg):
         print('currentRow in genLocality is ',currentRowArg)
         currentRow = currentRowArg
-        currentRecord = self.model.getRecordAtRow(currentRow)
+        currentRecord = self.model.getRecordAtRow(currentRow -1)
         print('currentRecord called in genLocality function returns at: ', currentRecord)
         pathIndex = self.findColumnIndex('path')
         localityIndex = self.findColumnIndex('locality')
