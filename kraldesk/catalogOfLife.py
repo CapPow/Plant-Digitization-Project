@@ -52,8 +52,11 @@ def colNameSearch(givenScientificName):
             try:
                 authorityName = result.find('name_html').find('i').tail
             except AttributeError:
-                authorityName = html.unescape(result.find('name_html').text)
-                authorityName = authorityName.split('</i> ')[1]
+                try:
+                    authorityName = html.unescape(result.find('name_html').text)
+                    authorityName = authorityName.split('</i> ')[1]
+                except IndexError:
+                    authorityName = ''
             authorityName = re.sub(r'\d+','',str(authorityName))
             authorityName = authorityName.strip().rstrip(',')
             return (name,authorityName)
