@@ -3257,7 +3257,6 @@ class Table(Canvas):
     # sets values in proper cells in Table
     def genLocality(self, currentRowArg):
         currentRow = currentRowArg
-        currentRecord = self.model.getRecordAtRow(currentRow -1)    #Altered to fix the locality matching problems.
         pathIndex = self.findColumnIndex('path')
         localityIndex = self.findColumnIndex('locality')
         municipalityIndex = self.findColumnIndex('municipality')
@@ -3270,8 +3269,8 @@ class Table(Canvas):
         if localityIndex != '':
             locality = self.model.getValueAt(currentRow, localityIndex)
             try:
-                latitude = (currentRecord['decimalLatitude'])
-                longitude = (currentRecord['decimalLongitude'])
+                latitude = (self.model.getValueAt(currentRow, latitudeIndex))
+                longitude = (self.model.getValueAt(currentRow, longitudeIndex))
                 if latitude == '' or longitude == '':
                     raise ValueError("Latitude/Longitude have no values")
             # return from here, can't call API without lat/long
