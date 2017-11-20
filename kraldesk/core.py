@@ -3257,7 +3257,6 @@ class Table(Canvas):
     # sets values in proper cells in Table
     def genLocality(self, currentRowArg):
         currentRow = currentRowArg
-        currentRecord = self.model.getRecordAtRow(currentRow -1)    #Altered to fix the locality matching problems.
         pathIndex = self.findColumnIndex('path')
         localityIndex = self.findColumnIndex('locality')
         municipalityIndex = self.findColumnIndex('municipality')
@@ -3270,8 +3269,8 @@ class Table(Canvas):
         if localityIndex != '':
             locality = self.model.getValueAt(currentRow, localityIndex)
             try:
-                latitude = (currentRecord['decimalLatitude'])
-                longitude = (currentRecord['decimalLongitude'])
+                latitude = (self.model.getValueAt(currentRow, latitudeIndex))
+                longitude = (self.model.getValueAt(currentRow, longitudeIndex))
                 if latitude == '' or longitude == '':
                     raise ValueError("Latitude/Longitude have no values")
             # return from here, can't call API without lat/long
@@ -3373,16 +3372,23 @@ class Table(Canvas):
 
         if sNameIndex != '':
             sciNameAtRow = self.model.getValueAt(currentRow, sNameIndex)
-            if 'sp.' in sciNameAtRow or 'Sp.' in sciNameAtRow or 'Sp' in sciNameAtRow or 'sp' in sciNameAtRow:
-                currentSciName = sciNameAtRow.split(' ')[0]
+            exclusionWordList = ['sp.','Sp.','Sp','sp','spp','spp.','Spp','Spp.','var','var.','Var','Var.']
+            if sciNameAtRow.split(' ')[-1] in exclusionWordList:
+                print('excluded word')
+                currentSciName = sciNameAtRow.split(' ')
+                sciNameSuffix = str(' ' + currentSciName[-1])
+                currentSciName.pop()
+                currentSciName = ' '.join(currentSciName)
+                print(currentSciName)
             else:
+                sciNameSuffix = ''
                 currentSciName = sciNameAtRow
             results = colNameSearch(currentSciName)
             if isinstance(results, tuple):
                 if len(results) == 1:
                     sciName = results[0]
                     if messagebox.askyesno("Sci-Name", "(row " + str(currentRow+1) + ") " + " Would you like to change " + str(sciNameAtRow) + " to " + str(sciName) + "?"):
-                        self.model.setValueAt(str(results[0]), currentRow, sNameIndex)
+                        self.model.setValueAt(str(results[0] + sciNameSuffix), currentRow, sNameIndex)
                         return sciName
                     else:
                         return currentSciName
@@ -3392,8 +3398,8 @@ class Table(Canvas):
                     if authIndex != '':
                         currentAuth = self.model.getValueAt(currentRow, authIndex)
                         if messagebox.askyesno("Sci-Name", "(row " + str(currentRow+1) + ") " + " Would you like to change " + str(sciNameAtRow) + " to " + str(sciName) + "? This will also update authority!"):
-                            self.model.setValueAt(str(sciName), currentRow, sNameIndex)
-                            if auth != 'None':
+                            self.model.setValueAt(str(sciName + sciNameSuffix), currentRow, sNameIndex)
+                            if auth != 'None' or '':
                                 self.model.setValueAt(str(auth), currentRow, authIndex)
                 else:
                     return currentSciName

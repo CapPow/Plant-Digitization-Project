@@ -13,8 +13,6 @@ import sys
 import subprocess
 from tkinter import filedialog
 
-
-
 def genPrintLabelPDFs(labelDataInput):
     labelData = labelDataInput
 
