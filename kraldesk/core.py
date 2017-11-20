@@ -3257,7 +3257,7 @@ class Table(Canvas):
     # sets values in proper cells in Table
     def genLocality(self, currentRowArg):
         currentRow = currentRowArg
-        currentRecord = self.model.getRecordAtRow(currentRow)
+        currentRecord = self.model.getRecordAtRow(currentRow -1)    #Altered to fix the locality matching problems.
         pathIndex = self.findColumnIndex('path')
         localityIndex = self.findColumnIndex('locality')
         municipalityIndex = self.findColumnIndex('municipality')
@@ -3316,27 +3316,27 @@ class Table(Canvas):
                 if isinstance(address, list):
                     # no tempDict temporarily
                     tempDict = {}
-                    addressString = ''
+                    addressString = []
                     for addressComponent in address:
                         if addressComponent['types'][0] == 'route':
                             streetName = addressComponent['long_name']
-                            addressString = streetName + ' ' + addressString
+                            addressString.append(streetName)
                         if addressComponent['types'][0] == 'administrative_area_level_1':
                             stateProvince = addressComponent['long_name']
-                            addressString = stateProvince + ' ' + addressString
+                            addressString.append(stateProvince)
                         if addressComponent['types'][0] == 'administrative_area_level_2':
                             county = addressComponent['long_name']
-                            addressString = county + ' ' + addressString
+                            addressString.append(county)
                         if addressComponent['types'][0] == 'locality':
                             municipality = addressComponent['long_name']
-                            addressString = municipality + ' ' + addressString
+                            addressString.append(municipality)
                         if addressComponent['types'][0] == 'country':
                             country = addressComponent['short_name']
-                            addressString = country + ' ' + addressString
+                            addressString.append(country)
 
                     # self.uniqueLocality.append(tempDict)
-                    addressString = ', '.join(addressString.strip().split(' '))
-                    localityAddressAdded = addressString + ' ' + locality
+                    addressString = ', '.join(addressString[::-1])
+                    localityAddressAdded = addressString + ', ' + locality
                     localityAddressAdded = localityAddressAdded.strip()
 
                     # ensure we don't add locality string twice
@@ -3406,6 +3406,9 @@ class Table(Canvas):
                         self.setSelectedRow(currentRow)
                         self.setSelectedCol(sNameIndex)
                         return "user_set_sciname"
+                elif results == 'http_Error':
+                     messagebox.showinfo("Scientific Name Error", "Catalog of Life Error, the webservice might be down. Try again later, if this issue persists please contact us: plantdigitizationprojectutc@gmail.com")
+                
         return
 
     # causes a pdf to be saved (uses dialog to get save name.
@@ -3466,7 +3469,15 @@ class Table(Canvas):
                                                     initialfile = filename,
                                                     initialdir = self.currentdir,
                                                     filetypes=[("csv","*.csv")])
-        return
+
+        if filename:
+            self.model.save(filename)
+            self.filename = filename
+            self.currentdir = os.path.basename(filename)
+            return
+        else:
+            
+            return
 
     def save(self):
         """Save current file"""
@@ -3570,6 +3581,8 @@ class Table(Canvas):
                                                         ("All files","*.*")])
         if filename:
             self.model.save(filename)
+            self.filename = filename
+            self.currentdir = os.path.basename(filename)
         return
 
     def getGeometry(self, frame):
