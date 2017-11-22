@@ -3373,13 +3373,14 @@ class Table(Canvas):
         if sNameIndex != '':
             sciNameAtRow = self.model.getValueAt(currentRow, sNameIndex)
             exclusionWordList = ['sp.','Sp.','Sp','sp','spp','spp.','Spp','Spp.','var','var.','Var','Var.']
-            if sciNameAtRow.split(' ')[-1] in exclusionWordList:
-                print('excluded word')
+            if sciNameAtRow.split(' ')[-1] in exclusionWordList:    #If an excluded word is in scientific name then modify.
                 currentSciName = sciNameAtRow.split(' ')
-                sciNameSuffix = str(' ' + currentSciName[-1])
+                sciNameSuffix = str(' ' + currentSciName[-1])       #store excluded word incase the user only has genus and wants Sp or the like included.
                 currentSciName.pop()
+                if len(currentSciName) > 1:                     #If the name has more than 1 word after excluded word was removed then forget the excluded word.
+                    sciNameSuffix = ''
                 currentSciName = ' '.join(currentSciName)
-                print(currentSciName)
+
             else:
                 sciNameSuffix = ''
                 currentSciName = sciNameAtRow
