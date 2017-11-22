@@ -157,11 +157,8 @@ def genPrintLabelPDFs(labelDataInput):
             return Paragraph('', style = stylesheet(styleKey))
 
     def cultivationStatusChecker(textfield1, styleKey):
-        if len(dfl(textfield1)) > 0 :
-            if int(dfl(textfield1)) > 0 :
-                return Paragraph('<b>Cultivated specimen</b>', style = stylesheet(styleKey))
-            else:
-                return Paragraph('', style = stylesheet('default'))
+        if str(dfl(textfield1)) == '1':
+            return Paragraph('<b>Cultivated specimen</b>', style = stylesheet(styleKey))
         else:
             return Paragraph('', style = stylesheet('default'))
         
@@ -198,7 +195,7 @@ def genPrintLabelPDFs(labelDataInput):
             barcodeValue = dfl('catalogNumber')
             code39._Code39Base._humanText = newHumanText  #Note, overriding the human text from this library to omit the stopcode ('+')
             barcode39Std = code39.Standard39(barcodeValue,barHeight=(yPaperSize * .10  ), barWidth=((xPaperSize * 0.28)/(len(barcodeValue)*13+35)), humanReadable=True, quiet = False, checksum=0)
-                                             #^^^Note width is dynamic, but I don't know the significance of *11+35 beyond making it work.
+                                             #^^^Note width is dynamic, but I don't know the significe of *13+35 beyond making it work.
             return barcode39Std
         else:
             return ''
@@ -231,10 +228,9 @@ def genPrintLabelPDFs(labelDataInput):
      
         row2 = Table([[
             sciName('scientificName','scientificNameAuthorship','sciNameSTY'),
-            Para('eventDate','dateSTY')
-                      ]],
-        colWidths = (xPaperSize * .80,xPaperSize * .18), rowHeights = None,
-        style = tableSty)
+            Para('eventDate','dateSTY')]],
+                colWidths = (xPaperSize * .80,xPaperSize * .18),
+                rowHeights = None,style = tableSty)
 
         row3 = Table([[
                 Para('locality','default')]],
@@ -253,52 +249,48 @@ def genPrintLabelPDFs(labelDataInput):
             colWidths = xPaperSize * .49, rowHeights = None,
             style=tableSty)
 
-        row6 = Table([[
+        if dfl('cultivationStatus') == '1':  #If cultivation status is not '1' (True from app) then forfit the space in case Substrate field is long.
+            row6 = Table([[
             Para('substrate','default','Substrate: '),
             cultivationStatusChecker('cultivationStatus','rightSTY')]],    
             colWidths = (xPaperSize * .68,xPaperSize * .30), rowHeights = None,
             style=tableSty)
+            
+        else:
+            row6 = Table([[
+            Para('substrate','default','Substrate: ')]],style=tableSty)
 
         row7 = [collectedByPara('recordedBy','associatedCollectors','default','Collected by: ')]
 
+        tableList = [[row0],
+                      [row1],
+                      [row2],
+                      [row3],
+                      [row4],
+                      [row5],
+                      [row6],
+                      [row7]]
 
-        row8 = Table([[
-            Para('othercatalognumbers','default','Field Number: '),        
-            gpsCoordStringer('decimalLatitude', 'decimalLongitude', 'coordinateUncertaintyInMeters', 'minimumElevationInMeters','rightSTY')]],            
-            colWidths = (xPaperSize * .27, xPaperSize * .71), rowHeights = None,style=tableSty)
-
-#Testing if there is enough width to combine bottom row. If not split it.
-        
-        row8Test = Table([[row8]])
-        r8wid, r8hei = row8Test.wrap(0,0)
-
-        if (r8wid * inch) > xPaperSize * .98:
+        #Testing if GPS String can fit on one row with the field number. If not, split them into two rows.
+        gpsStrElement = gpsCoordStringer('decimalLatitude', 'decimalLongitude', 'coordinateUncertaintyInMeters', 'minimumElevationInMeters','rightSTY')
+        try:
+            gpsStrElement.wrap(1400, 1400)
+            gpsParaWidth = gpsStrElement.getActualLineWidths0()[0]
+        except AttributeError:
+            gpsParaWidth = 0
             
+        if gpsParaWidth > xPaperSize * .65:
             row8 = Table([[Para('othercatalognumbers','default','Field Number: ')]], style = tableSty)
-
-            row9 = Table([[gpsCoordStringer('decimalLatitude', 'decimalLongitude', 'coordinateUncertaintyInMeters', 'minimumElevationInMeters','rightSTY')]],style = tableSty)
-
-            tableList = [[row0],
-                              [row1],
-                              [row2],
-                              [row3],
-                              [row4],
-                              [row5],
-                              [row6],
-                              [row7],
-                              [row8],
-                              [row9]]
+            row9 = Table([[gpsStrElement]],style = tableSty)
+            tableList.append([row8])
+            tableList.append([row9])
             
         else:
-            tableList = [[row0],
-                              [row1],
-                              [row2],
-                              [row3],
-                              [row4],
-                              [row5],
-                              [row6],
-                              [row7],
-                              [row8]]
+            row8 = Table([[
+            Para('othercatalognumbers','default','Field Number: '),        
+            gpsStrElement]],            
+            colWidths = (xPaperSize * .33, xPaperSize * .65), rowHeights = None,style=tableSty)
+            tableList.append([row8])
                    
         docTableStyle = [                           #Cell alignment and padding settings (not text align within cells)
                 ('VALIGN',(0,3),(0,-1),'BOTTOM'),     #Rows 4-end align to bottom
@@ -318,7 +310,8 @@ def genPrintLabelPDFs(labelDataInput):
 
         wid, hei = docTable.wrap(0, 0)      #Determines how much space is used by the table
         spaceRemaining = (yPaperSize - hei - 10) #Determine how much is left on the page
-        spaceFiller = [Spacer(width = 0, height = spaceRemaining)]
+        spaceFiller = [Spacer(width = 0, height = (spaceRemaining/2))] #assign half the remaining space to a filler (to distrib into two places.
+        tableList.insert(3,spaceFiller)     #build from bottom up because it is less confusing for the index values.
         tableList.insert(2,spaceFiller)
 
         docTable = Table(tableList, style = docTableStyle ) #build the final table
