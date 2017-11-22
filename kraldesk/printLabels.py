@@ -242,12 +242,22 @@ def genPrintLabelPDFs(labelDataInput):
                 rowHeights=yPaperSize * .15,
                 style = tableSty)
 
-        row5 = Table([[
-            Para('habitat','default','Habitat: '),
-            Para('individualCount','rightSTY', 'Approx. ≥ ',' on site.')]],
-            
-            colWidths = xPaperSize * .49, rowHeights = None,
-            style=tableSty)
+        if dfl('individualCount') != '':
+            row5 = Table([[
+                Para('habitat','default','Habitat: '),
+                Para('individualCount','rightSTY', 'Approx. ≥ ',' on site.')]],
+                colWidths = (xPaperSize * .68,xPaperSize * .30), rowHeights = None,
+                style = [
+                    ('VALIGN',(1,0),(1,0),'CENTER'),
+                    ('ALIGN',(0,0),(0,0),'LEFT'),
+                    ('ALIGN',(1,0),(1,0),'RIGHT'),
+                    ('LEFTPADDING',(0,0),(-1,-1), 0),
+                    ('RIGHTPADDING',(0,0),(-1,-1), 0),
+                    ('TOPPADDING',(0,0),(-1,-1), 0),
+                    ('BOTTOMPADDING',(0,0),(-1,-1), 0)])
+        else:
+            row5 = Table([[
+                Para('habitat','default','Habitat: ')]], style=tableSty)
 
         if dfl('cultivationStatus') == '1':  #If cultivation status is not '1' (True from app) then forfit the space in case Substrate field is long.
             row6 = Table([[
