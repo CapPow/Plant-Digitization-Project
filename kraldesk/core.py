@@ -3235,14 +3235,20 @@ class Table(Canvas):
             # field number with '#'
             else:
                 associatedTaxaString = ''
-                for pair in associatedTaxa:
-                    sciName = self.model.getValueAt(pair[1], sNameColumn)
-                    for pairCheck in associatedTaxa:
-                        if str(sciName) != str(pairCheck[0]):
-                            associatedTaxaString = pairCheck[0] + '. ' + associatedTaxaString
-                    self.model.setValueAt(associatedTaxaString, pair[1], assTaxaColumn)
-                    associatedTaxaString = ''
-                associatedTaxa = []
+                if len(associatedTaxa) > 1:
+                    for sciName_Row_Tuple in associatedTaxa:
+                        resultList = []
+                        sciNameAtRow = self.model.getValueAt(sciName_Row_Tuple[1], sNameColumn)
+                        for comparison_Tuple in associatedTaxa:
+                            print(str(comparison_Tuple))
+                            currentSciName = comparison_Tuple[0]
+                            if sciNameAtRow != currentSciName:
+                                resultList.append(currentSciName)
+                        resultList = ', '.join(resultList) + '.'
+                        self.model.setValueAt(str(resultList), sciName_Row_Tuple[1], assTaxaColumn)
+                    associatedTaxa = []
+                else:
+                    associatedTaxa = []
                 if cRow < int(self.model.getRowCount()-1):
                     self.gotonextRow()
                     self.redraw()
@@ -3380,7 +3386,6 @@ class Table(Canvas):
                 if len(currentSciName) > 1:                     #If the name has more than 1 word after excluded word was removed then forget the excluded word.
                     sciNameSuffix = ''
                 currentSciName = ' '.join(currentSciName)
-
             else:
                 sciNameSuffix = ''
                 currentSciName = sciNameAtRow
@@ -3402,6 +3407,7 @@ class Table(Canvas):
                             self.model.setValueAt(str(sciName + sciNameSuffix), currentRow, sNameIndex)
                             if auth != 'None' or '':
                                 self.model.setValueAt(str(auth), currentRow, authIndex)
+                                return (sciName, currentRow)
                 else:
                     return currentSciName
             elif isinstance(results, str):
