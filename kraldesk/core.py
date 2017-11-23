@@ -3351,7 +3351,7 @@ class Table(Canvas):
                     # self.uniqueLocality.append(tempDict)
                     addressString = ', '.join(addressString[::-1])
                     localityAddressAdded = addressString + ', ' + locality
-                    localityAddressAdded = localityAddressAdded.strip()
+                    localityAddressAdded = localityAddressAdded.rstrip().rstrip(',')
 
                     # ensure we don't add locality string twice
                     if addressString not in locality:
