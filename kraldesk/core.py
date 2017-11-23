@@ -3205,6 +3205,15 @@ class Table(Canvas):
         self.parentframe.master.title("KralDesk (Processing Records...)")
         while cRow < int(self.model.getRowCount()):
             cRow = self.currentrow
+            
+            #Clean duplicate primary collector names out of associated collectors. Presuming they're split with a " , ".
+            assCollectorColumn = self.findColumnIndex('associatedCollectors')
+            recordedByColumn = self.findColumnIndex('recordedBy')
+            associatedCollectors = self.model.getValueAt(cRow, assCollectorColumn).split(',')
+            recordedBy = self.model.getValueAt(cRow, recordedByColumn)
+            associatedCollectors = ', '.join([x.strip() for x in associatedCollectors if x.strip() != recordedBy.strip()])
+            self.model.setValueAt(associatedCollectors, cRow, assCollectorColumn)
+
             catNum = self.model.getValueAt(cRow, catNumColumn)
             catNumList = catNum.split('-')
             if catNumList[1] != '#':
