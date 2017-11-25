@@ -97,6 +97,15 @@ def genPrintLabelPDFs(labelDataInput):
             fontSize= relFont * 1.18,
             alignment=TA_LEFT,
             spaceAfter = 1
+            
+        )
+        styles['sciNameSTYSmall'] = ParagraphStyle(
+            'sciNameSTYSmall',
+            parent=styles['default'],
+            fontSize= relFont,
+            alignment=TA_LEFT,
+            spaceAfter = 1
+            
         )
         styles['rightSTY'] = ParagraphStyle(
             'rightSTY',
@@ -225,12 +234,37 @@ def genPrintLabelPDFs(labelDataInput):
                 
         
         row1 = Para('samplingEffort','samplingEffortSTY')
-     
-        row2 = Table([[
-            sciName('scientificName','scientificNameAuthorship','sciNameSTY'),
-            Para('eventDate','dateSTY')]],
-                colWidths = (xPaperSize * .80,xPaperSize * .18),
-                rowHeights = None,style = tableSty)
+
+        #Test if Scienftific Name can Share a row with Event Date.
+        
+        scientificNameElement = sciName('scientificName','scientificNameAuthorship','sciNameSTY')
+        try:
+            scientificNameElement.wrap(1400, 1400) #Test wrap the string in a large environment to get it's desired ideal width.
+            sciNameParaWidth = scientificNameElement.getActualLineWidths0()[0]
+            sciHeight = scientificNameElement.height
+            
+        except AttributeError:
+            sciNameParaWidth = 0
+
+        if sciNameParaWidth > xPaperSize *.96:      #If the string is so large as to not fit, even alone then shrink font and split lines into two rows.
+            row2 = Table([[
+                Para('eventDate','dateSTY')],
+                [Spacer(width = xPaperSize *.98, height = sciHeight)], #Add spacer between rows for formatting.
+                [sciName('scientificName','scientificNameAuthorship','sciNameSTYSmall')]],
+                    colWidths = xPaperSize *.98 , rowHeights = None, style = tableSty)
+                
+        elif sciNameParaWidth > xPaperSize * .80:   #If the string is too big to share row with event date, split lines into rows.
+            row2 = Table([[
+                Para('eventDate','dateSTY')],
+                [Spacer(width = xPaperSize *.98, height = sciHeight)],  #Add spacer between rows for formatting.
+                [sciName('scientificName','scientificNameAuthorship','sciNameSTY')]],
+                    colWidths = xPaperSize *.98, rowHeights = None, style = tableSty)               
+        else:
+            row2 = Table([[
+                sciName('scientificName','scientificNameAuthorship','sciNameSTY'),
+                Para('eventDate','dateSTY')]],
+                    colWidths = (xPaperSize * .80,xPaperSize * .18),
+                    rowHeights = None,style = tableSty)
 
         row3 = Table([[
                 Para('locality','default')]],
@@ -242,12 +276,22 @@ def genPrintLabelPDFs(labelDataInput):
                 rowHeights=yPaperSize * .15,
                 style = tableSty)
 
-        row5 = Table([[
-            Para('habitat','default','Habitat: '),
-            Para('individualCount','rightSTY', 'Approx. ≥ ',' on site.')]],
-            
-            colWidths = xPaperSize * .49, rowHeights = None,
-            style=tableSty)
+        if dfl('individualCount') != '':
+            row5 = Table([[
+                Para('habitat','default','Habitat: '),
+                Para('individualCount','rightSTY', 'Approx. ≥ ',' on site.')]],
+                colWidths = (xPaperSize * .68,xPaperSize * .30), rowHeights = None,
+                style = [
+                    ('VALIGN',(1,0),(1,0),'CENTER'),
+                    ('ALIGN',(0,0),(0,0),'LEFT'),
+                    ('ALIGN',(1,0),(1,0),'RIGHT'),
+                    ('LEFTPADDING',(0,0),(-1,-1), 0),
+                    ('RIGHTPADDING',(0,0),(-1,-1), 0),
+                    ('TOPPADDING',(0,0),(-1,-1), 0),
+                    ('BOTTOMPADDING',(0,0),(-1,-1), 0)])
+        else:
+            row5 = Table([[
+                Para('habitat','default','Habitat: ')]], style=tableSty)
 
         if dfl('cultivationStatus') == '1':  #If cultivation status is not '1' (True from app) then forfit the space in case Substrate field is long.
             row6 = Table([[
@@ -274,7 +318,7 @@ def genPrintLabelPDFs(labelDataInput):
         #Testing if GPS String can fit on one row with the field number. If not, split them into two rows.
         gpsStrElement = gpsCoordStringer('decimalLatitude', 'decimalLongitude', 'coordinateUncertaintyInMeters', 'minimumElevationInMeters','rightSTY')
         try:
-            gpsStrElement.wrap(1400, 1400)
+            gpsStrElement.wrap(xPaperSize * .98 , yPaperSize * .98)
             gpsParaWidth = gpsStrElement.getActualLineWidths0()[0]
         except AttributeError:
             gpsParaWidth = 0
