@@ -133,12 +133,47 @@ class Table(Canvas):
         # how should the list look (variable name of dict? or none?)
         # empty list for now
         self.uniqueLocality = []
+
+        # List of Initial Column order
+        self.column_order = [
+            'site#',
+            '-',
+            'specimen#',            
+            'eventDate',
+            'scientificName',
+            'scientificNameAuthorship',
+            'genericcolumn1',
+            'locality',
+            'associatedTaxa',
+            'recordedBy',
+            'associatedCollectors',
+            'samplingEffort',
+            'locationRemarks',
+            'occurrenceRemarks',
+            'genericcolumn2',
+            'substrate',
+            'habitat',
+            'individualCount',
+            'reproductiveCondition',
+            'cultivationStatus',
+            'decimalLatitude',
+            'decimalLongitude',
+            'coordinateUncertaintyInMeters',
+            'minimumElevationInMeters',
+            'country',
+            'stateProvince',
+            'county',
+            'municipality',
+            'path',
+            'othercatalognumbers',
+            ]
+        
         return
 
     def set_defaults(self):
         """Set default settings"""
 
-        self.cellwidth = 60
+        self.cellwidth = 120
         self.maxcellwidth=300
         self.mincellwidth = 30
         self.rowheight=30
@@ -356,6 +391,7 @@ class Table(Canvas):
         """
 
         model = self.model
+        self.delete('addSpecimenWidget')
         self.rows = len(self.model.df.index)
         self.cols = len(self.model.df.columns)
         if self.cols == 0 or self.rows == 0:
@@ -419,7 +455,13 @@ class Table(Canvas):
             offset = rows[0]
             for row in self.visiblerows:
                 text = coldata.iloc[row-offset]
-                self.drawText(row, col, text, align)
+                if self.model.df.columns[col] == 'specimen#':       #If it is a site record add a widget to generate specimens from it.                  
+                    if self.model.getValueAt(row, col) == '!AddSITE':
+                        self.drawAddSpecimenWidget(row,col)
+                    else:
+                        self.drawText(row, col, text, align)
+                else:
+                    self.drawText(row, col, text, align)
             colname = df.columns[col]
 
         self.colorColumns()
@@ -434,11 +476,7 @@ class Table(Canvas):
             self.rowheader.drawSelectedRows(self.multiplerowlist)
             self.drawMultipleRows(self.multiplerowlist)
             self.drawMultipleCells()
-
-        try:
-            self.model.df.sort_values('othercatalognumbers', inplace = True, na_position = 'first')
-        except:
-            pass
+        self.refreshSpecimenSiteNums(df)
 
         return
     def getOnlySpecimenRecords(self):
@@ -595,19 +633,28 @@ class Table(Canvas):
         scale = self.getScale()
         for col in range(self.cols):
             colname = self.model.getColumnName(col)
-            if colname in self.model.columnwidths:
+            if colname == 'site#':
+                l = 3
+            if colname == '-':
+                l = 1
+            if colname == 'specimen#':
+                l = 6
+            elif colname in self.model.columnwidths:
                 w = self.model.columnwidths[colname]
             else:
                 w = self.cellwidth
-            l = self.model.getlongestEntry(col)
+                l = self.model.getlongestEntry(col)
+                if l < 5:
+                    l = 5
             txt = ''.join(['X' for i in range(l+1)])
             tw,tl = util.getTextLength(txt, self.maxcellwidth,
                                        font=self.thefont)
             #print (col,txt,l,tw)
-            if tw >= self.maxcellwidth:
-                tw = self.maxcellwidth
-            elif tw < self.cellwidth:
-                tw = self.cellwidth
+            if colname not in ['site#','-','specimen#']:
+                if tw >= self.maxcellwidth:
+                    tw = self.maxcellwidth
+                elif tw < self.cellwidth:
+                    tw = self.cellwidth
             self.model.columnwidths[colname] = tw
         return
 
@@ -638,7 +685,7 @@ class Table(Canvas):
 
     def sortTable(self, columnIndex=None, ascending=1, index=False):
         """Set up sort order dict based on currently selected field"""
-
+        
         df = self.model.df
         if columnIndex == None:
             columnIndex = self.multiplecollist
@@ -651,9 +698,23 @@ class Table(Canvas):
             colnames = list(df.columns[columnIndex])
             try:
                 df.sort_values(by=colnames, inplace=True, ascending=ascending)
+                
+            except TypeError:                   #If mixed int/str column probably result of filling NaN with ''
+                def tempConvertForSort(v):      #Handle it by creating temp columns and fill '' with negative values which to sort by
+                    if v == '':
+                        return int(-9999)
+                    else:
+                        return v                    
+                tempColNames = []
+                for colName in colnames:
+                    df['tempSort_{}'.format(colName)] = df[colName].apply(lambda x: tempConvertForSort(x))
+                    tempColNames.append('tempSort_{}'.format(colName))
+                df.sort_values(by=tempColNames, inplace=True, ascending= True)
+                df.drop(tempColNames, axis = 1, inplace = True)     #Drop temporary helper columns
+                       
             except Exception as e:
-                print('could not sort')
-                print(e)
+                       print(e)
+                
         self.redraw()
         return
 
@@ -771,19 +832,24 @@ class Table(Canvas):
     def addRowFromSite(self, event=None):
         """Helper function to pass row and column to addRowFromSite
            in data.py"""
-        
-        row = self.currentrow
-        siteData = copy.deepcopy(self.model.df.loc[row-1])
-        oldOtherCatNum = siteData['othercatalognumbers'].split('-')[0]
-        specimenNumbers = self.model.df['othercatalognumbers'].tolist()
-        nextSpecimenNumber = max([int(y) for y in[x.split('-')[1] for x in specimenNumbers if '#' not in x]]) + 1
-        newOtherCatNumber = str(oldOtherCatNum) + '-' + str(nextSpecimenNumber)
-        siteData.loc['othercatalognumbers'] = newOtherCatNumber
+
+        row = self.getSelectedRow()
+        siteData = self.model.df.loc[row].to_dict() #occasional error, this func adds incorrect site Num row (see 36-# in problems
+        oldOtherSiteNum = siteData.get('site#')
+        siteData.pop('specimen#', None)
+        specimenNumbers = self.model.df['specimen#'].tolist()
+        nextSpecimenNumber = max([int(y) for y in[x for x in specimenNumbers if isinstance(x, int)]]) + 1
+        newOtherCatNumber = str(oldOtherSiteNum) + '-' + str(nextSpecimenNumber)
+        siteData['othercatalognumbers'] = newOtherCatNumber
         df = self.model.df
-        a, b = df[:row-1], df[row-1:]
-        a = a.append(siteData)
+        a, b = df[:row], df[row:]
+        a = a.append(siteData, ignore_index=True)
         self.model.df = pd.concat([a,b], ignore_index=True)
-        self.sortTable(self.model.df.columns.get_loc('othercatalognumbers'))
+        self.model.resetIndex()
+        self.refreshSpecimenSiteNums(self.model.df)
+        self.sortTable([self.model.df.columns.get_loc('site#'),self.model.df.columns.get_loc('specimen#')])
+        self.setSelectedRow(row)
+        self.redrawVisible()
 
         return
 
@@ -2721,9 +2787,27 @@ class Table(Canvas):
             return 1
         return 1
 
+    def drawAddSpecimenWidget(self, row, col):
+        """Draw the Addspecimen Widget in Cell """
+        
+        self.delete('addSpecimenWidget'+str(col)+'_'+str(row))
+        h = self.rowheight
+        x1,y1,x2,y2 = self.getCellCoords(row,col)
+        w=x2-x1
+        wrap = False
+        pad=5
+        y=y1+h/2
+        def addRowFromSiteHelper(r):
+            self.setSelectedRow(r)
+            self.addRowFromSite()
+        addSpecimenButton = Button(self,  text="Add Specimen", command=lambda r=row: addRowFromSiteHelper(r)) #Note have to assign r within lambda or else command is always final site#
+        length = len("Add Specimen")
+        addSpecimenWidget = self.create_window(x1+w/2,y,window=addSpecimenButton, tag=('addSpecimenWidget','addSpecimenWidget'+str(col)+'_'+str(row)))
+
+
     def drawText(self, row, col, celltxt, align=None):
         """Draw the text inside a cell area"""
-
+        self.delete('addSpecimenWidget'+str(col)+'_'+str(row))
         self.delete('celltext'+str(col)+'_'+str(row))
         h = self.rowheight
         x1,y1,x2,y2 = self.getCellCoords(row,col)
@@ -3032,7 +3116,7 @@ class Table(Canvas):
         self.prefs = prefs
         defaultprefs = {'horizlines':self.horizlines, 'vertlines':self.vertlines,
                         'rowheight':self.rowheight,
-                        'cellwidth':80,
+                        'cellwidth':120,
                         'autoresizecols': self.autoresizecols,
                         'align': 'w',
                         'floatprecision': self.floatprecision,
@@ -3492,10 +3576,15 @@ class Table(Canvas):
                                                     initialdir = self.currentdir,
                                                     filetypes=[("csv","*.csv")])
 
-        if filename:
-            self.model.save(filename)
-            self.filename = filename
-            self.currentdir = os.path.basename(filename)
+        if self.filename:
+            dfForExport = copy.deepcopy(self.model.df)
+            dfForExport['othercatalognumbers'] = dfForExport['othercatalognumbers'].apply(lambda x: ("'")+str(x))
+            exportColumns = []
+            for item in dfForExport.columns.values.tolist():
+                if item not in ['site#', 'specimen#' ,'-']:
+                    exportColumns.append(item)
+            dfForExport.to_csv(filename, encoding = 'utf-8', index = False, columns = exportColumns)
+
             return
         else:
             
@@ -3505,8 +3594,7 @@ class Table(Canvas):
         """Save current file"""
 
         self.saveAs(self.filename)
-        return
-
+        
     def importCSV(self, filename=None, dialog=False, **kwargs):
         """Import from csv file"""
 
@@ -3527,47 +3615,22 @@ class Table(Canvas):
             if df is None:
                 return
         else:
-            column_order = [
-            'othercatalognumbers',
-            'eventDate',
-            'genericcolumn1',
-            'scientificName',
-            'scientificNameAuthorship',
-            'locality',
-            'associatedTaxa',
-            'recordedBy',
-            'associatedCollectors',
-            'samplingEffort',
-            'locationRemarks',
-            'occurrenceRemarks',
-            'genericcolumn2',
-            'substrate',
-            'habitat',
-            'individualCount',
-            'reproductiveCondition',
-            'cultivationStatus',
-            'decimalLatitude',
-            'decimalLongitude',
-            'coordinateUncertaintyInMeters',
-            'minimumElevationInMeters',
-            'country',
-            'stateProvince',
-            'county',
-            'path'
-            ]
+            
         #Excel is interpreting site numbers < 12 as dates and converting them. Ex: 08-16 to Aug-16.
         #To prevent data loss mobile app sends field numbers with a leading " ' " which we don't want.
-            df = pd.read_csv(filename, usecols = column_order, encoding =  'utf-8',keep_default_na=False, dtype=str,)[column_order]
+
+            df = pd.read_csv(filename, encoding = 'utf-8',keep_default_na=False, dtype=str,)
             df['othercatalognumbers'] = df['othercatalognumbers'].apply(lambda x: x.lstrip("'"))
-            
-            
+            df['-'] = '-'
+            df.fillna('')
+            self.refreshSpecimenSiteNums(df)
         model = TableModel(dataframe=df)
         self.updateModel(model)
+        self.sortTable([self.model.df.columns.get_loc('site#'),self.model.df.columns.get_loc('specimen#')])
+        self.adjustColumnWidths()
         self.redraw()
-        # set selected row to 0 on import
         self.setSelectedRow(0)
         self.drawSelectedRow()
-        # at first row; at first cell
         self.drawSelectedRect(0,0)
         self.importpath = os.path.dirname(filename)
         return
@@ -3606,7 +3669,37 @@ class Table(Canvas):
             self.filename = filename
             self.currentdir = os.path.basename(filename)
         return
+    def refreshSpecimenSiteNums(self, dframe):
+    
+        def specimenNumExtract(catNum):
+            try:
+                result = catNum.split('-')[1]
+                if result.isdigit():
+                    return int(result)
+                else:
+                    return '!AddSITE'
+            except (ValueError, IndexError) as e:
+                return '!AddSITE'
 
+        def siteNumExtract(catNum):
+            try:
+                result = catNum.split('-')[0]
+                if result.isdigit():
+                    return int(result)
+                else:
+                    return ''
+            except ValueError:
+                return ''
+        df = dframe
+        if self.column_order:
+            df['site#'] = df['othercatalognumbers'].apply(lambda x: siteNumExtract(x))
+            df['specimen#'] = df['othercatalognumbers'].apply(lambda x: specimenNumExtract(x))
+            for item in df.columns.values.tolist():
+                if item not in self.column_order:
+                    self.column_order.append(item)
+            self.model.df = df.reindex(columns = self.column_order)
+
+            
     def getGeometry(self, frame):
         """Get frame geometry"""
         return frame.winfo_rootx(), frame.winfo_rooty(), frame.winfo_width(), frame.winfo_height()
