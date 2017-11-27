@@ -271,9 +271,13 @@ def genPrintLabelPDFs(labelDataInput):
                 rowHeights=yPaperSize * .15,
                 style = tableSty)
 
+        if dfl('associatedTaxa') == '':         #If associated taxa is not used, give up the y space.
+            associatedTaxaHeight = 0
+        else:
+            associatedTaxaHeight = .15
         row4 = Table([[
                 Para('associatedTaxa','default','Associated taxa: ')]],
-                rowHeights=yPaperSize * .15,
+                rowHeights=yPaperSize * associatedTaxaHeight,
                 style = tableSty)
 
         if dfl('individualCount') != '':
@@ -306,6 +310,10 @@ def genPrintLabelPDFs(labelDataInput):
 
         row7 = [collectedByPara('recordedBy','associatedCollectors','default','Collected by: ')]
 
+        row6_5 = Table([[
+            Para('locationRemarks','default','Location Remarks: ')]],style=tableSty)
+#Note locationRemarks is testing, may not stay!
+            
         tableList = [[row0],
                       [row1],
                       [row2],
@@ -313,6 +321,7 @@ def genPrintLabelPDFs(labelDataInput):
                       [row4],
                       [row5],
                       [row6],
+                      [row6_5],
                       [row7]]
 
         #Testing if GPS String can fit on one row with the field number. If not, split them into two rows.
@@ -355,7 +364,7 @@ def genPrintLabelPDFs(labelDataInput):
         wid, hei = docTable.wrap(0, 0)      #Determines how much space is used by the table
         spaceRemaining = (yPaperSize - hei - 10) #Determine how much is left on the page
         spaceFiller = [Spacer(width = 0, height = (spaceRemaining/2))] #assign half the remaining space to a filler (to distrib into two places.
-        tableList.insert(3,spaceFiller)     #build from bottom up because it is less confusing for the index values.
+        tableList.insert(4,spaceFiller)     #build from bottom up because it is less confusing for the index values.
         tableList.insert(2,spaceFiller)
 
         docTable = Table(tableList, style = docTableStyle ) #build the final table

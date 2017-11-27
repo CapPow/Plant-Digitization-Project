@@ -3418,6 +3418,8 @@ class Table(Canvas):
                     for addressComponent in address:
                         if addressComponent['types'][0] == 'route':
                             streetName = addressComponent['long_name']
+                            if locality == '':
+                                streetName = 'near '+ streetName
                             addressString.append(streetName)
                         if addressComponent['types'][0] == 'administrative_area_level_1':
                             stateProvince = addressComponent['long_name']
