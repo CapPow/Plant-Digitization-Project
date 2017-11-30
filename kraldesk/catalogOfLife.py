@@ -25,20 +25,22 @@ def colNameSearch(givenScientificName):
     if len(identification) > 1:
         identQuery.append(identification[1])
         if len(identification) > 2:
-            exclusionList = ['sp.','sp','var','var.']   #Possibly controversial.
+            exclusionList = ['sp.','sp','var','var.']
             if identification[-1] in exclusionList:
                 identification.remove(identification[-1])                   
             identQuery.append(identification[-1])
     try:
         CoLQuery = ET.parse(urllib.request.urlopen('http://webservice.catalogueoflife.org/col/webservice?name={}&response=terse'.format('+'.join(identQuery)), timeout=30)).getroot()
-    except HTTPError:
+    # help(socket.timeout)
+    except OSError:
         try:
-            #This try attempt tries to load a catalog by specififying the current year
-            #We may want to ask the user first, or consider removing this.
-            #This tries  the current year then attempts a year prior before giving up.
+            # This try attempt tries to load a catalog by specififying the current year
+            # We may want to ask the user first, or consider removing this.
+            # This tries  the current year then attempts a year prior before giving up.
             print('useing the alternative CoL URL')
             CoLQuery = ET.parse(urllib.request.urlopen('http://webservice.catalogueoflife.org/annual-checklist/{}/webservice?name={}&response=terse'.format(datetime.datetime.now().year,'+'.join(identQuery)), timeout=30)).getroot()
-        except HTTPError:
+        # help(socket.timeout)
+        except OSError:
             try:
                 CoLQuery = ET.parse(urllib.request.urlopen('http://webservice.catalogueoflife.org/annual-checklist/{}/webservice?name={}&response=terse'.format(datetime.datetime.now().year -1 ,'+'.join(identQuery)), timeout=30)).getroot()
             except HTTPError:
