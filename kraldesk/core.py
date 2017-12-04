@@ -129,11 +129,6 @@ class Table(Canvas):
         self.importpath = None
         self.prevdf = None
 
-        # list of dictionaries that include each unique GPS and address components
-        # how should the list look (variable name of dict? or none?)
-        # empty list for now
-        self.uniqueLocality = []
-
         # List of Initial Column order
         self.column_order = [
             'site#',
@@ -3281,198 +3276,162 @@ class Table(Canvas):
     # runs through table automatically
     # calls genLocality and genScientificName
     def processRecords(self):
-        cRow = self.currentrow
-        assTaxaColumn = self.findColumnIndex('associatedTaxa')
-        catNumColumn = self.findColumnIndex('othercatalognumbers')
-        sNameColumn = self.findColumnIndex('scientificName')
+        currentRow = self.currentrow
+        localityColumn = self.findColumnIndex('locality')
+        catalogNumColumn = self.findColumnIndex('othercatalognumbers')
+        recordedByColumn = self.findColumnIndex('recordedBy')
+        assCollectorColumn = self.findColumnIndex('associatedCollectors')
+        scientNameColumn = self.findColumnIndex('scientificName')
+        authorshipColumn = self.findColumnIndex('scientificNameAuthorship')
+        assocTaxaColumn = self.findColumnIndex('associatedTaxa')
         associatedTaxa = []
+        # an indication of record processing
         self.parentframe.master.title("KralDesk (Processing Records...)")
-        while cRow < int(self.model.getRowCount()):
-            cRow = self.currentrow
-            
+
+        while currentRow < int(self.model.getRowCount()):
+            currentRow = self.currentrow
             #Clean duplicate primary collector names out of associated collectors. Presuming they're split with a " , ".
-            assCollectorColumn = self.findColumnIndex('associatedCollectors')
-            recordedByColumn = self.findColumnIndex('recordedBy')
-            associatedCollectors = self.model.getValueAt(cRow, assCollectorColumn).split(',')
-            recordedBy = self.model.getValueAt(cRow, recordedByColumn)
+            associatedCollectors = self.model.getValueAt(currentRow, assCollectorColumn).split(',')
+            recordedBy = self.model.getValueAt(currentRow, recordedByColumn)
             associatedCollectors = ', '.join([x.strip() for x in associatedCollectors if x.strip() != recordedBy.strip()])
-            self.model.setValueAt(associatedCollectors, cRow, assCollectorColumn)
-
-            catNum = self.model.getValueAt(cRow, catNumColumn)
-            catNumList = catNum.split('-')
-            if catNumList[1] != '#':
-                resLoc = self.genLocality(cRow)
-                # missing gps coordinates
-                if resLoc == "loc_error_no_gps":
-                    self.redraw()
-                elif resLoc == "user_set_gps":
-                    self.parentframe.master.title("KralDesk")
-                    self.redraw()
-                    return
-                resSci = self.genScientificName(cRow)
-                # missing scientific name
-                if resSci == "user_set_sciname":
-                    self.parentframe.master.title("KralDesk")
-                    self.redraw()
-                    return
-                else:
-                    if self.model.getValueAt(cRow, catNumColumn).split('-')[0] == self.model.getValueAt(cRow-1, catNumColumn).split('-')[0]:
-                        associatedTaxa.append((resSci, cRow))
-                if cRow < int(self.model.getRowCount()-1):
-                    self.gotonextRow()
-                    self.redraw()
-                else:
-                    self.parentframe.master.title("KralDesk")
-                    self.redraw()
-                    return
-            # field number with '#'
+            self.model.setValueAt(associatedCollectors, currentRow, assCollectorColumn)
+            
+            resultLocality = self.genLocality(currentRow)
+            # missing gps coordinates
+            if resultLocality == "loc_error_no_gps":
+                self.redraw()
+            elif resultLocality == "user_set_gps":
+                self.parentframe.master.title("KralDesk")
+                self.redraw()
+                return
+            # modify to set value here
             else:
-                associatedTaxaString = ''
-                if len(associatedTaxa) > 1:
-                    for sciName_Row_Tuple in associatedTaxa:
-                        resultList = []
-                        sciNameAtRow = self.model.getValueAt(sciName_Row_Tuple[1], sNameColumn)
-                        for comparison_Tuple in associatedTaxa:
-                            print(str(comparison_Tuple))
-                            currentSciName = comparison_Tuple[0]
-                            if sciNameAtRow != currentSciName:
-                                resultList.append(currentSciName)
-                        resultList = ', '.join(resultList) + '.'
-                        self.model.setValueAt(str(resultList), sciName_Row_Tuple[1], assTaxaColumn)
-                    associatedTaxa = []
-                else:
-                    associatedTaxa = []
-                if cRow < int(self.model.getRowCount()-1):
-                    self.gotonextRow()
+                self.model.setValueAt(resultLocality, currentRow, localityColumn)
+                self.redraw()
+            
+            catNum = self.model.getValueAt(currentRow, catalogNumColumn)
+            resSci = self.genScientificName(currentRow)
+            # missing scientific name
+            if resSci == "user_set_sciname":
+                self.parentframe.master.title("KralDesk")
+                self.redraw()
+                return
+            else:
+                if isinstance(resSci, tuple):
+                    self.model.setValueAt(resSci[0], currentRow, scientNameColumn)
+                    # getting more weird authorship return values? add them here!
+                    if resSci[1] != 'None':
+                        self.model.setValueAt(resSci[1], currentRow, authorshipColumn)
+                    associatedTaxa.append([currentRow, catNum, resSci[0]])
                     self.redraw()
                 else:
-                    self.parentframe.master.title("KralDesk")
+                    self.model.setValueAt(resSci, currentRow, scientNameColumn)
+                    associatedTaxa.append([currentRow, catNum, resSci])
                     self.redraw()
-                    return
-        return
+            if currentRow < int(self.model.getRowCount()-1):
+                self.gotonextRow()
+                self.redraw()
+            else:
+                # reached end of file
+                # add associated taxa
+                # list of lists with [currentRow, catNum, resSci] for each specimen in table
+                for elem in associatedTaxa:
+                    resultList = []
+                    for innerElem in associatedTaxa:
+                        if elem[1].split('-')[0] == innerElem[1].split('-')[0]:
+                            resultList.append(innerElem)
+                    if len(resultList) > 1:
+                        resultString = ''
+                        for resultElem in resultList:
+                            resultString += " " + resultElem[2]
+                        currentSciName = self.model.getValueAt(int(elem[0]), scientNameColumn)
+                        resultString = resultString.replace(currentSciName, "").strip()
+                        self.model.setValueAt(resultString, int(elem[0]), assocTaxaColumn)
+                self.parentframe.master.title("KralDesk")
+                self.redraw()
+                return
 
-    # takes current row as argument
     # calls google reverse geolocation api
-    # sets values in proper cells in Table
     def genLocality(self, currentRowArg):
         currentRow = currentRowArg
-        pathIndex = self.findColumnIndex('path')
-        localityIndex = self.findColumnIndex('locality')
-        municipalityIndex = self.findColumnIndex('municipality')
-        countyIndex = self.findColumnIndex('county')
-        stateProvinceIndex = self.findColumnIndex('stateProvince')
-        countryIndex = self.findColumnIndex('country')
-        latitudeIndex = self.findColumnIndex('decimalLatitude')
-        longitudeIndex = self.findColumnIndex('decimalLongitude')
+        pathColumn = self.findColumnIndex('path')
+        localityColumn = self.findColumnIndex('locality')
+        municipalityColumn = self.findColumnIndex('municipality')
+        countyColumn = self.findColumnIndex('county')
+        stateColumn = self.findColumnIndex('stateProvince')
+        countryColumn = self.findColumnIndex('country')
+        latitudeColumn = self.findColumnIndex('decimalLatitude')
+        longitudeColumn = self.findColumnIndex('decimalLongitude')
 
-        if localityIndex != '':
-            locality = self.model.getValueAt(currentRow, localityIndex)
+        if localityColumn != '':
+            currentLocality = self.model.getValueAt(currentRow, localityColumn)
             try:
-                latitude = (self.model.getValueAt(currentRow, latitudeIndex))
-                longitude = (self.model.getValueAt(currentRow, longitudeIndex))
+                latitude = (self.model.getValueAt(currentRow, latitudeColumn))
+                longitude = (self.model.getValueAt(currentRow, longitudeColumn))
                 if latitude == '' or longitude == '':
                     raise ValueError("Latitude/Longitude have no values")
-            # return from here, can't call API without lat/long
             except ValueError:
                 messagebox.showinfo("Locality Error", "Row " + str(currentRow+1) + " has no GPS coordinates!")
                 if messagebox.askyesno("Locality Error", "Would you like to manually enter GPS coordinates for row " + str(currentRow+1)):
                     self.setSelectedRow(currentRow)
-                    self.setSelectedCol(latitudeIndex)
+                    self.setSelectedCol(latitudeColumn)
                     return "user_set_gps"
                 else:
                     return "loc_error_no_gps"
-            # filter will return a dictionary if matching lat/long exists
-            # using global list uniqueLocality to hold unique gps coordinate pairs
-            latMatch = list(filter(lambda elem: elem['latitude'] == str(latitude), self.uniqueLocality))
-            longMatch = list(filter( lambda elem: elem['longitude'] == str(longitude), self.uniqueLocality))
-
-            # set values in proper table cells if there's a match
-            if latMatch and longMatch and latMatch != [] and longMatch != []:
-                # use old locality string from dictionary
-                addressString = latMatch[0]['localityString']
-                localityAddressAdded = addressString + ' ' + locality
-                # should stop adding locality string twice through multiple runs of processRecords
-                if addressString not in locality:
-                    self.model.setValueAt(localityAddressAdded, currentRow, localityIndex)
-                if pathIndex != '':
-                    self.model.setValueAt(latMatch[0]['path'], currentRow, pathIndex)
-                if municipalityIndex != '':
-                    self.model.setValueAt(latMatch[0]['municipality'], currentRow, municipalityIndex)
-                if countyIndex != '':
-                    self.model.setValueAt(latMatch[0]['county'], currentRow, countyIndex)
-                if stateProvinceIndex != '':
-                    self.model.setValueAt(latMatch[0]['stateProvince'], currentRow, stateProvinceIndex)
-                if countryIndex != '':
-                    self.model.setValueAt(latMatch[0]['country'], currentRow, countryIndex)
-
-            # call the reverse geolocation function
-            # function defined in locality.py
-            else:
-                address = reverseGeoCall(latitude, longitude)
-                # reverseGeoCall will return a list of results
-                # or it will return an error/status string
-                if isinstance(address, list):
-                    # no tempDict temporarily
-                    tempDict = {}
-                    addressString = []
-                    for addressComponent in address:
-                        if addressComponent['types'][0] == 'route':
-                            streetName = addressComponent['long_name']
-                            if locality == '':
-                                streetName = 'near '+ streetName
-                            addressString.append(streetName)
-                        if addressComponent['types'][0] == 'administrative_area_level_1':
-                            stateProvince = addressComponent['long_name']
-                            addressString.append(stateProvince)
-                        if addressComponent['types'][0] == 'administrative_area_level_2':
-                            county = addressComponent['long_name']
-                            addressString.append(county)
-                        if addressComponent['types'][0] == 'locality':
-                            municipality = addressComponent['long_name']
-                            addressString.append(municipality)
-                        if addressComponent['types'][0] == 'country':
-                            country = addressComponent['short_name']
-                            addressString.append(country)
-
-                    # self.uniqueLocality.append(tempDict)
-                    addressString = ', '.join(addressString[::-1])
-                    localityAddressAdded = addressString + ', ' + locality
-                    localityAddressAdded = localityAddressAdded.rstrip().rstrip(',')
-
-                    # ensure we don't add locality string twice
-                    if addressString not in locality:
-                        self.model.setValueAt(localityAddressAdded, currentRow, localityIndex)
-                    if municipalityIndex != '' and 'municipality' in locals():
-                        self.model.setValueAt(municipality, currentRow, municipalityIndex)
-                    if countyIndex != '' and 'county' in locals():
-                        self.model.setValueAt(county, currentRow, countyIndex)
-                    if stateProvinceIndex != '' and 'stateProvince' in locals():
-                        self.model.setValueAt(stateProvince, currentRow, stateProvinceIndex)
-                    if countryIndex != '' and 'country' in locals():
-                        self.model.setValueAt(country, currentRow, countryIndex)
-
-                # Google API call returned error/status string
+            address = reverseGeoCall(latitude, longitude)
+            if isinstance(address, list):
+                newLocality = []
+                for addressComponent in address:
+                    if addressComponent['types'][0] == 'route':
+                        # path could be Unamed Road
+                        # probably don't want this as a result?
+                        path = addressComponent['long_name']
+                        if currentLocality == '':
+                            path = 'near '+ path
+                        newLocality.append(path)
+                        self.model.setValueAt(path, currentRow, pathColumn)
+                    if addressComponent['types'][0] == 'administrative_area_level_1':
+                        stateProvince = addressComponent['long_name']
+                        newLocality.append(stateProvince)
+                        self.model.setValueAt(stateProvince, currentRow, stateColumn)
+                    if addressComponent['types'][0] == 'administrative_area_level_2':
+                        county = addressComponent['long_name']
+                        newLocality.append(county)
+                        self.model.setValueAt(county, currentRow, countyColumn)
+                    if addressComponent['types'][0] == 'locality':
+                        municipality = addressComponent['long_name']
+                        newLocality.append(municipality)
+                        self.model.setValueAt(municipality, currentRow, municipalityColumn)
+                    if addressComponent['types'][0] == 'country':
+                        country = addressComponent['short_name']
+                        newLocality.append(country)
+                        self.model.setValueAt(country, currentRow, countryColumn)
+                newLocality = ', '.join(newLocality[::-1])
+                if newLocality not in currentLocality:
+                    newLocality = newLocality + ', ' + currentLocality
+                    return newLocality
                 else:
-                    apiErrorMessage = address
-                    messagebox.showinfo("Locality Error", "Row " + str(currentRow+1) + " API Error: " + str(apiErrorMessage))
-                    if messagebox.askyesno("Locality Error", "This function requires an internet connection, would you like to retry?"):
-                        self.genLocality(currentRow)
-                    else:
-                        return "loc_apierr_no_retry"
+                    return currentLocality
+            # Google API call returned error/status string
+            else:
+                apiErrorMessage = address
+                messagebox.showinfo("Locality Error", "Row " + str(currentRow+1) + " API Error: " + str(apiErrorMessage))
+                if messagebox.askyesno("Locality Error", "This function requires an internet connection, would you like to retry?"):
+                    self.genLocality(currentRow)
+                else:
+                    return "loc_apierr_no_retry"
         else:
             messagebox.showinfo("Locality Error", "Locality generation requires GPS coordinates and a column named locality!")
             return
         return
 
-    # sets the scientific name of specimen
-    # uses colNameSearch in catalogOfLife.py
+    # gets the scientific name of specimen
     def genScientificName(self, currentRowArg):
         currentRow = currentRowArg
-        sNameIndex = self.findColumnIndex('scientificName')
-        authIndex = self.findColumnIndex('scientificNameAuthorship')
-
-        if sNameIndex != '':
-            sciNameAtRow = self.model.getValueAt(currentRow, sNameIndex)
+        sciNameColumn = self.findColumnIndex('scientificName')
+        authorColumn = self.findColumnIndex('scientificNameAuthorship')
+        if sciNameColumn != '':
+            sciNameAtRow = self.model.getValueAt(currentRow, sciNameColumn)
             exclusionWordList = ['sp.','Sp.','Sp','sp','spp','spp.','Spp','Spp.','var','var.','Var','Var.']
             if sciNameAtRow.split(' ')[-1] in exclusionWordList:    #If an excluded word is in scientific name then modify.
                 currentSciName = sciNameAtRow.split(' ')
@@ -3489,22 +3448,15 @@ class Table(Canvas):
                 if len(results) == 1:
                     sciName = results[0]
                     if messagebox.askyesno("Sci-Name", "(row " + str(currentRow+1) + ") " + " Would you like to change " + str(sciNameAtRow) + " to " + str(sciName) + "?"):
-                        self.model.setValueAt(str(results[0] + sciNameSuffix), currentRow, sNameIndex)
-                        return sciName
-                    else:
-                        return currentSciName
+                        return str(sciName + sciNameSuffix)
                 elif len(results) == 2:
                     sciName = results[0]
                     auth = results[1]
-                    if authIndex != '':
-                        currentAuth = self.model.getValueAt(currentRow, authIndex)
+                    if authorColumn != '':
                         if messagebox.askyesno("Sci-Name", "(row " + str(currentRow+1) + ") " + " Would you like to change " + str(sciNameAtRow) + " to " + str(sciName) + "? This will also update authority!"):
-                            self.model.setValueAt(str(sciName + sciNameSuffix), currentRow, sNameIndex)
-                            if auth != 'None' or '':
-                                self.model.setValueAt(str(auth), currentRow, authIndex)
-                                return (sciName, currentRow)
-                else:
-                    return currentSciName
+                            sciName = str(sciName + sciNameSuffix)
+                            auth = str(auth)
+                            return (sciName, auth)
             elif isinstance(results, str):
                 if results == 'not_accepted_or_syn':
                     messagebox.showinfo("Scientific Name Error", "No scientific name update!")
@@ -3512,12 +3464,11 @@ class Table(Canvas):
                     messagebox.showinfo("Scientific Name Error", "Row " + str(currentRow+1) + " has no scientific name.")
                     if messagebox.askyesno("Sci-Name", "Would you like to add scientific name to row " + str(currentRow+1)):
                         self.setSelectedRow(currentRow)
-                        self.setSelectedCol(sNameIndex)
+                        self.setSelectedCol(sciNameColumn)
                         return "user_set_sciname"
                 elif results == 'http_Error':
                      messagebox.showinfo("Scientific Name Error", "Catalog of Life Error, the webservice might be down. Try again later, if this issue persists please contact us: plantdigitizationprojectutc@gmail.com")
-                
-        return
+        return currentSciName
 
     # causes a pdf to be saved (uses dialog to get save name.
     # causes a pdf to be opened with default pdf reader.
