@@ -247,7 +247,7 @@ def genPrintLabelPDFs(labelDataInput):
         except (AttributeError, IndexError) as e:
             sciNameParaWidth = 0
 
-        if sciNameParaWidth > xPaperSize *.96:      #If the string is so large as to not fit, even alone then shrink font and split lines into two rows.
+        if sciNameParaWidth > xPaperSize *.96:  #If the string is so large as to not fit, even alone then shrink font and split lines into two rows.
             row2 = Table([[
                 Para('eventDate','dateSTY')],
                 [Spacer(width = xPaperSize *.98, height = sciHeight)], #Add spacer between rows for formatting.
