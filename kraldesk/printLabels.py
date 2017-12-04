@@ -3,6 +3,7 @@ from reportlab.platypus import Image, Table, TableStyle, Flowable, SimpleDocTemp
 from reportlab.platypus import Frame as platypusFrame   #NOTE SEE Special case import here to avoid namespace conflict with "Frame"
 from reportlab.platypus.flowables import Spacer
 from reportlab.platypus.paragraph import Paragraph
+#from reportlab.platypus.doctemplate import LayoutError #Prep for font scaling handling
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.enums import TA_LEFT, TA_RIGHT, TA_CENTER, TA_JUSTIFY
 from reportlab.graphics.barcode import code39 #Note, overriding a function from this import in barcode section
@@ -242,11 +243,11 @@ def genPrintLabelPDFs(labelDataInput):
             scientificNameElement.wrap(1400, 1400) #Test wrap the string in a large environment to get it's desired ideal width.
             sciNameParaWidth = scientificNameElement.getActualLineWidths0()[0]
             sciHeight = scientificNameElement.height
-            
-        except AttributeError:
+        
+        except (AttributeError, IndexError) as e:
             sciNameParaWidth = 0
 
-        if sciNameParaWidth > xPaperSize *.96:      #If the string is so large as to not fit, even alone then shrink font and split lines into two rows.
+        if sciNameParaWidth > xPaperSize *.96:  #If the string is so large as to not fit, even alone then shrink font and split lines into two rows.
             row2 = Table([[
                 Para('eventDate','dateSTY')],
                 [Spacer(width = xPaperSize *.98, height = sciHeight)], #Add spacer between rows for formatting.
@@ -264,12 +265,13 @@ def genPrintLabelPDFs(labelDataInput):
                 sciName('scientificName','scientificNameAuthorship','sciNameSTY'),
                 Para('eventDate','dateSTY')]],
                     colWidths = (xPaperSize * .80,xPaperSize * .18),
-                    rowHeights = None,style = tableSty)
+                    rowHeights = None, style = tableSty)
 
         row3 = Table([[
                 Para('locality','default')]],
-                rowHeights=yPaperSize * .15,
-                style = tableSty)
+                     rowHeights=None, style = tableSty)
+                #rowHeights=yPaperSize * .15,
+                
 
         if dfl('associatedTaxa') == '':         #If associated taxa is not used, give up the y space.
             associatedTaxaHeight = 0
@@ -277,9 +279,10 @@ def genPrintLabelPDFs(labelDataInput):
             associatedTaxaHeight = .15
         row4 = Table([[
                 Para('associatedTaxa','default','Associated taxa: ')]],
-                rowHeights=yPaperSize * associatedTaxaHeight,
+                rowHeights=None,
                 style = tableSty)
-
+        #rowHeights=yPaperSize * associatedTaxaHeight,
+        
         if dfl('individualCount') != '':
             row5 = Table([[
                 Para('habitat','default','Habitat: '),
@@ -313,6 +316,9 @@ def genPrintLabelPDFs(labelDataInput):
         row6_5 = Table([[
             Para('locationRemarks','default','Location Remarks: ')]],style=tableSty)
 #Note locationRemarks is testing, may not stay!
+
+        row6_7 = Table([[
+                    Para('occurrenceRemarks','default','Occurence Remarks: ')]],style=tableSty)
             
         tableList = [[row0],
                       [row1],
@@ -322,6 +328,7 @@ def genPrintLabelPDFs(labelDataInput):
                       [row5],
                       [row6],
                       [row6_5],
+                      [row6_7],
                       [row7]]
 
         #Testing if GPS String can fit on one row with the field number. If not, split them into two rows.
@@ -363,8 +370,9 @@ def genPrintLabelPDFs(labelDataInput):
 
         wid, hei = docTable.wrap(0, 0)      #Determines how much space is used by the table
         spaceRemaining = (yPaperSize - hei - 10) #Determine how much is left on the page
-        spaceFiller = [Spacer(width = 0, height = (spaceRemaining/2))] #assign half the remaining space to a filler (to distrib into two places.
+        spaceFiller = [Spacer(width = 0, height = (spaceRemaining/3))] #assign half the remaining space to a filler (to distrib into two places.
         tableList.insert(4,spaceFiller)     #build from bottom up because it is less confusing for the index values.
+        tableList.insert(3,spaceFiller)
         tableList.insert(2,spaceFiller)
 
         docTable = Table(tableList, style = docTableStyle ) #build the final table
