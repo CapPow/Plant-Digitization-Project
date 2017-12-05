@@ -3342,10 +3342,11 @@ class Table(Canvas):
                             resultList.append(innerElem)
                     if len(resultList) > 1:
                         resultString = ''
-                        for resultElem in resultList:
-                            resultString += " " + resultElem[2]
                         currentSciName = self.model.getValueAt(int(elem[0]), scientNameColumn)
-                        resultString = resultString.replace(currentSciName, "").strip()
+                        for resultElem in resultList:
+                            if resultElem[2] not in ['', currentSciName]:
+                                resultString += ', ' + resultElem[2]
+                        resultString = resultString.strip().lstrip(', ')
                         self.model.setValueAt(resultString, int(elem[0]), assocTaxaColumn)
                 self.parentframe.master.title("KralDesk")
                 self.redraw()
