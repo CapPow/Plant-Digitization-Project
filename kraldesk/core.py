@@ -3480,9 +3480,12 @@ class Table(Canvas):
     # http://pandastable.readthedocs.io/en/latest/_modules/pandastable/core.html#Table.getSelectedDataFrame
 
     def genLabelPDF(self):
-        toPrintDataFrame = self.getSelectedLabelDict()
-        #toPrintDataFrame = self.getSelectedDataFrame()
-        genPrintLabelPDFs(toPrintDataFrame)
+        toPrintDataFrame = self.getSelectedLabelDict()  #function returns a list of dicts (one for each record to print)
+        for record in toPrintDataFrame:         #for each dict, verify that the associatedTaxa string does not consist of >15 items.
+            associatedTaxaItems = record.get('associatedTaxa').split(', ')
+            if len(associatedTaxaItems) > 15:   #if it is too large, trunicate it at 15, and append "..." to indicate trunication.
+                record['associatedTaxa'] = ', '.join(associatedTaxaItems[:15])+' ...'
+        genPrintLabelPDFs(toPrintDataFrame)     #sent modified list of dicts to the printLabelPDF module without editing actual data fields.
         return
 
     
