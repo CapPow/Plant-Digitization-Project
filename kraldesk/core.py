@@ -3445,8 +3445,9 @@ class Table(Canvas):
         currentRow = currentRowArg
         sciNameColumn = self.findColumnIndex('scientificName')
         authorColumn = self.findColumnIndex('scientificNameAuthorship')
-        if sciNameColumn != '':
-            sciNameAtRow = self.model.getValueAt(currentRow, sciNameColumn)
+        sciNameAtRow = self.model.getValueAt(currentRow, sciNameColumn)
+        sciAuthorAtRow = str(self.model.getValueAt(currentRow, authorColumn))
+        if sciNameAtRow != '':            
             exclusionWordList = ['sp.','Sp.','Sp','sp','spp','spp.','Spp','Spp.','var','var.','Var','Var.']
             if sciNameAtRow.split(' ')[-1] in exclusionWordList:    #If an excluded word is in scientific name then modify.
                 currentSciName = sciNameAtRow.split(' ')
@@ -3462,18 +3463,23 @@ class Table(Canvas):
                 currentSciName = sciNameAtRow
             results = colNameSearch(currentSciName)
             if isinstance(results, tuple):
-                sciName = results[0]
-                if currentSciName != sciName:
-                    if len(results) == 1:                        
-                        if messagebox.askyesno("Sci-Name", "(row " + str(currentRow+1) + ") " + " Would you like to change " + str(sciNameAtRow) + " to " + str(sciName) + "?"):
-                            return str(sciName + sciNameSuffix)
-                    elif len(results) == 2:
-                        auth = results[1]
-                        if authorColumn != '':
-                            if messagebox.askyesno("Sci-Name", "(row " + str(currentRow+1) + ") " + " Would you like to change " + str(sciNameAtRow) + " to " + str(sciName) + "? This will also update authority!"):
-                                sciName = str(sciName + sciNameSuffix)
-                                auth = str(auth)
-                                return (sciName, auth)
+                print(sciAuthorAtRow)
+                sciName = str(results[0])
+                auth = str(results[1])
+                if currentSciName != sciName:   #If scientific name needs updating, ask. Don't ask about new authority in this case.
+                    if messagebox.askyesno('Sci-Name at row {}'.format(currentRow+1), 'Would you like to change {} to {} and update the authority?'.format(sciNameAtRow,sciName)):
+                        return (sciName, auth)
+                    else:
+                        return (currentSciName + sciNameSuffix, sciAuthorAtRow) #if user declines the change return the old stuff.
+
+                elif sciAuthorAtRow == '':  #if author is empty, update it without asking.
+                    return (currentSciName + sciNameSuffix, auth)
+                elif sciAuthorAtRow != auth:  #If only Author needs updating, ask and keep origional scientific name (we've covered if itis wrong already)
+                    if messagebox.askyesno('Authority at row {}'.format(currentRow+1), 'Would you like to update the authorship for {} from {} to {}?'.format(sciNameAtRow,sciAuthorAtRow,auth)):
+                        return (currentSciName + sciNameSuffix, auth)
+                    else:
+                        return (currentSciName + sciNameSuffix, sciAuthorAtRow) #if user declines the change return the old stuff.
+                    
             elif isinstance(results, str):
                 if results == 'not_accepted_or_syn':
                     messagebox.showinfo("Scientific Name Error", "No scientific name update!")
@@ -3485,7 +3491,13 @@ class Table(Canvas):
                         return "user_set_sciname"
                 elif results == 'http_Error':
                      messagebox.showinfo("Scientific Name Error", "Catalog of Life Error, the webservice might be down. Try again later, if this issue persists please contact us: plantdigitizationprojectutc@gmail.com")
-        return currentSciName
+        else:
+            messagebox.showinfo("Scientific Name Error", "Row " + str(currentRow+1) + " has no scientific name.")
+            if messagebox.askyesno("Sci-Name", "Would you like to add scientific name to row " + str(currentRow+1)):
+                self.setSelectedRow(currentRow)
+                self.setSelectedCol(sciNameColumn)
+                return "user_set_sciname"
+            return currentSciName
 
     # causes a pdf to be saved (uses dialog to get save name.
     # causes a pdf to be opened with default pdf reader.
