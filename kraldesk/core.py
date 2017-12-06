@@ -3342,6 +3342,14 @@ class Table(Canvas):
                 self.model.df = self.model.df.groupby('site#').apply(self.genAssociatedTaxa).reset_index(drop=True)#group by 'site#', apply genAssociatedTaxa groupwise
                 self.parentframe.master.title("KralDesk")
                 self.redraw()
+        #this for loop rectifies the scientific name's presence also being in associated Taxa. It would be ideal to do this in associatedTaxa
+        for recordRow in range(self.model.getRowCount()):
+            recordAssociatedTaxa = self.model.getValueAt(recordRow, assocTaxaColumn)
+            recordAssociatedTaxa = recordAssociatedTaxa.split(', ')
+            recordAssociatedTaxa.remove(self.model.getValueAt(recordRow,scientNameColumn))
+            recordAssociatedTaxa = ', '.join(recordAssociatedTaxa).strip().strip(', ')
+            self.model.setValueAt(recordAssociatedTaxa, recordRow, assocTaxaColumn)
+
         self.parentframe.master.title("KralDesk")
         self.setSelectedRow(0)
         self.redraw()
@@ -3463,7 +3471,6 @@ class Table(Canvas):
                 currentSciName = sciNameAtRow
             results = colNameSearch(currentSciName)
             if isinstance(results, tuple):
-                print(sciAuthorAtRow)
                 sciName = str(results[0])
                 auth = str(results[1])
                 if currentSciName != sciName:   #If scientific name needs updating, ask. Don't ask about new authority in this case.
@@ -3479,6 +3486,8 @@ class Table(Canvas):
                         return (currentSciName + sciNameSuffix, auth)
                     else:
                         return (currentSciName + sciNameSuffix, sciAuthorAtRow) #if user declines the change return the old stuff.
+                else:
+                    return (currentSciName + sciNameSuffix, sciAuthorAtRow)
                     
             elif isinstance(results, str):
                 if results == 'not_accepted_or_syn':
