@@ -2630,7 +2630,8 @@ class Table(Canvas):
         labelDicts = []
         for datum in data:
             datum = {key: value.strip() for key, value in datum.items() if isinstance(value,str)} #dict comprehension!
-            labelDicts.append(datum)
+            if datum.get('specimen#') not in ['#','!AddSITE']:   #keep out the site level records!
+                labelDicts.append(datum)
         return labelDicts
     
     #--- Drawing stuff ---
@@ -3289,68 +3290,81 @@ class Table(Canvas):
         self.parentframe.master.title("KralDesk (Processing Records...)")
 
         while currentRow < int(self.model.getRowCount()):
-            currentRow = self.currentrow
-            #Clean duplicate primary collector names out of associated collectors. Presuming they're split with a " , ".
-            associatedCollectors = self.model.getValueAt(currentRow, assCollectorColumn).split(',')
-            recordedBy = self.model.getValueAt(currentRow, recordedByColumn)
-            associatedCollectors = ', '.join([x.strip() for x in associatedCollectors if x.strip() != recordedBy.strip()])
-            self.model.setValueAt(associatedCollectors, currentRow, assCollectorColumn)
-            
-            resultLocality = self.genLocality(currentRow)
-            # missing gps coordinates
-            if resultLocality == "loc_error_no_gps":
-                self.redraw()
-            elif resultLocality == "user_set_gps":
-                self.parentframe.master.title("KralDesk")
-                self.redraw()
-                return
-            # modify to set value here
-            else:
-                self.model.setValueAt(resultLocality, currentRow, localityColumn)
-                self.redraw()
-            
-            catNum = self.model.getValueAt(currentRow, catalogNumColumn)
-            resSci = self.genScientificName(currentRow)
-            # missing scientific name
-            if resSci == "user_set_sciname":
-                self.parentframe.master.title("KralDesk")
-                self.redraw()
-                return
-            else:
-                if isinstance(resSci, tuple):
-                    self.model.setValueAt(resSci[0], currentRow, scientNameColumn)
-                    # getting more weird authorship return values? add them here!
-                    if resSci[1] != 'None':
-                        self.model.setValueAt(resSci[1], currentRow, authorshipColumn)
-                    associatedTaxa.append([currentRow, catNum, resSci[0]])
+            try:
+                currentRow = self.currentrow
+                if self.model.getValueAt(currentRow, self.findColumnIndex('specimen#')) in ['#','!AddSITE']:
+                    self.gotonextRow()
+                    currentRow = self.currentrow
                     self.redraw()
+                    continue
+                #Clean duplicate primary collector names out of associated collectors. Presuming they're split with a " , ".
+                associatedCollectors = self.model.getValueAt(currentRow, assCollectorColumn).split(',')
+                recordedBy = self.model.getValueAt(currentRow, recordedByColumn)
+                associatedCollectors = ', '.join([x.strip() for x in associatedCollectors if x.strip() != recordedBy.strip()])
+                self.model.setValueAt(associatedCollectors, currentRow, assCollectorColumn)
+                
+                resultLocality = self.genLocality(currentRow)
+                # missing gps coordinates
+                if resultLocality == "loc_error_no_gps":
+                    self.redraw()
+                elif resultLocality == "user_set_gps":
+                    self.parentframe.master.title("KralDesk")
+                    self.redraw()
+                    return
+                # modify to set value here
                 else:
-                    self.model.setValueAt(resSci, currentRow, scientNameColumn)
-                    associatedTaxa.append([currentRow, catNum, resSci])
+                    self.model.setValueAt(resultLocality, currentRow, localityColumn)
                     self.redraw()
-            if currentRow < int(self.model.getRowCount()-1):
+                
+                catNum = self.model.getValueAt(currentRow, catalogNumColumn)
+                resSci = self.genScientificName(currentRow)
+                # missing scientific name
+                if resSci == "user_set_sciname":
+                    self.parentframe.master.title("KralDesk")
+                    self.redraw()
+                    return
+                else:
+                    if isinstance(resSci, tuple):
+                        self.model.setValueAt(resSci[0], currentRow, scientNameColumn)
+                        # getting more weird authorship return values? add them here!
+                        if resSci[1] != 'None':
+                            self.model.setValueAt(resSci[1], currentRow, authorshipColumn)
+                        associatedTaxa.append([currentRow, catNum, resSci[0]])
+                        self.redraw()
+                    else:
+                        self.model.setValueAt(resSci, currentRow, scientNameColumn)
+                        associatedTaxa.append([currentRow, catNum, resSci])
+                        self.redraw()
+                        
                 self.gotonextRow()
                 self.redraw()
-            else:
-                # reached end of file
-                # add associated taxa
-                # list of lists with [currentRow, catNum, resSci] for each specimen in table
-                for elem in associatedTaxa:
-                    resultList = []
-                    for innerElem in associatedTaxa:
-                        if elem[1].split('-')[0] == innerElem[1].split('-')[0]:
-                            resultList.append(innerElem)
-                    if len(resultList) > 1:
-                        resultString = ''
-                        currentSciName = self.model.getValueAt(int(elem[0]), scientNameColumn)
-                        for resultElem in resultList:
-                            if resultElem[2] not in ['', currentSciName]:
-                                resultString += ', ' + resultElem[2]
-                        resultString = resultString.strip().lstrip(', ')
-                        self.model.setValueAt(resultString, int(elem[0]), assocTaxaColumn)
+            except IndexError:
+                self.model.df = self.model.df.groupby('site#').apply(self.genAssociatedTaxa).reset_index(drop=True)#group by 'site#', apply genAssociatedTaxa groupwise
                 self.parentframe.master.title("KralDesk")
                 self.redraw()
-                return
+        self.parentframe.master.title("KralDesk")
+        self.setSelectedRow(0)
+        self.redraw()
+                
+
+    def genAssociatedTaxa(self, siteGroup):
+        associatedTaxaList = [] #start with empty list
+#first generate a list of every item already in associatedTaxa (user entered)
+        for recordAssociatedTaxa in siteGroup['associatedTaxa'].tolist():   #get the exising associated taxa from each row in the group
+            if isinstance(recordAssociatedTaxa, str):                       #check that it exists
+                recordAssociatedTaxa = recordAssociatedTaxa.split(',')      #if exists, try to split by commas
+                recordAssociatedTaxa = [x.strip(' ') for x in recordAssociatedTaxa] #strip extra space from each item.
+                associatedTaxaList = associatedTaxaList + recordAssociatedTaxa #Add each item individually to a list
+        associatedTaxaList = sorted(list(set(associatedTaxaList)),key=str.lower) #clean the list
+#then generate a list of all scientificNames in the group which are not already present in the associatedTaxaList.
+        groupScientificNameList = [y.strip(' ') for y in siteGroup['scientificName'].tolist() if y not in associatedTaxaList]
+        groupScientificNameList = sorted(list(set(groupScientificNameList)),key=str.lower) #clean the list
+#join the lists keeping user entered fields at the start of the list.
+        groupAssociatedTaxa = associatedTaxaList + groupScientificNameList
+        groupAssociatedTaxa = ', '.join(groupAssociatedTaxa).strip().strip(', ')
+        siteGroup['associatedTaxa'] = groupAssociatedTaxa #Update associated taxa according to the group with the final list.
+        return siteGroup    #Return the groups with modified associatedTaxa Fields.
+        
 
     # calls google reverse geolocation api
     def genLocality(self, currentRowArg):
@@ -3440,24 +3454,26 @@ class Table(Canvas):
                 currentSciName.pop()
                 if len(currentSciName) > 1:                     #If the name has more than 1 word after excluded word was removed then forget the excluded word.
                     sciNameSuffix = ''
+                else:
+                    return sciNameAtRow
                 currentSciName = ' '.join(currentSciName)
             else:
                 sciNameSuffix = ''
                 currentSciName = sciNameAtRow
             results = colNameSearch(currentSciName)
             if isinstance(results, tuple):
-                if len(results) == 1:
-                    sciName = results[0]
-                    if messagebox.askyesno("Sci-Name", "(row " + str(currentRow+1) + ") " + " Would you like to change " + str(sciNameAtRow) + " to " + str(sciName) + "?"):
-                        return str(sciName + sciNameSuffix)
-                elif len(results) == 2:
-                    sciName = results[0]
-                    auth = results[1]
-                    if authorColumn != '':
-                        if messagebox.askyesno("Sci-Name", "(row " + str(currentRow+1) + ") " + " Would you like to change " + str(sciNameAtRow) + " to " + str(sciName) + "? This will also update authority!"):
-                            sciName = str(sciName + sciNameSuffix)
-                            auth = str(auth)
-                            return (sciName, auth)
+                sciName = results[0]
+                if currentSciName != sciName:
+                    if len(results) == 1:                        
+                        if messagebox.askyesno("Sci-Name", "(row " + str(currentRow+1) + ") " + " Would you like to change " + str(sciNameAtRow) + " to " + str(sciName) + "?"):
+                            return str(sciName + sciNameSuffix)
+                    elif len(results) == 2:
+                        auth = results[1]
+                        if authorColumn != '':
+                            if messagebox.askyesno("Sci-Name", "(row " + str(currentRow+1) + ") " + " Would you like to change " + str(sciNameAtRow) + " to " + str(sciName) + "? This will also update authority!"):
+                                sciName = str(sciName + sciNameSuffix)
+                                auth = str(auth)
+                                return (sciName, auth)
             elif isinstance(results, str):
                 if results == 'not_accepted_or_syn':
                     messagebox.showinfo("Scientific Name Error", "No scientific name update!")
