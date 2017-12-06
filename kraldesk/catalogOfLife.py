@@ -25,6 +25,9 @@ def colNameSearch(givenScientificName):
     if len(identification) > 1:
         identQuery.append(identification[1])
         if len(identification) > 2:
+            exclusionList = ['sp.','sp','var','var.']
+            if identification[-1] in exclusionList:
+                identification.remove(identification[-1])                   
             identQuery.append(identification[-1])
     try:
         CoLQuery = ET.parse(urllib.request.urlopen('http://webservice.catalogueoflife.org/col/webservice?name={}&response=terse'.format('+'.join(identQuery)), timeout=30)).getroot()
