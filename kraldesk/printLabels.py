@@ -108,6 +108,11 @@ def genPrintLabelPDFs(labelDataInput):
             spaceAfter = 1
             
         )
+        styles['defaultSTYSmall'] = ParagraphStyle(
+            'defaultSTYSmall',
+            parent=styles['default'],
+            fontSize= relFont * .80,
+        )
         styles['rightSTY'] = ParagraphStyle(
             'rightSTY',
             parent=styles['default'],
@@ -193,8 +198,6 @@ def genPrintLabelPDFs(labelDataInput):
     #def getLogo(logoPath):
     #    if logoPath:
     #        return Image(logoPath, width = 40, height =30.6) #These values should be handled dynamically!
-    #
-
     ######Barcode work(Catalog Number)######
 
     def newHumanText(self):
@@ -236,10 +239,10 @@ def genPrintLabelPDFs(labelDataInput):
         
         row1 = Para('samplingEffort','samplingEffortSTY')
 
-        #Test if Scienftific Name can Share a row with Event Date.
-        
+#ScientificName Row Dynamic Formatting
+    
         scientificNameElement = sciName('scientificName','scientificNameAuthorship','sciNameSTY')
-        try:
+        try:            #Test if Scienftific Name can Share a row with Event Date.
             scientificNameElement.wrap(1400, 1400) #Test wrap the string in a large environment to get it's desired ideal width.
             sciNameParaWidth = scientificNameElement.getActualLineWidths0()[0]
             sciHeight = scientificNameElement.height
@@ -270,18 +273,28 @@ def genPrintLabelPDFs(labelDataInput):
         row3 = Table([[
                 Para('locality','default')]],
                      rowHeights=None, style = tableSty)
-                #rowHeights=yPaperSize * .15,
-                
 
+#Associated Taxa Dynamic Formatting
         if dfl('associatedTaxa') == '':         #If associated taxa is not used, give up the y space.
             associatedTaxaHeight = 0
         else:
-            associatedTaxaHeight = .15
-        row4 = Table([[
-                Para('associatedTaxa','default','Associated taxa: ')]],
+            associatedTaxaHeight = .15 * yPaperSize          #Otherwise, devote some space, then test it's useage.
+            associatedTaxaElement = Para('associatedTaxa','default','Associated taxa: ') #Test build for height
+            try:
+                associatedTaxaParaHeight = associatedTaxaElement.wrap(xPaperSize *.98, 1)[1] #Test wrap the string in a large environment to get necessary height.
+            except (AttributeError, IndexError) as e:
+                print('error ',e)
+                associatedTaxaParaHeight = 0
+
+            if associatedTaxaParaHeight > associatedTaxaHeight:  #If the string is too large, reduce the font size.
+                associatedTaxaStyle = 'defaultSTYSmall'
+            else:
+                associatedTaxaStyle = 'default'             #otherwise, use the normal height
+            row4 = Table([[
+                Para('associatedTaxa',associatedTaxaStyle,'Associated taxa: ')]],
                 rowHeights=None,
                 style = tableSty)
-        #rowHeights=yPaperSize * associatedTaxaHeight,
+#Note, associatedTaxa only reduces size if it is too large. At some extream point we'll need to consider trunication.
         
         if dfl('individualCount') != '':
             row5 = Table([[
