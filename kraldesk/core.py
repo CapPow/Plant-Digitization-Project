@@ -762,16 +762,16 @@ class Table(Canvas):
             self.pf.updateData()
         return
 
-    def flattenIndex(self):
-        """FLatten multiindex"""
+    # def flattenIndex(self):
+    #     """FLatten multiindex"""
 
-        df = self.model.df
-        df.columns = df.columns.get_level_values(0)
-        #self.model.df
-        self.redraw()
-        if hasattr(self, 'pf'):
-            self.pf.updateData()
-        return
+    #     df = self.model.df
+    #     df.columns = df.columns.get_level_values(0)
+    #     #self.model.df
+    #     self.redraw()
+    #     if hasattr(self, 'pf'):
+    #         self.pf.updateData()
+    #     return
 
     def copyIndex(self):
         """Copy index to a column"""
@@ -1009,56 +1009,6 @@ class Table(Canvas):
         self.tableChanged()
         return
 
-    def fillColumn(self):
-        """Fill a column with a data range"""
-
-        dists = ['normal','gamma','uniform','random integer','logistic']
-        d = MultipleValDialog(title='New Column',
-                                initialvalues=(0,1,False,dists,1.0,1.0),
-                                labels=('Low','High','Random Noise','Distribution','Mean','Std'),
-                                types=('string','string','checkbutton','combobox','float','float'),
-                                tooltips=('start value if filling with data',
-                                          'end value if filling with data',
-                                          'create random noise data in the ranges',
-                                          'sampling distribution for noise',
-                                          'mean/scale of distribution',
-                                          'std dev./shape of distribution'),
-                                parent = self.parentframe)
-        if d.result == None:
-            return
-        else:
-            low = d.results[0]
-            high = d.results[1]
-            random = d.results[2]
-            dist = d.results[3]
-            param1 = float(d.results[4])
-            param2 = float(d.results[5])
-
-        df = self.model.df
-        if low != '' and high != '':
-            try:
-                low=float(low); high=float(high)
-            except:
-                return
-        if random == True:
-            if dist == 'normal':
-                data = np.random.normal(param1, param2, len(df))
-            elif dist == 'gamma':
-                data = np.random.gamma(param1, param2, len(df))
-            elif dist == 'uniform':
-                data = np.random.uniform(low, high, len(df))
-            elif dist == 'random integer':
-                data = np.random.randint(low, high, len(df))
-            elif dist == 'logistic':
-                data = np.random.logistic(low, high, len(df))
-        else:
-            step = (high-low)/len(df)
-            data = pd.Series(np.arange(low,high,step))
-        col = df.columns[self.currentcol]
-        df[col] = data
-        self.redraw()
-        return
-
     def autoAddColumns(self, numcols=None):
         """Automatically add x number of cols"""
 
@@ -1071,6 +1021,8 @@ class Table(Canvas):
         self.redraw()
         return
 
+    # may not need
+    ## should probably customize rather than delete
     def setColumnType(self):
         """Change the column dtype"""
 
@@ -1145,157 +1097,6 @@ class Table(Canvas):
             df = df.round(rounddecimals)
         self.model.df = df
         self.redraw()
-        return
-
-    def createCategorical(self):
-        """Get a categorical column from selected"""
-
-        df = self.model.df
-        col = df.columns[self.currentcol]
-
-        d = MultipleValDialog(title='Categorical data',
-                                initialvalues=(0,'',0,'','',''),
-                                labels=('Convert to integer codes:','Name:',
-                                        'Get dummies:','Dummies prefix:',
-                                        'Numerical bins:','Labels:'),
-                                types=('checkbutton','string','checkbutton',
-                                       'string','string','string'),
-                                tooltips=(None, 'name if new column',
-                                         'get dummy columns for fitting',None,
-                                         'define bins edges for numerical data',
-                                         'labels for bins'),
-                                parent = self.parentframe)
-        if d.result == None:
-            return
-        self.storeCurrent()
-        convert = d.results[0]
-        name = d.results[1]
-        dummies = d.results[2]
-        prefix = d.results[3]
-        bins = d.results[4]
-        binlabels = d.results[5]
-
-        if name == '':
-            name = col
-        if prefix == '':
-            prefix=None
-        if dummies == 1:
-            new = pd.get_dummies(df[col], prefix=prefix)
-            new.columns = new.columns.astype(str)
-            self.model.df = pd.concat([df,new],1)
-        elif convert == 1:
-            df[name] = pd.Categorical(df[col]).codes
-        elif bins != '':
-            bins = [int(i) for i in bins.split(',')]
-            if len(bins)==1:
-                bins = int(bins[0])
-                binlabels = list(string.ascii_uppercase[:bins])
-            else:
-                binlabels = binlabels.split(',')
-            if name == col:
-                name = col+'_binned'
-            df[name] = pd.cut(df[col], bins, labels=binlabels)
-        else:
-            df[name] = df[col].astype('category')
-        if name != col:
-            self.placeColumn(name, col)
-        else:
-            self.redraw()
-        return
-
-    def applyColumnWise(self, evt=None):
-        """Apply col wise function"""
-
-        df = self.model.df
-        cols = list(df.columns[self.multiplecollist])
-
-        funcs = ['mean','std','max','min','log','exp','log10','log2',
-                 'round','floor','ceil','trunc',
-                 'sum','subtract','divide','mod','remainder','convolve',
-                 'negative','sign','power',
-                 'sin','cos','tan','degrees','radians']
-
-        d = MultipleValDialog(title='Apply Function',
-                                initialvalues=(funcs,'',False,'_x'),
-                                labels=('Function:',
-                                        'New column name:',
-                                        'In place:',
-                                        'New column suffix:'),
-                                types=('combobox','string','checkbutton','string'),
-                                tooltips=(None,
-                                          'New column name',
-                                          'Update in place',
-                                          'suffix for new columns'),
-                                parent = self.parentframe)
-        if d.result == None:
-            return
-        self.storeCurrent()
-        funcname = d.results[0]
-        newcol = d.results[1]
-        inplace = d.results[2]
-        suffix = d.results[3]
-
-        func = getattr(np, funcname)
-        if newcol == '':
-            newcol = funcname + '(%s)' %(','.join(cols))
-        if funcname in ['subtract','divide','mod','remainder','convolve']:
-            newcol = cols[0]+' '+ funcname +' '+cols[1]
-            df[newcol] = df[cols[0]].combine(df[cols[1]], func=func)
-        else:
-            if inplace == True:
-                newcol = cols[0]
-            df[newcol] = df[cols].apply(func, 1)
-        if inplace == False:
-            self.placeColumn(newcol,cols[-1])
-        else:
-            self.redraw()
-        return
-
-    def applyFunction(self, evt=None):
-        """Apply row-wise functions on a column/Series"""
-
-        df = self.model.df
-        cols = list(df.columns[self.multiplecollist])
-
-        funcs = ['value_counts','rolling_mean','rolling_count',
-                 'resample','shift']
-
-        d = MultipleValDialog(title='Apply Function',
-                                initialvalues=(funcs,'',False,False,'_x'),
-                                labels=('Function:','or Function name:',
-                                        'Add as new column(s):',
-                                        'Replace table:',
-                                        'New column suffix:'),
-                                types=('combobox','string','checkbutton',
-                                       'checkbutton','string'),
-                                tooltips=(None,'Manually enter a pandas function name',
-                                          'Add the result to the table',
-                                          'Replace current table or open in subtable',
-                                          'suffix for new columns'),
-                                parent = self.parentframe)
-        if d.result == None:
-            return
-
-        funcname = d.results[1]
-        addcols = d.results[2]
-        replace = d.results[3]
-        suffix = d.results[4]
-        if funcname == '':
-            funcname = d.results[0]
-
-        new = self._callFunction(df[cols], funcname)
-        if new is None:
-            return
-        #if isinstance(new, pd.Series):
-        #    new = pd.DataFrame(new)
-        if addcols == True:
-            new = df.merge(new, left_index=1,right_index=1,suffixes=['',suffix])
-        if replace == True:
-            self.model.df = new
-            self.showIndex()
-            self.redraw()
-        else:
-            self.createChildTable(new, index=True)
         return
 
     def resample(self):
@@ -1394,74 +1195,8 @@ class Table(Canvas):
             new = func(**p)
         return new
 
-    def applyStringMethod(self):
-        """Apply string operation to column(s)"""
-
-        df = self.model.df
-        cols = list(df.columns[self.multiplecollist])
-        col = cols[0]
-        funcs = ['','split','strip','lstrip','lower','upper','title','swapcase','len',
-                 'slice','replace','concat']
-        d = MultipleValDialog(title='Apply Function',
-                                initialvalues=(funcs,',',0,1,'','',0),
-                                labels=('Function:',
-                                        'Split sep:',
-                                        'Slice start:',
-                                        'Slice end:',
-                                        'Pattern:',
-                                        'Replace with:',
-                                        'Add as new column(s):'),
-                                types=('combobox','string','int',
-                                       'int','string','string','checkbutton'),
-                                tooltips=(None,'separator for split or concat',
-                                          'start index for slice',
-                                          'end index for slice',
-                                          'characters or regular expression for replace',
-                                          'characters to replace with',
-                                          'do not replace column'),
-                                parent = self.parentframe)
-        if d.result == None:
-            return
-        self.storeCurrent()
-        func = d.results[0]
-        sep = d.results[1]
-        start = d.results[2]
-        end = d.results[3]
-        pat = d.results[4]
-        repl = d.results[5]
-        newcol = d.results[6]
-        if func == 'split':
-            new = df[col].str.split(sep).apply(pd.Series)
-            new.columns = [col+'_'+str(i) for i in new.columns]
-            self.model.df = pd.concat([df,new],1)
-            self.redraw()
-            return
-        elif func == 'strip':
-            x = df[col].str.strip()
-        elif func == 'lstrip':
-            x = df[col].str.lstrip(pat)
-        elif func == 'upper':
-            x = df[col].str.upper()
-        elif func == 'lower':
-            x = df[col].str.lower()
-        elif func == 'title':
-            x = df[col].str.title()
-        elif func == 'swapcase':
-            x = df[col].str.swapcase()
-        elif func == 'len':
-            x = df[col].str.len()
-        elif func == 'slice':
-            x = df[col].str.slice(start,end)
-        elif func == 'replace':
-            x = df[col].replace(pat, repl, regex=True)
-        elif func == 'concat':
-            x = df[col].str.cat(df[cols[1]].astype(str), sep=sep)
-        if newcol == 1:
-            col = col+'_'+func
-        df[col] = x
-        self.redraw()
-        return
-
+    # could leverage this to format dates to fit Symbiota dbase
+    ## check import error to see desired format
     def convertDates(self):
         """Convert single or multiple columns into datetime"""
 
@@ -2459,19 +2194,19 @@ class Table(Canvas):
                         "Copy" : lambda: self.copy(rows, cols),
                         "Undo" : lambda: self.undo(event),
                         "Paste" : lambda: self.paste(rows, cols),
-                        "Fill Down" : lambda: self.fillDown(rows, cols),
-                        "Fill Right" : lambda: self.fillAcross(cols, rows),
+                        "Fill Down" : lambda: self.fillDown(rows, cols), # could potentially be removed
+                        "Fill Right" : lambda: self.fillAcross(cols, rows), # could potentially be removed
                         "Add Row(s)" : lambda: self.addRows(),
                         "Delete Row(s)" : lambda: self.deleteRow(),
                         "Add Column(s)" : lambda: self.addColumn(),
                         "Delete Column(s)" : lambda: self.deleteColumn(),
-                        "Clear Data" : lambda: self.deleteCells(rows, cols),
+                        "Clear Data" : lambda: self.deleteCells(rows, cols), # could potentially be removed
                         "Select All" : self.selectAll,
                         "Auto Fit Columns" : self.autoResizeColumns,
-                        "Table Info" : self.showInfo,
+                        "Table Info" : self.showInfo, # could potentially be removed
                         "Set Color" : self.setRowColors,
                         "Show as Text" : self.showasText,
-                        "Filter Rows" : self.queryBar,
+                        "Filter Rows" : self.queryBar, # could potentially be removed
                         "New": self.new,
                         "Load": self.load,
                         "Save": self.save,
@@ -2479,14 +2214,13 @@ class Table(Canvas):
                         "Import csv": lambda: self.importCSV(dialog=True),
                         "Export": self.doExport,
                         "Preferences" : self.showPrefs,
-                        "Table to Text" : self.showasText,
-                        "Clean Data" : self.cleanData,
-                        "Clear Formatting" : self.clearFormatting}
+                        "Table to Text" : self.showasText, # could potentially be removed
+                        "Clean Data" : self.cleanData, # could potentially be removed
+                        "Clear Formatting" : self.clearFormatting} # could potentially be removed
 
         main = ["Copy", "Paste", "Undo", "Clear Data"]
         general = ["Select All", "Preferences"]
 
-        # filecommands = ['New','Load','Import csv','Save','Save as']
         filecommands = ['New','Import csv','Save','Save as']
         # tablecommands = ['Table to Text','Clean Data','Clear Formatting']
 
