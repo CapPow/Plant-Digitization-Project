@@ -59,7 +59,7 @@ class ColumnHeader(Canvas):
             self.bind('<Control-Button-1>', self.handle_left_ctrl_click)
             self.bind("<Double-Button-1>",self.handle_double_click)
             self.bind('<Leave>', self.leave)
-            if self.table.ostyp=='mac':
+            if self.table.ostype=='mac':
                 #For mac we bind Shift, left-click to right click
                 self.bind("<Button-2>", self.handle_right_click)
                 self.bind('<Shift-Button-1>',self.handle_right_click)

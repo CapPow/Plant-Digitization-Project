@@ -24,26 +24,27 @@ try:
     from tkinter import *
     from tkinter.ttk import *
     from tkinter import filedialog, messagebox, simpledialog
+    from tkinter import font
 except:
     from Tkinter import *
     from ttk import *
     import tkFileDialog as filedialog
     import tkSimpleDialog as simpledialog
     import tkMessageBox as messagebox
-from tkinter import font
+# general imports
 import math, time
 import os, types
 import string, copy
-import platform
 import numpy as np
 import pandas as pd
+# pandastable imports
 from data import TableModel
 from headers import ColumnHeader, RowHeader, IndexHeader, RowWidgetColumn
 from prefs import Preferences
 from dialogs import ImportDialog
 import images, util
 from dialogs import *
-# kraldesk added imports
+# pd added imports
 from catalogOfLife import *
 from locality import *
 from printLabels import *
@@ -76,7 +77,7 @@ class Table(Canvas):
                          scrollregion=(0,0,300,200))
         self.parentframe = parent
         #get platform into a variable
-        self.ostyp = util.checkOS()
+        self.ostype = util.checkOS()
         self.platform = platform.system()
         self.width = width
         self.height = height
@@ -229,8 +230,9 @@ class Table(Canvas):
         self.bind("<Shift-Button-1>", self.handle_left_shift_click)
 
         self.bind("<ButtonRelease-1>", self.handle_left_release)
-        if self.ostyp=='mac':
-            #For mac we bind Shift, left-click to right click
+        # For mac we bind Shift, left-click to right click
+        ## Test this on Mac OSX machines
+        if self.ostype=='mac':
             self.bind("<Button-2>", self.handle_right_click)
             self.bind('<Shift-Button-1>',self.handle_right_click)
         else:
@@ -475,11 +477,11 @@ class Table(Canvas):
 
         return
     def getOnlySpecimenRecords(self):
-        #Returns a list of indices which are specimen records. Use it as such:
-        #self.parentapp.model.df.iloc[self.parentapp.getOnlySpecimenRecords(),:]
-        #or perhaps, depending on the tkinter frames:
-        #self.model.df.iloc[self.parentapp.getOnlySpecimenRecords(),:]
-        #Also see the function called:  self.parentapp.model.df.get_loc('catalogNumber') for use case.
+        """Returns a list of indices which are specimen records. Use it as such:
+        self.parentapp.model.df.iloc[self.parentapp.getOnlySpecimenRecords(),:]
+        or perhaps, depending on the tkinter frames:
+        self.model.df.iloc[self.parentapp.getOnlySpecimenRecords(),:]
+        Also see the function called:  self.parentapp.model.df.get_loc('catalogNumber') for use case."""
         
         return [i for i, x in enumerate(self.model.df['othercatalognumbers'].str.split('-').str[1]) if x != '#']
         
@@ -610,6 +612,7 @@ class Table(Canvas):
         return
 
     def getScale(self):
+        """Scales font """
         try:
             fontsize = self.thefont[1]
         except:
@@ -1045,6 +1048,7 @@ class Table(Canvas):
             print('failed')
         return
 
+    # may not need
     def cleanData(self):
         """Deal with missing data"""
 
@@ -1099,6 +1103,7 @@ class Table(Canvas):
         self.redraw()
         return
 
+    # may not need
     def resample(self):
         """table resampling dialog"""
 
@@ -1262,21 +1267,21 @@ class Table(Canvas):
         self.redraw()
         return
 
-    def statsViewer(self):
-        """Show model fitting dialog"""
+    # def statsViewer(self):
+    #     """Show model fitting dialog"""
 
-        from .stats import StatsViewer
-        if StatsViewer._doimport() == 0:
-            messagebox.showwarning("no such module",
-                                    "statsmodels is not installed.",
-                                    parent=self.parentframe)
-            return
+    #     from .stats import StatsViewer
+    #     if StatsViewer._doimport() == 0:
+    #         messagebox.showwarning("no such module",
+    #                                 "statsmodels is not installed.",
+    #                                 parent=self.parentframe)
+    #         return
 
-        if not hasattr(self, 'sv') or self.sv == None:
-            sf = self.statsframe = Frame(self.parentframe)
-            sf.grid(row=self.queryrow+1,column=0,columnspan=3,sticky='news')
-            self.sv = StatsViewer(table=self,parent=sf)
-        return self.sv
+    #     if not hasattr(self, 'sv') or self.sv == None:
+    #         sf = self.statsframe = Frame(self.parentframe)
+    #         sf.grid(row=self.queryrow+1,column=0,columnspan=3,sticky='news')
+    #         self.sv = StatsViewer(table=self,parent=sf)
+    #     return self.sv
 
     def getRowsFromIndex(self, idx=None):
         """Get row positions from index values"""
@@ -1292,12 +1297,14 @@ class Table(Canvas):
             idx = df.ix[mask].index
         return self.getRowsFromIndex(idx)
 
+    # may not need
     def query(self, evt=None):
         """Do query"""
 
         self.qframe.query()
         return
 
+    # may not need
     def queryBar(self, evt=None):
         """Query/filtering dialog"""
 
@@ -1853,60 +1860,62 @@ class Table(Canvas):
         return
 
     # don't need this
-    def transpose(self):
-        """Transpose table"""
+    # def transpose(self):
+    #     """Transpose table"""
 
-        self.model.transpose()
-        self.updateModel(self.model)
-        self.setSelectedRow(0)
-        self.redraw()
-        return
+    #     self.model.transpose()
+    #     self.updateModel(self.model)
+    #     self.setSelectedRow(0)
+    #     self.redraw()
+    #     return
 
-    def transform(self):
-        """Apply element-wise transform"""
+    
+    # def transform(self):
+    #     """Apply element-wise transform"""
 
-        df = self.model.df
-        cols = list(df.columns[self.multiplecollist])
-        rows = self.multiplerowlist
-        funcs = ['log','exp','log10','log2',
-                 'round','floor','ceil','trunc',
-                 'subtract','divide','mod',
-                 'negative','power',
-                 'sin','cos','tan','degrees','radians']
+    #     df = self.model.df
+    #     cols = list(df.columns[self.multiplecollist])
+    #     rows = self.multiplerowlist
+    #     funcs = ['log','exp','log10','log2',
+    #              'round','floor','ceil','trunc',
+    #              'subtract','divide','mod',
+    #              'negative','power',
+    #              'sin','cos','tan','degrees','radians']
 
-        d = MultipleValDialog(title='Apply Function',
-                                initialvalues=(funcs,1,False),
-                                labels=('Function:','Constant:','Use Selected'),
-                                types=('combobox','string','checkbutton'),
-                                tooltips=(None,'value to apply with arithmetic operations',
-                                          'apply to selected data only'),
-                                parent = self.parentframe)
-        if d.result == None:
-            return
-        self.storeCurrent()
-        funcname = d.results[0]
-        func = getattr(np, funcname)
-        const = float(d.results[1])
-        use_sel = float(d.results[2])
+    #     d = MultipleValDialog(title='Apply Function',
+    #                             initialvalues=(funcs,1,False),
+    #                             labels=('Function:','Constant:','Use Selected'),
+    #                             types=('combobox','string','checkbutton'),
+    #                             tooltips=(None,'value to apply with arithmetic operations',
+    #                                       'apply to selected data only'),
+    #                             parent = self.parentframe)
+    #     if d.result == None:
+    #         return
+    #     self.storeCurrent()
+    #     funcname = d.results[0]
+    #     func = getattr(np, funcname)
+    #     const = float(d.results[1])
+    #     use_sel = float(d.results[2])
 
-        if funcname in ['round']:
-            const = int(const)
+    #     if funcname in ['round']:
+    #         const = int(const)
 
-        if funcname in ['subtract','divide','mod','power','round']:
-            if use_sel == True:
-                df.ix[rows, cols] = df.ix[rows, cols].applymap(lambda x: func(x, const))
-            else:
-                df = df.applymap( lambda x: func(x, const))
-        else:
-            if use_sel == True:
-                df.ix[rows, cols] = df.ix[rows, cols].applymap(func)
-            else:
-                df = df.applymap(func)
+    #     if funcname in ['subtract','divide','mod','power','round']:
+    #         if use_sel == True:
+    #             df.ix[rows, cols] = df.ix[rows, cols].applymap(lambda x: func(x, const))
+    #         else:
+    #             df = df.applymap( lambda x: func(x, const))
+    #     else:
+    #         if use_sel == True:
+    #             df.ix[rows, cols] = df.ix[rows, cols].applymap(func)
+    #         else:
+    #             df = df.applymap(func)
 
-        self.model.df = df
-        self.redraw()
-        return
+    #     self.model.df = df
+    #     self.redraw()
+    #     return
 
+    # may not need this
     def aggregate(self):
         """Show aggregate dialog"""
 
@@ -1926,65 +1935,66 @@ class Table(Canvas):
             self.createChildTable(g, 'aggregated', index=True)
         return
 
-    def melt(self):
-        """Melt table"""
+    # def melt(self):
+    #     """Melt table"""
 
-        df = self.model.df
-        cols = list(df.columns)
-        valcols = list(df.select_dtypes(include=[np.float64,np.int32]))
-        d = MultipleValDialog(title='Melt',
-                                initialvalues=(cols,valcols,'var'),
-                                labels=('ID vars:', 'Value vars:', 'var name:'),
-                                types=('combobox','listbox','entry'),
-                                tooltips=('Column(s) to use as identifier variables',
-                                          'Column(s) to unpivot',
-                                          'name of variable column'),
-                                parent = self.parentframe)
-        idvars = d.results[0]
-        valuevars = d.results[1]
-        varname = d.results[2]
-        if valuevars == '':
-            valuevars = None
-        elif len(valuevars) == 1:
-            valuevars = valuevars[0]
-        t = pd.melt(df, id_vars=idvars, value_vars=valuevars,
-                 var_name=varname,value_name='value')
-        #print(t)
-        self.createChildTable(t, '', index=True)
-        return
+    #     df = self.model.df
+    #     cols = list(df.columns)
+    #     valcols = list(df.select_dtypes(include=[np.float64,np.int32]))
+    #     d = MultipleValDialog(title='Melt',
+    #                             initialvalues=(cols,valcols,'var'),
+    #                             labels=('ID vars:', 'Value vars:', 'var name:'),
+    #                             types=('combobox','listbox','entry'),
+    #                             tooltips=('Column(s) to use as identifier variables',
+    #                                       'Column(s) to unpivot',
+    #                                       'name of variable column'),
+    #                             parent = self.parentframe)
+    #     idvars = d.results[0]
+    #     valuevars = d.results[1]
+    #     varname = d.results[2]
+    #     if valuevars == '':
+    #         valuevars = None
+    #     elif len(valuevars) == 1:
+    #         valuevars = valuevars[0]
+    #     t = pd.melt(df, id_vars=idvars, value_vars=valuevars,
+    #              var_name=varname,value_name='value')
+    #     #print(t)
+    #     self.createChildTable(t, '', index=True)
+    #     return
 
-    def pivot(self):
-        """Pivot table"""
+    # def pivot(self):
+    #     """Pivot table"""
 
-        self.convertNumeric()
-        df = self.model.df
-        cols = list(df.columns)
-        valcols = list(df.select_dtypes(include=[np.float64,np.int32]))
-        funcs = ['mean','sum','count','max','min','std','first','last']
-        d = MultipleValDialog(title='Pivot',
-                                initialvalues=(cols,cols,valcols,funcs),
-                                labels=('Index:', 'Column:', 'Values:','Agg Function:'),
-                                types=('combobox','combobox','listbox','combobox'),
-                                tooltips=('a unique index to reshape on','column with variables',
-                                    'selecting no values uses all remaining cols',
-                                    'function to aggregate on'),
-                                parent = self.parentframe)
-        if d.result == None:
-            return
-        index = d.results[0]
-        column = d.results[1]
-        values = d.results[2]
-        func = d.results[3]
-        if values == '': values = None
-        elif len(values) == 1: values = values[0]
+    #     self.convertNumeric()
+    #     df = self.model.df
+    #     cols = list(df.columns)
+    #     valcols = list(df.select_dtypes(include=[np.float64,np.int32]))
+    #     funcs = ['mean','sum','count','max','min','std','first','last']
+    #     d = MultipleValDialog(title='Pivot',
+    #                             initialvalues=(cols,cols,valcols,funcs),
+    #                             labels=('Index:', 'Column:', 'Values:','Agg Function:'),
+    #                             types=('combobox','combobox','listbox','combobox'),
+    #                             tooltips=('a unique index to reshape on','column with variables',
+    #                                 'selecting no values uses all remaining cols',
+    #                                 'function to aggregate on'),
+    #                             parent = self.parentframe)
+    #     if d.result == None:
+    #         return
+    #     index = d.results[0]
+    #     column = d.results[1]
+    #     values = d.results[2]
+    #     func = d.results[3]
+    #     if values == '': values = None
+    #     elif len(values) == 1: values = values[0]
 
-        p = pd.pivot_table(df, index=index, columns=column, values=values, aggfunc=func)
-        print (p)
-        if type(p) is pd.Series:
-            p = pd.DataFrame(p)
-        self.createChildTable(p, 'pivot-%s-%s' %(index,column), index=True)
-        return
+    #     p = pd.pivot_table(df, index=index, columns=column, values=values, aggfunc=func)
+    #     print (p)
+    #     if type(p) is pd.Series:
+    #         p = pd.DataFrame(p)
+    #     self.createChildTable(p, 'pivot-%s-%s' %(index,column), index=True)
+    #     return
 
+    # probably don't need this
     def doCombine(self):
         """Do combine/merge operation"""
 
@@ -2001,6 +2011,7 @@ class Table(Canvas):
         #self.redraw()
         return
 
+    # probably don't need this
     def merge(self, table):
         """Merge with another table."""
 
@@ -2057,13 +2068,13 @@ class Table(Canvas):
         self.redraw()
         return
 
-    def corrMatrix(self):
-        """Correlation matrix"""
+    # def corrMatrix(self):
+    #     """Correlation matrix"""
 
-        df = self.model.df
-        corr = df.corr()
-        self.createChildTable(corr)
-        return
+    #     df = self.model.df
+    #     corr = df.corr()
+    #     self.createChildTable(corr)
+    #     return
 
     def createChildTable(self, df, title=None, index=False, out=False):
         """Add the child table"""
@@ -2110,19 +2121,19 @@ class Table(Canvas):
         self.createChildTable(df, 'selection')
         return
 
-    '''def pasteChildTable(self):
-        """Paste child table back into main one"""
+    # def pasteChildTable(self):
+    #     """Paste child table back into main one"""
 
-        answer =  messagebox.askyesno("Confirm",
-                                "This will overwrite the main table.\n"+\
-                                "Are you sure?",
-                                parent=self.parentframe)
-        if not answer:
-            return
-        table = self.parenttable
-        model = TableModel(self.model.df)
-        table.updateModel(model)
-        return'''
+    #     answer =  messagebox.askyesno("Confirm",
+    #                             "This will overwrite the main table.\n"+\
+    #                             "Are you sure?",
+    #                             parent=self.parentframe)
+    #     if not answer:
+    #         return
+    #     table = self.parenttable
+    #     model = TableModel(self.model.df)
+    #     table.updateModel(model)
+    #     return
 
     def showInfo(self):
         """Show dataframe info"""
@@ -2372,6 +2383,7 @@ class Table(Canvas):
 
     def drawGrid(self, startrow, endrow):
         """Draw the table grid lines"""
+
         self.delete('gridline','text')
         rows=len(self.rowrange)
         cols=self.cols
@@ -2537,6 +2549,7 @@ class Table(Canvas):
 
     def drawText(self, row, col, celltxt, align=None):
         """Draw the text inside a cell area"""
+
         self.delete('addSpecimenWidget'+str(col)+'_'+str(row))
         self.delete('celltext'+str(col)+'_'+str(row))
         h = self.rowheight
@@ -2670,12 +2683,16 @@ class Table(Canvas):
         return
 
     def setcellbackgr(self):
+        """set cell background color"""
+
         clr = self.getaColor(self.cellbackgr)
         if clr != None:
             self.cellbackgr = clr
         return
 
     def setgrid_color(self):
+        """set grid color"""
+
         clr = self.getaColor(self.grid_color)
         if clr != None:
             self.grid_color = clr
@@ -2690,6 +2707,7 @@ class Table(Canvas):
         return
 
     def getaColor(self, oldcolor):
+        """get a color"""
 
         import tkinter.colorchooser
         ctuple, newcolor = tkinter.colorchooser.askcolor(title='pick a color',
@@ -2832,6 +2850,7 @@ class Table(Canvas):
         return self.prefswindow
 
     def getFonts(self):
+        """get fonts available"""
 
         fonts = set(list(font.families()))
         fonts = sorted(list(fonts))
@@ -2907,6 +2926,7 @@ class Table(Canvas):
 
     def savePrefs(self):
         """Save and set the prefs"""
+
         try:
             self.prefs.set('horizlines', self.horizlinesvar.get())
             self.horizlines = self.horizlinesvar.get()
@@ -3011,6 +3031,12 @@ class Table(Canvas):
     # runs through table automatically
     # calls genLocality and genScientificName
     def processRecords(self):
+        """Process records in table. Deals specifically with
+        scientific name and locality strings. This function calls
+        genLocality and genScientificName which use web API calls
+        to update the given scientific name as well as fill locality
+        fields from GPS coordinates."""
+
         currentRow = self.currentrow
         localityColumn = self.findColumnIndex('locality')
         catalogNumColumn = self.findColumnIndex('othercatalognumbers')
@@ -3090,6 +3116,10 @@ class Table(Canvas):
                 
 
     def genAssociatedTaxa(self, siteGroup):
+        """Generate Associated Taxa gets all associated taxa
+        for a given record (specimen)."""
+        
+
         associatedTaxaList = [] #start with empty list
 #first generate a list of every item already in associatedTaxa (user entered)
         for recordAssociatedTaxa in siteGroup['associatedTaxa'].tolist():   #get the exising associated taxa from each row in the group
@@ -3107,9 +3137,10 @@ class Table(Canvas):
         siteGroup['associatedTaxa'] = groupAssociatedTaxa #Update associated taxa according to the group with the final list.
         return siteGroup    #Return the groups with modified associatedTaxa Fields.
         
-
-    # calls google reverse geolocation api
     def genLocality(self, currentRowArg):
+        """ Generate locality fields, uses API call to get
+        country, state, city, etc. from GPS coordinates."""
+
         currentRow = currentRowArg
         pathColumn = self.findColumnIndex('path')
         localityColumn = self.findColumnIndex('locality')
@@ -3182,8 +3213,11 @@ class Table(Canvas):
             return
         return
 
-    # gets the scientific name of specimen
     def genScientificName(self, currentRowArg):
+        """Generate scientific name calls API to get
+        most up-to-date scientific name for the specimen
+        in question."""
+
         currentRow = currentRowArg
         sciNameColumn = self.findColumnIndex('scientificName')
         authorColumn = self.findColumnIndex('scientificNameAuthorship')
@@ -3251,6 +3285,9 @@ class Table(Canvas):
     # http://pandastable.readthedocs.io/en/latest/_modules/pandastable/core.html#Table.getSelectedDataFrame
 
     def genLabelPDF(self):
+        """Generate Label PDF. Print specimen labels
+        for physical plant records."""
+
         toPrintDataFrame = self.getSelectedLabelDict()  #function returns a list of dicts (one for each record to print)
         for record in toPrintDataFrame:         #for each dict, verify that the associatedTaxa string does not consist of >15 items.
             associatedTaxaItems = record.get('associatedTaxa').split(', ')
@@ -3260,10 +3297,10 @@ class Table(Canvas):
         return
 
     
-    # returns index location of column header
-    # if the column header doesn't exist
-    # returns empty string
     def findColumnIndex(self, columnLabel):
+        """Find Column Index, gets the column index
+        number for a given column header."""
+        
         columnIndex = ''
         for column in range(0,self.model.getColumnCount()):
             # convert self.model.getColumnName(column) to lower case before comparison
@@ -3275,6 +3312,7 @@ class Table(Canvas):
 
     def load(self, filename=None):
         """load from a file"""
+
         if filename == None:
             filename = filedialog.askopenfilename(parent=self.master,
                                                       defaultextension='.mpk',
@@ -3430,6 +3468,7 @@ class Table(Canvas):
             
     def getGeometry(self, frame):
         """Get frame geometry"""
+
         return frame.winfo_rootx(), frame.winfo_rooty(), frame.winfo_width(), frame.winfo_height()
 
     def clearFormatting(self):
@@ -3592,6 +3631,8 @@ class CatNumberBar(Frame):
 #Functions to operate within the CatNumberBar's tkinter space.
 
     def genCatNumPreview(self):
+        """Generate catalog number preview ..."""
+
         prefix = self.catPrefix.get()
         digits = self.catDigits.get()
         start = str(self.catStartEntryBox.get()).zfill(digits)
@@ -3602,6 +3643,8 @@ class CatNumberBar(Frame):
             self.parentapp.redraw()
 
     def addCatalogNumbers(self):
+        """Add catalog numbers..."""
+
         prefix = self.catPrefix.get()
         digits = self.catDigits.get()
         start = self.catStartEntryBox.get()
@@ -3615,6 +3658,8 @@ class CatNumberBar(Frame):
             self.parentapp.redraw()
                 
     def delCatalogNumbers(self):
+        """Delete catalog numbers..."""
+
         try:
             self.parentapp.model.df.drop('catalogNumber', axis=1, inplace=True)
             if messagebox.askyesno("Roll Back Starting Catalog Number?", "Would you like to reduce the starting catalog value by the quantity removed from the table?"):
@@ -3626,6 +3671,7 @@ class CatNumberBar(Frame):
 
 class ToolBar(Frame):
     """Uses the parent instance to provide the functions"""
+
     def __init__(self, parent=None, parentapp=None):
 
         Frame.__init__(self, parent, width=600, height=40)
@@ -3678,6 +3724,7 @@ class ToolBar(Frame):
 
 class ChildToolBar(ToolBar):
     """Smaller toolbar for child table"""
+
     def __init__(self, parent=None, parentapp=None):
         Frame.__init__(self, parent, width=600, height=40)
         self.parentframe = parent
@@ -3687,8 +3734,8 @@ class ChildToolBar(ToolBar):
         img = images.importcsv()
         func = lambda: self.parentapp.importCSV(dialog=1)
         addButton(self, 'Import', func, img, 'import csv')
-        img = images.transpose()
-        addButton(self, 'Transpose', self.parentapp.transpose, img, 'transpose')
+        # img = images.transpose()
+        # addButton(self, 'Transpose', self.parentapp.transpose, img, 'transpose')
         img = images.copy()
         addButton(self, 'Copy', self.parentapp.copyTable, img, 'copy to clipboard')
         img = images.paste()
@@ -3701,6 +3748,7 @@ class ChildToolBar(ToolBar):
 
 class statusBar(Frame):
     """Status bar class"""
+
     def __init__(self, parent=None, parentapp=None):
 
         Frame.__init__(self, parent)
