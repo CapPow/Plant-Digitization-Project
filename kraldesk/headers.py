@@ -59,7 +59,7 @@ class ColumnHeader(Canvas):
             self.bind('<Control-Button-1>', self.handle_left_ctrl_click)
             self.bind("<Double-Button-1>",self.handle_double_click)
             self.bind('<Leave>', self.leave)
-            if self.table.ostyp=='mac':
+            if self.table.ostype=='mac':
                 #For mac we bind Shift, left-click to right click
                 self.bind("<Button-2>", self.handle_right_click)
                 self.bind('<Shift-Button-1>',self.handle_right_click)
@@ -351,12 +351,7 @@ class ColumnHeader(Canvas):
         #     popupmenu.add_command(label="Flatten Index", command=self.table.flattenIndex)
         popupmenu.add_command(label="Add Column(s)" , command=self.table.addColumn)
         popupmenu.add_command(label="Delete Column(s)", command=self.table.deleteColumn)
-        # popupmenu.add_command(label="Fill With Data", command=self.table.fillColumn)
         # popupmenu.add_command(label="Set Column Type", command=self.table.setColumnType)
-        # popupmenu.add_command(label="Create Categorical", command=self.table.createCategorical)
-        # popupmenu.add_command(label="Apply Function", command=self.table.applyFunction)
-        # popupmenu.add_command(label="Apply Function Col-wise", command=self.table.applyColumnWise)
-        # popupmenu.add_command(label="String Operation", command=self.table.applyStringMethod)
         # popupmenu.add_command(label="Date/Time Conversion", command=self.table.convertDates)
         # popupmenu.add_command(label="Set Color", command=self.table.setColumnColors)
         # popupmenu.add_command(label="Color by Value", command=self.table.setColorbyValue)

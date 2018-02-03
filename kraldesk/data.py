@@ -56,53 +56,8 @@ class TableModel(object):
         else:
             colnames = list(string.ascii_lowercase[:columns])
             self.df = pd.DataFrame(index=range(rows),columns=colnames)
-            #self.df = self.getSampleData()
         self.reclist = self.df.index # not needed now?
         return
-
-    @classmethod
-    def getSampleData(self, rows=400, cols=5):
-        """Generate sample data"""
-
-        colnames = list(string.ascii_lowercase[:cols])
-        coldata = [np.random.normal(x,1,rows) for x in np.random.normal(5,3,cols)]
-        n = np.array(coldata).T
-        df = pd.DataFrame(n, columns=colnames)
-        df['b'] = df.a*np.random.normal(.8, 0.1, len(df))
-        df = np.round(df, 3)
-        #df = df.astype('object')
-        cats = ['high','medium','low','unknown']
-        df['label'] = [cats[i] for i in np.random.randint(0,4,rows)]
-        df['date'] = pd.date_range('1/1/2014', periods=rows, freq='H')
-        return df
-
-    @classmethod
-    def getIrisData(self):
-        """Get iris dataset"""
-
-        path = os.path.dirname(__file__)
-        cols = ['sepal length','sepal width','petal length','petal width','class']
-        df = pd.read_csv(os.path.join(path,'datasets','iris.data'),names=cols)
-        return df
-
-    @classmethod
-    def getKralSample(self):
-        """Get Sample data for KralDesk testing"""
-
-        df = pd.read_csv('/home/lidless/Programming/pd-project/sample-data/new_sampledata.csv')
-        return df
-
-    @classmethod
-    def getStackedData(self):
-        """Get a dataframe to pivot test"""
-
-        import pandas.util.testing as tm; tm.N = 4
-        frame = tm.makeTimeDataFrame()
-        N, K = frame.shape
-        data = {'value' : frame.values.ravel('F'),
-                'variable' : np.asarray(frame.columns).repeat(N),
-                'date' : np.tile(np.asarray(frame.index), K)}
-        return pd.DataFrame(data, columns=['date', 'variable', 'value'])
 
     def initialiseFields(self):
         """Create meta data fields"""
@@ -129,7 +84,6 @@ class TableModel(object):
     def load(self, filename, filetype=None):
         """Load file, if no filetype given assume it's msgpack format"""
 
-        print (filetype)
         if filetype == '.pickle':
             self.df = pd.read_pickle(filename)
         else:
@@ -360,33 +314,33 @@ class TableModel(object):
         self.df.iloc[rowindex,colindex] = value
         return
 
-    def transpose(self):
-        """Transpose dataframe"""
+    # def transpose(self):
+    #     """Transpose dataframe"""
 
-        df = self.df
-        rows = df.index
-        df = df.transpose()
-        df.reset_index()
-        if util.check_multiindex(df.columns) != 1:
-            try:
-                df.columns = df.columns.astype(str)
-            except:
-                pass
-        self.df = df.convert_objects()
-        self.columnwidths = {}
-        return
+    #     df = self.df
+    #     rows = df.index
+    #     df = df.transpose()
+    #     df.reset_index()
+    #     if util.check_multiindex(df.columns) != 1:
+    #         try:
+    #             df.columns = df.columns.astype(str)
+    #         except:
+    #             pass
+    #     self.df = df.convert_objects()
+    #     self.columnwidths = {}
+    #     return
 
-    def query(self):
+    # why is this here?
+    # def query(self):
 
-        return
+    #     return
 
-    def filterby(self):
-        import filtering
-        funcs = filtering.operatornames
-        floatops = ['=','>','<']
-        func = funcs[op]
-
-        return
+    # def filterby(self):
+    #     import filtering
+    #     funcs = filtering.operatornames
+    #     floatops = ['=','>','<']
+    #     func = funcs[op]
+    #     return
 
     def __repr__(self):
         return 'Table Model with %s rows' %len(self.df)
