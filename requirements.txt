@@ -1,0 +1,6 @@
+tkinter
+numpy
+pandas
+reportlab
+requests
+any others?

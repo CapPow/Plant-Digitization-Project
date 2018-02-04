@@ -5,9 +5,8 @@ import tkinter
 from PIL import Image, ImageTk
 import base64
 
-with open("/home/lidless/Downloads/process.png", "rb") as imageFile:
+with open("/image/location/image.png", "rb") as imageFile:
     f = imageFile.read()
     b = bytearray(f)
 
 enc = base64.b64encode(b)
-
