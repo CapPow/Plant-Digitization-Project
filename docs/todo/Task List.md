@@ -2,6 +2,10 @@ Priority Tasks:
 
 ~~* Convert existing, old site / specimen read methods to use the newer easier site# specimen# fields.~~
 
+* Locality generation needs to use local fields when GPS coords are not available.
+
+* Locality generation and local fields should be set in agreement. (IE: if user entered a state, county, and GPS value and the reverse geolocate API disagrees with county we would record conflicting data in the record and the label.
+
 * Associated Taxa is not being added when processing.
   * Associated Taxa should be a string of scientific names, without authorities generated from joining:
     * a set() datatype containing the list of split(',') associatedTaxa (field entered) from each specimen which shares a site#
