@@ -14,6 +14,10 @@ import sys
 import subprocess
 from tkinter import filedialog
 
+# This entire module needs clean up,
+# dynamic spacing needs redesigned and simplified
+# before size options are added.
+
 def genPrintLabelPDFs(labelDataInput):
     labelData = labelDataInput
 
@@ -277,6 +281,7 @@ def genPrintLabelPDFs(labelDataInput):
 #Associated Taxa Dynamic Formatting
         if dfl('associatedTaxa') == '':         #If associated taxa is not used, give up the y space.
             associatedTaxaHeight = 0
+            associatedTaxaStyle = 'defaultSTYSmall'   #This entire block is not functioning the way it was planned to.
         else:
             associatedTaxaHeight = .15 * yPaperSize          #Otherwise, devote some space, then test it's useage.
             associatedTaxaElement = Para('associatedTaxa','default','Associated taxa: ') #Test build for height
@@ -290,10 +295,10 @@ def genPrintLabelPDFs(labelDataInput):
                 associatedTaxaStyle = 'defaultSTYSmall'
             else:
                 associatedTaxaStyle = 'default'             #otherwise, use the normal height
-            row4 = Table([[
-                Para('associatedTaxa',associatedTaxaStyle,'Associated taxa: ')]],
-                rowHeights=None,
-                style = tableSty)
+        row4 = Table([[
+            Para('associatedTaxa',associatedTaxaStyle,'Associated taxa: ')]],
+            rowHeights=None,
+            style = tableSty)
 #Note, associatedTaxa only reduces size if it is too large. At some extream point we'll need to consider trunication.
         
         if dfl('individualCount') != '':
