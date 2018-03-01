@@ -16,14 +16,8 @@ Priority Tasks:
 
 ~~*Remove user dialog (and 'pass') if sciname / authority are the same as proposed change. (It currently ALWAYS asks)~~
 
-* Modify Pandastables preferences windows to load preferences on start up, and save when they are modified.
+~~* Modify Pandastables preferences windows to load preferences on start up, and save when they are modified.~~
 ~~* Values to save in preferences:~~
-    * Window Size
-    ~~* Collection name~~
-     ~~* Determined by & Date preferences (maybe automatically append when the sci-name field is entered?)
-     * Catalog number Prefix, Digits and Start (aka: barcode number)~~
-     * Possibly add consider dialog at the time of label printing
-     * Paths to input field-number-named images and output catalog-number-named images.
 
 Tasks:
 
