@@ -195,11 +195,10 @@ class Table(Canvas):
         self.columncolors = {}
         self.rowcolors = pd.DataFrame()
         self.bg = Style().lookup('TLabel.label', 'background')
-#BOOKMARK
         #Collection data entry bar defaults
         self.collName = ''
         self.detName = ''
-        self.useDetDateVar = 0
+        self.useDetDate = 0
         #Catalog number data entry bar defaults
         self.catPrefix = ''
         self.catDigits = 0
@@ -2886,7 +2885,7 @@ class Table(Canvas):
                         #CollectionDataEntryBar stuff
                         'collName': self.collName,
                         'detName':self.detName,
-                        'useDetDate':self.useDetDateVar,
+                        'useDetDate':self.useDetDate,
                         #CatNumberBar stuff
                         'catPrefix':self.catPrefix,
                         'catDigits':self.catDigits,
@@ -2933,21 +2932,22 @@ class Table(Canvas):
         self.rowheaderwidthvar = IntVar()
         self.rowheaderwidthvar.set(self.prefs.get('rowheaderwidth'))
         self.rowheaderwidth = self.rowheaderwidthvar.get()
-#BOOKMARK
+        
         #Collection data entry bar defaults
-        self.collName = StringVar(None)
-        self.collName.set(self.prefs.get('collName'))
-        self.detName = StringVar(None)
-        self.detName.set(self.prefs.get('detName'))
-        self.useDetDateVar = IntVar(0)
-        self.useDetDateVar.set(self.prefs.get('useDetDate'))
+        CollectionDataEntryBar.collNameVar = StringVar()
+        CollectionDataEntryBar.collNameVar.set(self.prefs.get('collName'))
+        CollectionDataEntryBar.detNameVar = StringVar()
+        CollectionDataEntryBar.detNameVar.set(self.prefs.get('detName'))
+        CollectionDataEntryBar.useDetDateVar = IntVar()
+        CollectionDataEntryBar.useDetDateVar.set(self.prefs.get('useDetDate'))
+
         #Catalog number data entry bar defaults
-        self.catPrefix = StringVar(None)
-        self.catPrefix.set(self.prefs.get('catPrefix'))
-        self.catDigits = IntVar(0)
-        self.catDigits.set(self.prefs.get('catDigits'))
-        self.catStart = IntVar(0)
-        self.catStart.set(self.prefs.get('catStart'))
+        CatNumberBar.catPrefixVar = StringVar()
+        CatNumberBar.catPrefixVar.set(self.prefs.get('catPrefix'))
+        CatNumberBar.catDigitsVar = IntVar()
+        CatNumberBar.catDigitsVar.set(self.prefs.get('catDigits'))
+        CatNumberBar.catStartVar = IntVar()
+        CatNumberBar.catStartVar.set(self.prefs.get('catStart'))
         return
 
     def savePrefs(self):
@@ -2979,22 +2979,9 @@ class Table(Canvas):
             self.rowheaderwidth = self.rowheaderwidthvar.get()
             # self.thefont = (self.prefs.get('celltextfont'), self.prefs.get('celltextsize'))
             self.fontsize = self.prefs.get('celltextsize')
-#BOOKMARK
-            #CollectionDataEntryBar Stuff
-            self.prefs.set('collName', self.collName.get())
-            #self.collName = self.collName.get()
 
-            self.prefs.set('detName',self.detName.get())
-            #self.detName = self.detName.get()
-
-            self.prefs.set('useDetDate',self.useDetDateVar.get())
-            #self.useDetDateVar = self.useDetDateVar.get()
-            #CatNumberBar Stuff
-            self.prefs.set('catPrefix',self.catPrefix.get())
-            self.prefs.set('catDigits',self.catDigits.get())
-            self.prefs.set('catStart',self.catStart.get())
-
-        except ValueError:
+        except ValueError as e:
+            print('prefs error: ', e)
             pass
         self.prefs.save_prefs()
         return
@@ -3563,6 +3550,23 @@ class Table(Canvas):
         self.main.destroy()
         return
 
+    def saveBarPrefs(self):
+        """ saves the CollectionDataEntryBar settings """
+        #BOOKMARK
+        # Save CollectionDataEntry Bar settings
+        self.prefs.set('collName', CollectionDataEntryBar.collNameVar.get())
+        self.prefs.set('detName',CollectionDataEntryBar.detNameVar.get())        
+        self.prefs.set('useDetDate',CollectionDataEntryBar.useDetDateVar.get())
+        # Save Cat Number Bar settings
+        self.prefs.set('catPrefix',CatNumberBar.catPrefixVar.get())
+        self.prefs.set('catDigits',CatNumberBar.catDigitsVar.get())
+        self.prefs.set('catStart',CatNumberBar.catStartVar.get())
+        #report a few of the values
+        print(self.prefs.get('collName'))
+        print('use det date checkbox value ',self.prefs.get('useDetDate'))
+        print('cat start value', self.prefs.get('catStart'))
+
+
 class CollectionDataEntryBar(Frame):
     """Uses the parent instance to store collection specific data and application functions"""
 
@@ -3573,13 +3577,14 @@ class CollectionDataEntryBar(Frame):
             self.parentframe = parent
             self.parentapp = parentapp
             #Collection Name Stuff
-            
+
+           
             self.labelCollText = StringVar()
             self.labelCollText.set("Collection Name:")
             self.labelColl = Label(self, textvariable=self.labelCollText)
             self.labelColl.grid(row=0, column=1, rowspan = 1, sticky='news', pady=1, ipady=1)
-            self.collName = StringVar(None) #Variable for collection name
-            self.collEntryBox = Entry(self,textvariable=self.collName, width=40)
+            #self.collName = StringVar() #Variable for collection name
+            self.collEntryBox = Entry(self,textvariable=self.collNameVar, width=40)
             self.collEntryBox.grid(row=0, column=2, rowspan = 2, sticky='news', pady=1, ipady=1)
 
             self.addCollNameButton = Button(self, text = 'Add', command = self.addCollectionName, width = 5)
@@ -3589,17 +3594,17 @@ class CollectionDataEntryBar(Frame):
             ToolTip.createToolTip(self.delCollNameButton,'Remove collection name from all records')
             self.delCollNameButton.grid(row=0, column=4, rowspan =1, sticky ='news', pady=1, ipady=1)
             #Determined By Stuff
-#BOOKMARK
             self.labelDetText = StringVar()
             self.labelDetText.set("Determined By:")
             self.labelDet = Label(self, textvariable=self.labelDetText)
             self.labelDet.grid(row=0, column=5, rowspan = 1, sticky='news', pady=1, ipady=1)
-            self.detName = StringVar(None) #Variable for collection name
-            self.detEntryBox = Entry(self,textvariable=self.detName, width=20)
+            self.detName = StringVar() #Variable for Determiner name
+            self.detEntryBox = Entry(self,textvariable=self.detNameVar, width=20)
             self.detEntryBox.grid(row=0, column=6, rowspan = 2, sticky='news', pady=1, ipady=1)
 
-            self.useDetDateVar = IntVar(0) #Variable for Determination date Preference
+            #self.useDetDateVar = IntVar() #Variable for Determination date Preference
             self.useDetDateCheckButton = Checkbutton(self, text="Date", variable=self.useDetDateVar)
+
             ToolTip.createToolTip(self.useDetDateCheckButton,"Add today's date as the determination date")
             self.useDetDateCheckButton.grid(row=0, column=7, rowspan=1, sticky ='news', pady=1, ipady=1)
             self.addDetByNameButton = Button(self, text = 'Add', command = self.addDetByName, width = 5)
@@ -3612,7 +3617,7 @@ class CollectionDataEntryBar(Frame):
 #Functions to operate within the CollectionDataEntryBar's tkinter space.
 
     def addCollectionName(self):
-        collName = self.collName.get()
+        collName = self.collNameVar.get()
         self.parentapp.model.df['collectionName'] = collName
         self.parentapp.redraw()
 
@@ -3623,7 +3628,7 @@ class CollectionDataEntryBar(Frame):
             pass
         self.parentapp.redraw()
 
-    def addDetByName(self):
+    def addDetByName(self): # Any reason to believe this will overwrite other data? Would multiple determinations exist on import?
         detName = self.detName.get()
         self.parentapp.model.df['identifiedBy'] = detName
         if self.useDetDateVar.get() == 1:
@@ -3632,7 +3637,7 @@ class CollectionDataEntryBar(Frame):
             self.parentapp.model.df['dateIdentified'] = isoDate
         self.parentapp.redraw()
 
-    def delDetByName(self):
+    def delDetByName(self): # Should this only remove the "added" names?
         try:
             self.parentapp.model.df.drop('identifiedBy', axis=1, inplace=True)
             self.parentapp.model.df.drop('dateIdentified', axis=1, inplace=True)
@@ -3661,31 +3666,32 @@ class CatNumberBar(Frame):
             #else:
             #    catStatus = DISABLED
             catStatus = NORMAL
-                
+                #BOOKMARK  Can probably get rid of non "Var" variables here
             self.labelCatNumText = StringVar()
             self.labelCatNumText.set('Catalog Number Prefix:')
             self.labelCatPrefix = Label(self, textvariable=self.labelCatNumText)
             self.labelCatPrefix.grid(row=1, column=1, rowspan = 1, sticky='news', pady=1, ipady=1)
-            self.catPrefix = StringVar('') #Variable for catalog number prefix
-            self.catPrefixEntryBox = Entry(self,textvariable=self.catPrefix, width=12, state=catStatus)
+
+            self.catPrefix = StringVar() #Variable for catalog number prefix
+            self.catPrefixEntryBox = Entry(self,textvariable=self.catPrefixVar, width=12, state=catStatus)
             self.catPrefixEntryBox.grid(row=1, column=2, rowspan = 1, sticky='news', pady=1, ipady=1)
 
             self.labelCatDigitsText = StringVar()
             self.labelCatDigitsText.set('Digits:')
             self.labelCatDigits = Label(self, textvariable=self.labelCatDigitsText)
             self.labelCatDigits.grid(row=1, column=3, rowspan = 1, sticky='news', pady=1, ipady=1)
-            self.catDigits = IntVar(0) #Variable for catalog number prefix
-            self.catDigits.set(1)
-            self.catDigitsEntryBox = Entry(self,textvariable=self.catDigits, width=3, state=catStatus)
+
+            self.catDigits = IntVar() #Variable for catalog number prefix
+            self.catDigitsEntryBox = Entry(self,textvariable=self.catDigitsVar, width=3, state=catStatus)
             self.catDigitsEntryBox.grid(row=1, column=4, rowspan = 1, sticky='news', pady=1, ipady=1)
 
             self.labelCatStartText = StringVar()
             self.labelCatStartText.set('Start:')
             self.labelCatStart = Label(self, textvariable=self.labelCatStartText)
             self.labelCatStart.grid(row=1, column=5, rowspan = 1, sticky='news', pady=1, ipady=1)
-            self.catStart = IntVar(0) #Variable for catalog starting number
-            self.catStart.set(1)
-            self.catStartEntryBox = Entry(self,textvariable=self.catStart, width=5, state=catStatus)
+
+            self.catStart = IntVar() #Variable for catalog starting number
+            self.catStartEntryBox = Entry(self,textvariable=self.catStartVar, width=5, state=catStatus)
             self.catStartEntryBox.grid(row=1, column=6, rowspan = 1, sticky='news', pady=1, ipady=1)
             
             self.catPreviewText = StringVar()
@@ -3709,9 +3715,10 @@ class CatNumberBar(Frame):
 
     def genCatNumPreview(self):
         """Generate catalog number preview ..."""
-
-        prefix = self.catPrefix.get()
-        digits = self.catDigits.get()
+#Bookmark
+        self.parentapp.savePrefs()
+        prefix = self.catPrefixVar.get()
+        digits = self.catDigitsVar.get()
         start = str(self.catStartEntryBox.get()).zfill(digits)
         if len(start) > digits:
             messagebox.showwarning("Starting Value Error", "Starting Catalog Number Value Exceeds Entered The Max Digits")
@@ -3722,9 +3729,10 @@ class CatNumberBar(Frame):
     def addCatalogNumbers(self):
         """Add catalog numbers..."""
 
-        prefix = self.catPrefix.get()
-        digits = self.catDigits.get()
-        start = self.catStartEntryBox.get()
+        prefix = self.catPrefixVar.get()
+        digits = self.catDigitsVar.get()
+#Bookmark
+        start = self.catStartEntryBox.get() # here I believe I'm asking the actual box not the variable
         if len(start) > digits:
             messagebox.showwarning("Starting Value Error", "Starting Catalog Number Value Exceeds Entered The Max Digits")
         else:
@@ -3736,11 +3744,12 @@ class CatNumberBar(Frame):
                 
     def delCatalogNumbers(self):
         """Delete catalog numbers..."""
-
+#Bookmark
         try:
             self.parentapp.model.df.drop('catalogNumber', axis=1, inplace=True)
             if messagebox.askyesno("Roll Back Starting Catalog Number?", "Would you like to reduce the starting catalog value by the quantity removed from the table?"):
                 self.catStartEntryBox.set(str(self.catStartEntryBox.get() - len(self.parentapp.getOnlySpecimenRecords())))
+                self.parentapp.saveBarPrefs()
         except ValueError:
             pass
         self.parentapp.redraw()
@@ -3775,6 +3784,10 @@ class ToolBar(Frame):
         
         img = images.cross()
         addButton(self, 'Help', self.parentapp.helpDocumentation , img , 'Help Documentation', side=LEFT)
+
+        
+        img = images.fit()
+        addButton(self, 'Save Settings', self.parentapp.saveBarPrefs , img , 'Save Collection Bar Settings', side=LEFT)
 
         # List of unused button assets (for temp use before we get in our assets.
         # img = images.open_proj()
