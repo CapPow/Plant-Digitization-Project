@@ -497,8 +497,8 @@ class Table(Canvas):
 
     def redraw(self, event=None, callback=None):
         """Redraw table"""
-
         self.redrawVisible(event, callback)
+        self.saveBarPrefs()
         if hasattr(self, 'statusbar'):
             self.statusbar.update()
         return
@@ -3552,7 +3552,6 @@ class Table(Canvas):
 
     def saveBarPrefs(self):
         """ saves the CollectionDataEntryBar settings """
-        #BOOKMARK
         # Save CollectionDataEntry Bar settings
         self.prefs.set('collName', CollectionDataEntryBar.collNameVar.get())
         self.prefs.set('detName',CollectionDataEntryBar.detNameVar.get())        
@@ -3561,11 +3560,6 @@ class Table(Canvas):
         self.prefs.set('catPrefix',CatNumberBar.catPrefixVar.get())
         self.prefs.set('catDigits',CatNumberBar.catDigitsVar.get())
         self.prefs.set('catStart',CatNumberBar.catStartVar.get())
-        #report a few of the values
-        print(self.prefs.get('collName'))
-        print('use det date checkbox value ',self.prefs.get('useDetDate'))
-        print('cat start value', self.prefs.get('catStart'))
-
 
 class CollectionDataEntryBar(Frame):
     """Uses the parent instance to store collection specific data and application functions"""
@@ -3629,7 +3623,7 @@ class CollectionDataEntryBar(Frame):
         self.parentapp.redraw()
 
     def addDetByName(self): # Any reason to believe this will overwrite other data? Would multiple determinations exist on import?
-        detName = self.detName.get()
+        detName = self.detNameVar.get()
         self.parentapp.model.df['identifiedBy'] = detName
         if self.useDetDateVar.get() == 1:
             from datetime import date
@@ -3656,23 +3650,12 @@ class CatNumberBar(Frame):
             self.parentapp = parentapp
 
             #Catalog Number Stuff
-
-            #self.useCatNumVar = IntVar(0) #Variable for Determination date Preference
-            #self.useCatNumCheckButton = Checkbutton(self, text='Catalog Numbers',command = self.parentapp.redraw, variable=self.useCatNumVar)
-            #ToolTip.createToolTip(self.useCatNumCheckButton,'Generate catalog numbers for records')
-            #self.useCatNumCheckButton.grid(row=1, column=0, rowspan=1, sticky ='news', pady=1, ipady=1)
-            #if self.useCatNumVar.get() == 1:
-            #    catStatus = NORMAL
-            #else:
-            #    catStatus = DISABLED
             catStatus = NORMAL
-                #BOOKMARK  Can probably get rid of non "Var" variables here
             self.labelCatNumText = StringVar()
             self.labelCatNumText.set('Catalog Number Prefix:')
             self.labelCatPrefix = Label(self, textvariable=self.labelCatNumText)
             self.labelCatPrefix.grid(row=1, column=1, rowspan = 1, sticky='news', pady=1, ipady=1)
 
-            self.catPrefix = StringVar() #Variable for catalog number prefix
             self.catPrefixEntryBox = Entry(self,textvariable=self.catPrefixVar, width=12, state=catStatus)
             self.catPrefixEntryBox.grid(row=1, column=2, rowspan = 1, sticky='news', pady=1, ipady=1)
 
@@ -3681,7 +3664,6 @@ class CatNumberBar(Frame):
             self.labelCatDigits = Label(self, textvariable=self.labelCatDigitsText)
             self.labelCatDigits.grid(row=1, column=3, rowspan = 1, sticky='news', pady=1, ipady=1)
 
-            self.catDigits = IntVar() #Variable for catalog number prefix
             self.catDigitsEntryBox = Entry(self,textvariable=self.catDigitsVar, width=3, state=catStatus)
             self.catDigitsEntryBox.grid(row=1, column=4, rowspan = 1, sticky='news', pady=1, ipady=1)
 
@@ -3690,7 +3672,6 @@ class CatNumberBar(Frame):
             self.labelCatStart = Label(self, textvariable=self.labelCatStartText)
             self.labelCatStart.grid(row=1, column=5, rowspan = 1, sticky='news', pady=1, ipady=1)
 
-            self.catStart = IntVar() #Variable for catalog starting number
             self.catStartEntryBox = Entry(self,textvariable=self.catStartVar, width=5, state=catStatus)
             self.catStartEntryBox.grid(row=1, column=6, rowspan = 1, sticky='news', pady=1, ipady=1)
             
@@ -3715,7 +3696,6 @@ class CatNumberBar(Frame):
 
     def genCatNumPreview(self):
         """Generate catalog number preview ..."""
-#Bookmark
         self.parentapp.savePrefs()
         prefix = self.catPrefixVar.get()
         digits = self.catDigitsVar.get()
@@ -3731,25 +3711,24 @@ class CatNumberBar(Frame):
 
         prefix = self.catPrefixVar.get()
         digits = self.catDigitsVar.get()
-#Bookmark
-        start = self.catStartEntryBox.get() # here I believe I'm asking the actual box not the variable
-        if len(start) > digits:
+        start = self.catStartVar.get()
+        if start > digits:
             messagebox.showwarning("Starting Value Error", "Starting Catalog Number Value Exceeds Entered The Max Digits")
         else:
             catalogValues = [prefix + str(x + int(start)).zfill(digits) for x in range(len(self.parentapp.getOnlySpecimenRecords()))]
-            self.catStart.set(len(catalogValues) + int(start))
+            self.catStartVar.set(len(catalogValues) + int(start))
             self.parentapp.model.df['catalogNumber'] = ''
             self.parentapp.model.df.iloc[self.parentapp.getOnlySpecimenRecords(),self.parentapp.model.df.columns.get_loc('catalogNumber')] = catalogValues
             self.parentapp.redraw()
                 
     def delCatalogNumbers(self):
         """Delete catalog numbers..."""
-#Bookmark
         try:
             self.parentapp.model.df.drop('catalogNumber', axis=1, inplace=True)
             if messagebox.askyesno("Roll Back Starting Catalog Number?", "Would you like to reduce the starting catalog value by the quantity removed from the table?"):
-                self.catStartEntryBox.set(str(self.catStartEntryBox.get() - len(self.parentapp.getOnlySpecimenRecords())))
-                self.parentapp.saveBarPrefs()
+                self.catStartVar.set(str(self.catStartVar.get() - len(self.parentapp.getOnlySpecimenRecords())))
+                #self.catStartEntryBox.set(str(self.catStartEntryBox.get() - len(self.parentapp.getOnlySpecimenRecords())))
+                
         except ValueError:
             pass
         self.parentapp.redraw()
