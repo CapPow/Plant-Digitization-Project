@@ -3160,7 +3160,7 @@ class Table(Canvas):
         groupScientificNameList = sorted(list(set(groupScientificNameList)),key=str.lower) #clean the list
 #join the lists keeping user entered fields at the start of the list.
         groupAssociatedTaxa = associatedTaxaList + groupScientificNameList
-        groupAssociatedTaxa = ', '.join(groupAssociatedTaxa).strip().strip(', ')
+        groupAssociatedTaxa = ', '.join(groupAssociatedTaxa).strip().strip(', ').replace(', , ', ', ')
         siteGroup['associatedTaxa'] = groupAssociatedTaxa #Update associated taxa according to the group with the final list.
         return siteGroup    #Return the groups with modified associatedTaxa Fields.
         
