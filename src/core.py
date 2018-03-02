@@ -3080,9 +3080,9 @@ class Table(Canvas):
                 #Clean duplicate primary collector names out of associated collectors. Presuming they're split with a " , ".
                 associatedCollectors = self.model.getValueAt(currentRow, assCollectorColumn).split(',')
                 recordedBy = self.model.getValueAt(currentRow, recordedByColumn)
-                associatedCollectors = ', '.join([x.strip() for x in associatedCollectors if x.strip() != recordedBy.strip()])
+                #use all uppercase names to check for duplicates.
+                associatedCollectors = ', '.join([x.strip() for x in associatedCollectors if x.strip().upper() != recordedBy.strip().upper()])
                 self.model.setValueAt(associatedCollectors, currentRow, assCollectorColumn)
-                
                 resultLocality = self.genLocality(currentRow)
                 # missing gps coordinates
                 if resultLocality == "loc_error_no_gps":
@@ -3140,8 +3140,18 @@ class Table(Canvas):
         self.parentframe.master.title("KralDesk")
         self.setSelectedRow(0)
         self.redraw()
-                
 
+#Automatically captalizing names is currently axed due to names like "McNabb," people just have to enter their name as they want it.
+#    def cleanCollectorNames(self, currentRowArg):
+#        currentRow = currentRowArg
+#        #change primary collector ('recordedBy') to title case
+#        recordedByColumn = self.findColumnIndex('recordedBy')
+#        self.model.setValueAt(str(self.model.getValueAt(currentRow, recordedByColumn)).title(), currentRow, recordedByColumn)
+#        #change ALL words in associated collector field ('associatedCollectors') to title case
+#        associatedCollColumn = self.findColumnIndex('associatedCollectors')
+#        self.model.setValueAt(str(self.model.getValueAt(currentRow, associatedCollColumn)).title(), currentRow, associatedCollColumn)
+#        return
+        
     def genAssociatedTaxa(self, siteGroup):
         """Generate Associated Taxa gets all associated taxa
         for a given record (specimen)."""
