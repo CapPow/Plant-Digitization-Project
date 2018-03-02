@@ -490,8 +490,8 @@ class Table(Canvas):
         or perhaps, depending on the tkinter frames:
         self.model.df.iloc[self.parentapp.getOnlySpecimenRecords(),:]
         Also see the function called:  self.parentapp.model.df.get_loc('catalogNumber') for use case."""
-        
-        return [i for i, x in enumerate(self.model.df['otherCatalogNumbers'].str.split('-').str[1]) if x != '#']
+        listToReturn = [i for i, x in enumerate(self.model.df['specimen#']) if x != '!AddSITE']
+        return listToReturn
         
 
 
@@ -3712,23 +3712,27 @@ class CatNumberBar(Frame):
         prefix = self.catPrefixVar.get()
         digits = self.catDigitsVar.get()
         start = self.catStartVar.get()
-        if start > digits:
+        if len(str(start)) > digits: #check that the starting value does not require more decimal places than the entered digit length
             messagebox.showwarning("Starting Value Error", "Starting Catalog Number Value Exceeds Entered The Max Digits")
         else:
-            catalogValues = [prefix + str(x + int(start)).zfill(digits) for x in range(len(self.parentapp.getOnlySpecimenRecords()))]
-            self.catStartVar.set(len(catalogValues) + int(start))
-            self.parentapp.model.df['catalogNumber'] = ''
-            self.parentapp.model.df.iloc[self.parentapp.getOnlySpecimenRecords(),self.parentapp.model.df.columns.get_loc('catalogNumber')] = catalogValues
+            try: # try and isolate the records which need a catalog number
+                groupNeedingBarcodes = self.parentapp.model.df['catalogNumber'].str.len() != (len(str(prefix)) + digits)
+            except KeyError: #if no 'catalogNumber column exists, generate it
+                self.parentapp.model.df['catalogNumber'] = ''
+                groupNeedingBarcodes = self.parentapp.model.df['catalogNumber'].str.len() != (len(str(prefix)) + digits) #probably could simplify this.
+
+            groupNeedingBarcodes = self.parentapp.model.df[groupNeedingBarcodes] #change the boolean values into a df slice
+            catalogValues = [prefix + str(x + int(start)).zfill(digits) for x in range(len(groupNeedingBarcodes))] #Generate a list of the barcodes to assign
+            self.catStartVar.set(len(catalogValues) + int(start)) # update the starting view by the quanity being added
+            self.parentapp.model.df.loc[groupNeedingBarcodes.index,'catalogNumber'] = catalogValues #apply the selective changes
             self.parentapp.redraw()
                 
     def delCatalogNumbers(self):
-        """Delete catalog numbers..."""
+        """Blindly removes the catalogNumber column..."""
         try:
             self.parentapp.model.df.drop('catalogNumber', axis=1, inplace=True)
             if messagebox.askyesno("Roll Back Starting Catalog Number?", "Would you like to reduce the starting catalog value by the quantity removed from the table?"):
-                self.catStartVar.set(str(self.catStartVar.get() - len(self.parentapp.getOnlySpecimenRecords())))
-                #self.catStartEntryBox.set(str(self.catStartEntryBox.get() - len(self.parentapp.getOnlySpecimenRecords())))
-                
+                self.catStartVar.set(str(self.catStartVar.get() - len(self.parentapp.getOnlySpecimenRecords())))              
         except ValueError:
             pass
         self.parentapp.redraw()
