@@ -176,7 +176,7 @@ def genPrintLabelPDFs(labelDataInput):
             return Paragraph('', style = stylesheet(styleKey))
 
     def cultivationStatusChecker(textfield1, styleKey):
-        if str(dfl(textfield1)) == '1':
+        if str(dfl(textfield1)) == 'cultivated':
             return Paragraph('<b>Cultivated specimen</b>', style = stylesheet(styleKey))
         else:
             return Paragraph('', style = stylesheet('default'))
@@ -318,10 +318,10 @@ def genPrintLabelPDFs(labelDataInput):
             row5 = Table([[
                 Para('habitat','default','Habitat: ')]], style=tableSty)
 
-        if dfl('cultivationStatus') == '1':  #If cultivation status is not '1' (True from app) then forfit the space in case Substrate field is long.
+        if dfl('establishmentMeans') == 'cultivated':  #If establishmentMeans status is not 'cultivated' (based on cultivated status in mobile app) then forfit the space in case Substrate field is long.
             row6 = Table([[
             Para('substrate','default','Substrate: '),
-            cultivationStatusChecker('cultivationStatus','rightSTY')]],    
+            cultivationStatusChecker('establishmentMeans','rightSTY')]],    
             colWidths = (xPaperSize * .68,xPaperSize * .30), rowHeights = None,
             style=tableSty)
             
@@ -358,14 +358,14 @@ def genPrintLabelPDFs(labelDataInput):
             gpsParaWidth = 0
             
         if gpsParaWidth > xPaperSize * .65:
-            row8 = Table([[Para('othercatalognumbers','default','Field Number: ')]], style = tableSty)
+            row8 = Table([[Para('otherCatalogNumbers','default','Field Number: ')]], style = tableSty)
             row9 = Table([[gpsStrElement]],style = tableSty)
             tableList.append([row8])
             tableList.append([row9])
             
         else:
             row8 = Table([[
-            Para('othercatalognumbers','default','Field Number: '),        
+            Para('otherCatalogNumbers','default','Field Number: '),        
             gpsStrElement]],            
             colWidths = (xPaperSize * .33, xPaperSize * .65), rowHeights = None,style=tableSty)
             tableList.append([row8])

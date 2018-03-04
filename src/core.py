@@ -151,7 +151,7 @@ class Table(Canvas):
             'habitat',
             'individualCount',
             'reproductiveCondition',
-            'cultivationStatus',
+            'establishmentMeans',
             'decimalLatitude',
             'decimalLongitude',
             'coordinateUncertaintyInMeters',
@@ -161,7 +161,7 @@ class Table(Canvas):
             'county',
             'municipality',
             'path',
-            'otherCatalogNumbers',
+            's',
             ]
         
         return
