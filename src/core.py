@@ -3245,7 +3245,7 @@ class Table(Canvas):
                         #path = addressComponent['long_name']
                         #if currentLocality == '':
                             #path = 'near '+ path
-                        path = 'near '+ path
+                        path = 'near '+ addressComponent['long_name']
                         
                         newLocality.append(path)
                         self.model.setValueAt(path, currentRow, pathColumn)
