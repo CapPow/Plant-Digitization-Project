@@ -3239,9 +3239,14 @@ class Table(Canvas):
                     if addressComponent['types'][0] == 'route':
                         # path could be Unamed Road
                         # probably don't want this as a result?
-                        path = addressComponent['long_name']
-                        if currentLocality == '':
-                            path = 'near '+ path
+
+                        # Testing the idea of ALWAYS adding "near" to route/path level detail.
+
+                        #path = addressComponent['long_name']
+                        #if currentLocality == '':
+                            #path = 'near '+ path
+                        path = 'near '+ path
+                        
                         newLocality.append(path)
                         self.model.setValueAt(path, currentRow, pathColumn)
                     if addressComponent['types'][0] == 'administrative_area_level_1':
