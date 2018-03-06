@@ -1,27 +1,27 @@
 Priority Tasks:
 
 ~~* Convert existing, old site / specimen read methods to use the newer easier site# specimen# fields.~~
+ 
+~~* Locality generation needs to use local fields when GPS coords are not available.~~
 
-* Associated Taxa is not being added when processing.
-  * Associated Taxa should be a string of scientific names, without authorities generated from joining:
-    * a set() datatype containing the list of split(',') associatedTaxa (field entered) from each specimen which shares a site#
-    * a set() datatype containing the scientificName from each specimen which shares a site# and is not listed in the set above.
-    * Final Associated Taxa string should keep associatedTaxa set before scientificName set (so generated follows user entered).
+* Locality generation and local fields should be set in agreement. (IE: if user entered a state, county, and GPS value and the reverse geolocate API disagrees with county we would record conflicting data in the record and the label.
+
+~~* Associated Taxa is not being added when processing.~~
+  ~~* Associated Taxa should be a string of scientific names, without authorities generated from joining:~~
+    ~~* a set() datatype containing the list of split(',') associatedTaxa (field entered) from each specimen which shares a site#~~
+    ~~* a set() datatype containing the scientificName from each specimen which shares a site# and is not listed in the set above.~~
+    ~~* Final Associated Taxa string should keep associatedTaxa set before scientificName set (so generated follows user entered).~~
 
 ~~*Remove user dialog when authority is filling in a blank field~~
 
 ~~*Remove user dialog (and 'pass') if sciname / authority are the same as proposed change. (It currently ALWAYS asks)~~
 
-* Modify Pandastables preferences windows to load preferences on start up, and save when they are modified.
-  * Values to save in preferences:
-    * Window Size
-    * Collection name
-     * Determined by & Date preferences (maybe automatically append when the sci-name field is entered?)
-     * Catalog number Prefix, Digits and Start (aka: barcode number)
-     * Possibly add consider dialog at the time of label printing
-     * Paths to input field-number-named images and output catalog-number-named images.
+~~* Modify Pandastables preferences windows to load preferences on start up, and save when they are modified.~~
+~~* Values to save in preferences:~~
 
 Tasks:
+
+* Use existing pandastable's column types to add a column type for site only rows (ie: the ones we currently fill with "!AddSITE" and then populate those cells with a button. We could make these column types uneditable, perhaps. Find relevant code in core.py by searching for "#column specific actions, define for every column type in the model"
 
 * Impliment the rename and move image handling functions from fieldImageHandling.py, possibly at the time of label printing
 

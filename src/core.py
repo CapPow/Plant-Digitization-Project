@@ -151,7 +151,7 @@ class Table(Canvas):
             'habitat',
             'individualCount',
             'reproductiveCondition',
-            'cultivationStatus',
+            'establishmentMeans',
             'decimalLatitude',
             'decimalLongitude',
             'coordinateUncertaintyInMeters',
@@ -161,7 +161,7 @@ class Table(Canvas):
             'county',
             'municipality',
             'path',
-            'othercatalognumbers',
+            's',
             ]
         
         return
@@ -195,6 +195,14 @@ class Table(Canvas):
         self.columncolors = {}
         self.rowcolors = pd.DataFrame()
         self.bg = Style().lookup('TLabel.label', 'background')
+        #Collection data entry bar defaults
+        self.collName = ''
+        self.detName = ''
+        self.useDetDate = 0
+        #Catalog number data entry bar defaults
+        self.catPrefix = ''
+        self.catDigits = 0
+        self.catStart = 0
         return
 
     def setFontSize(self):
@@ -482,15 +490,15 @@ class Table(Canvas):
         or perhaps, depending on the tkinter frames:
         self.model.df.iloc[self.parentapp.getOnlySpecimenRecords(),:]
         Also see the function called:  self.parentapp.model.df.get_loc('catalogNumber') for use case."""
-        
-        return [i for i, x in enumerate(self.model.df['othercatalognumbers'].str.split('-').str[1]) if x != '#']
+        listToReturn = [i for i, x in enumerate(self.model.df['specimen#']) if x != '!AddSITE']
+        return listToReturn
         
 
 
     def redraw(self, event=None, callback=None):
         """Redraw table"""
-
         self.redrawVisible(event, callback)
+        self.saveBarPrefs()
         if hasattr(self, 'statusbar'):
             self.statusbar.update()
         return
@@ -711,7 +719,7 @@ class Table(Canvas):
                 df.drop(tempColNames, axis = 1, inplace = True)     #Drop temporary helper columns
                        
             except Exception as e:
-                       print(e)
+                       print('core.py error in function "sortTable", error: {}'.format(e))
                 
         self.redraw()
         return
@@ -838,7 +846,7 @@ class Table(Canvas):
         specimenNumbers = self.model.df['specimen#'].tolist()
         nextSpecimenNumber = max([int(y) for y in[x for x in specimenNumbers if isinstance(x, int)]]) + 1
         newOtherCatNumber = str(oldOtherSiteNum) + '-' + str(nextSpecimenNumber)
-        siteData['othercatalognumbers'] = newOtherCatNumber
+        siteData['otherCatalogNumbers'] = newOtherCatNumber
         df = self.model.df
         a, b = df[:row], df[row:]
         a = a.append(siteData, ignore_index=True)
@@ -2873,13 +2881,15 @@ class Table(Canvas):
                         'cellbackgr': self.cellbackgr, 'grid_color': self.grid_color,
                         'linewidth' : self.linewidth,
                         'rowselectedcolor': self.rowselectedcolor,
-                        'rowheaderwidth': self.rowheaderwidth
-                        #'collName': self.collectiondataentrybar.collName.get(),
-                        #'detName':self.collectiondataentrybar.detName.get(),
-                        #'useDetDate':self.collectiondataentrybar.useDetDateVar.get(),
-                        #'catPrefix':self.catnumberbar.catPrefix.get(),
-                        #'catDigits':self.catnumberbar.catDigits.get(),
-                        #'catStart':self.catnumberbar.catStartEntryBox.get()
+                        'rowheaderwidth': self.rowheaderwidth,
+                        #CollectionDataEntryBar stuff
+                        'collName': self.collName,
+                        'detName':self.detName,
+                        'useDetDate':self.useDetDate,
+                        #CatNumberBar stuff
+                        'catPrefix':self.catPrefix,
+                        'catDigits':self.catDigits,
+                        'catStart':self.catStart
                         }
      
 
@@ -2922,6 +2932,22 @@ class Table(Canvas):
         self.rowheaderwidthvar = IntVar()
         self.rowheaderwidthvar.set(self.prefs.get('rowheaderwidth'))
         self.rowheaderwidth = self.rowheaderwidthvar.get()
+        
+        #Collection data entry bar defaults
+        CollectionDataEntryBar.collNameVar = StringVar()
+        CollectionDataEntryBar.collNameVar.set(self.prefs.get('collName'))
+        CollectionDataEntryBar.detNameVar = StringVar()
+        CollectionDataEntryBar.detNameVar.set(self.prefs.get('detName'))
+        CollectionDataEntryBar.useDetDateVar = IntVar()
+        CollectionDataEntryBar.useDetDateVar.set(self.prefs.get('useDetDate'))
+
+        #Catalog number data entry bar defaults
+        CatNumberBar.catPrefixVar = StringVar()
+        CatNumberBar.catPrefixVar.set(self.prefs.get('catPrefix'))
+        CatNumberBar.catDigitsVar = IntVar()
+        CatNumberBar.catDigitsVar.set(self.prefs.get('catDigits'))
+        CatNumberBar.catStartVar = IntVar()
+        CatNumberBar.catStartVar.set(self.prefs.get('catStart'))
         return
 
     def savePrefs(self):
@@ -2954,14 +2980,8 @@ class Table(Canvas):
             # self.thefont = (self.prefs.get('celltextfont'), self.prefs.get('celltextsize'))
             self.fontsize = self.prefs.get('celltextsize')
 
-            self.prefs.set('collName', self.collectiondataentrybar.collName.get())
-            self.prefs.set('detName',self.collectiondataentrybar.detName.get())
-            self.prefs.set('useDetDate',self.collectiondataentrybar.useDetDateVar.get())
-            self.prefs.set('catPrefix',self.catnumberbar.catPrefix.get())
-            self.prefs.set('catDigits',self.catnumberbar.catDigits.get())
-            self.prefs.set('catStart',self.catnumberbar.catStartEntryBox.get())
-
-        except ValueError:
+        except ValueError as e:
+            print('prefs error: ', e)
             pass
         self.prefs.save_prefs()
         return
@@ -3039,7 +3059,7 @@ class Table(Canvas):
 
         currentRow = self.currentrow
         localityColumn = self.findColumnIndex('locality')
-        catalogNumColumn = self.findColumnIndex('othercatalognumbers')
+        catalogNumColumn = self.findColumnIndex('otherCatalogNumbers')
         recordedByColumn = self.findColumnIndex('recordedBy')
         assCollectorColumn = self.findColumnIndex('associatedCollectors')
         scientNameColumn = self.findColumnIndex('scientificName')
@@ -3060,12 +3080,16 @@ class Table(Canvas):
                 #Clean duplicate primary collector names out of associated collectors. Presuming they're split with a " , ".
                 associatedCollectors = self.model.getValueAt(currentRow, assCollectorColumn).split(',')
                 recordedBy = self.model.getValueAt(currentRow, recordedByColumn)
-                associatedCollectors = ', '.join([x.strip() for x in associatedCollectors if x.strip() != recordedBy.strip()])
+                #use all uppercase names to check for duplicates.
+                associatedCollectors = ', '.join([x.strip() for x in associatedCollectors if x.strip().upper() != recordedBy.strip().upper()])
                 self.model.setValueAt(associatedCollectors, currentRow, assCollectorColumn)
-                
                 resultLocality = self.genLocality(currentRow)
                 # missing gps coordinates
                 if resultLocality == "loc_error_no_gps":
+                    #if fails to generate locality from GPS coords, try with local fields
+                    # TODO This could probably use a try except block for whatever imaginable errors?
+                    resultLocality = self.genLocalityNoAPI(currentRow)
+                    self.model.setValueAt(resultLocality, currentRow, localityColumn)
                     self.redraw()
                 elif resultLocality == "user_set_gps":
                     self.parentframe.master.title("KralDesk")
@@ -3099,47 +3123,89 @@ class Table(Canvas):
                 self.gotonextRow()
                 self.redraw()
             except IndexError:
-                self.model.df = self.model.df.groupby('site#').apply(self.genAssociatedTaxa).reset_index(drop=True)#group by 'site#', apply genAssociatedTaxa groupwise
                 self.parentframe.master.title("KralDesk")
                 self.redraw()
+
+        self.model.df = self.model.df.groupby('site#').apply(self.genAssociatedTaxa).reset_index(drop=True)#group by 'site#', apply genAssociatedTaxa groupwise
         #this for loop rectifies the scientific name's presence also being in associated Taxa. It would be ideal to do this in associatedTaxa
         for recordRow in range(self.model.getRowCount()):
             recordAssociatedTaxa = self.model.getValueAt(recordRow, assocTaxaColumn)
             recordAssociatedTaxa = recordAssociatedTaxa.split(', ')
-            recordAssociatedTaxa.remove(self.model.getValueAt(recordRow,scientNameColumn))
+            if self.model.getValueAt(recordRow,scientNameColumn) in recordAssociatedTaxa:
+                recordAssociatedTaxa.remove(self.model.getValueAt(recordRow,scientNameColumn))            
+            
             recordAssociatedTaxa = ', '.join(recordAssociatedTaxa).strip().strip(', ')
             self.model.setValueAt(recordAssociatedTaxa, recordRow, assocTaxaColumn)
 
         self.parentframe.master.title("KralDesk")
         self.setSelectedRow(0)
         self.redraw()
-                
 
+#Automatically captalizing names is currently axed due to names like "McNabb," people just have to enter their name as they want it.
+#    def cleanCollectorNames(self, currentRowArg):
+#        currentRow = currentRowArg
+#        #change primary collector ('recordedBy') to title case
+#        recordedByColumn = self.findColumnIndex('recordedBy')
+#        self.model.setValueAt(str(self.model.getValueAt(currentRow, recordedByColumn)).title(), currentRow, recordedByColumn)
+#        #change ALL words in associated collector field ('associatedCollectors') to title case
+#        associatedCollColumn = self.findColumnIndex('associatedCollectors')
+#        self.model.setValueAt(str(self.model.getValueAt(currentRow, associatedCollColumn)).title(), currentRow, associatedCollColumn)
+#        return
+        
     def genAssociatedTaxa(self, siteGroup):
         """Generate Associated Taxa gets all associated taxa
         for a given record (specimen)."""
         
-
         associatedTaxaList = [] #start with empty list
 #first generate a list of every item already in associatedTaxa (user entered)
-        for recordAssociatedTaxa in siteGroup['associatedTaxa'].tolist():   #get the exising associated taxa from each row in the group
+        for recordAssociatedTaxa in siteGroup['associatedTaxa'].tolist():  #get the exising associated taxa from each row in the group
             if isinstance(recordAssociatedTaxa, str):                       #check that it exists
                 recordAssociatedTaxa = recordAssociatedTaxa.split(',')      #if exists, try to split by commas
                 recordAssociatedTaxa = [x.strip(' ') for x in recordAssociatedTaxa] #strip extra space from each item.
                 associatedTaxaList = associatedTaxaList + recordAssociatedTaxa #Add each item individually to a list
         associatedTaxaList = sorted(list(set(associatedTaxaList)),key=str.lower) #clean the list
 #then generate a list of all scientificNames in the group which are not already present in the associatedTaxaList.
+        groupSciNameList = [x for x in siteGroup['scientificName'].tolist() if str(x) not in ['', 'nan']]
         groupScientificNameList = [y.strip(' ') for y in siteGroup['scientificName'].tolist() if y not in associatedTaxaList]
         groupScientificNameList = sorted(list(set(groupScientificNameList)),key=str.lower) #clean the list
 #join the lists keeping user entered fields at the start of the list.
         groupAssociatedTaxa = associatedTaxaList + groupScientificNameList
-        groupAssociatedTaxa = ', '.join(groupAssociatedTaxa).strip().strip(', ')
+        groupAssociatedTaxa = ', '.join(groupAssociatedTaxa).strip().strip(', ').replace(', , ', ', ')
         siteGroup['associatedTaxa'] = groupAssociatedTaxa #Update associated taxa according to the group with the final list.
         return siteGroup    #Return the groups with modified associatedTaxa Fields.
         
+    def genLocalityNoAPI(self, currentRowArg):
+# both locality functions would benefit from some systemic methid of determining when to add italics to binomial (scientific) names.
+# such the italic tags "<i> and </i>" would need to be stripped before exporting for database submission.
+        currentRow = currentRowArg
+        pathColumn = self.findColumnIndex('path')
+        localityColumn = self.findColumnIndex('locality')
+        municipalityColumn = self.findColumnIndex('municipality')
+        countyColumn = self.findColumnIndex('county')
+        stateColumn = self.findColumnIndex('stateProvince')
+        countryColumn = self.findColumnIndex('country')
+        try:
+            currentLocality = self.model.getValueAt(currentRow, localityColumn)
+            #Gen list of locality value locations
+            localityFields = [self.model.getValueAt(currentRow,x) for x in [countryColumn, stateColumn, countyColumn, municipalityColumn, pathColumn, localityColumn]]
+            #Clean nans and empty fields out of the list
+            localityFields = [x for x in localityFields if str(x) not in['','nan']]
+            #combine values from each item remaining in localityFields
+            newLocality = [x for x in localityFields if x.lower() not in currentLocality.lower()]
+            #join the list into a single string
+            newLocality = ', '.join(newLocality)
+            return newLocality
+
+        except ValueError:
+            #if some lookup fails, toss value error and return empty
+            messagebox.showinfo( "Locality generation requires at least a column named locality!")
+            return
+
     def genLocality(self, currentRowArg):
         """ Generate locality fields, uses API call to get
         country, state, city, etc. from GPS coordinates."""
+# both locality functions would benefit from some systemic methid of determining when to add italics to binomial (scientific) names.
+# such the italic tags "<i> and </i>" would need to be stripped before exporting for database submission.
 
         currentRow = currentRowArg
         pathColumn = self.findColumnIndex('path')
@@ -3173,9 +3239,14 @@ class Table(Canvas):
                     if addressComponent['types'][0] == 'route':
                         # path could be Unamed Road
                         # probably don't want this as a result?
-                        path = addressComponent['long_name']
-                        if currentLocality == '':
-                            path = 'near '+ path
+
+                        # Testing the idea of ALWAYS adding "near" to route/path level detail.
+
+                        #path = addressComponent['long_name']
+                        #if currentLocality == '':
+                            #path = 'near '+ path
+                        path = 'near '+ addressComponent['long_name']
+                        
                         newLocality.append(path)
                         self.model.setValueAt(path, currentRow, pathColumn)
                     if addressComponent['types'][0] == 'administrative_area_level_1':
@@ -3224,8 +3295,11 @@ class Table(Canvas):
         sciNameAtRow = self.model.getValueAt(currentRow, sciNameColumn)
         sciAuthorAtRow = str(self.model.getValueAt(currentRow, authorColumn))
         if sciNameAtRow != '':            
-            exclusionWordList = ['sp.','Sp.','Sp','sp','spp','spp.','Spp','Spp.','var','var.','Var','Var.']
-            if sciNameAtRow.split(' ')[-1] in exclusionWordList:    #If an excluded word is in scientific name then modify.
+            exclusionWordList = ['sp.','sp','spp','spp.','ssp','ssp.','var','var.']
+            #exclusionWordList = ['sp.','Sp.','Sp','sp','spp','spp.','Spp','Spp.','Ssp','var','var.','Var','Var.']
+
+            #this intends to exclude only those instances where the final word is one from the exclusion list.
+            if sciNameAtRow.lower().split(' ')[-1].lower() in exclusionWordList:    #If an excluded word is in scientific name then modify.
                 currentSciName = sciNameAtRow.split(' ')
                 sciNameSuffix = str(' ' + currentSciName[-1])       #store excluded word incase the user only has genus and wants Sp or the like included.
                 currentSciName.pop()
@@ -3239,6 +3313,10 @@ class Table(Canvas):
                 currentSciName = sciNameAtRow
             results = colNameSearch(currentSciName)
             if isinstance(results, tuple):
+                if results[0] == 'ERROR':
+                    messagebox.showinfo('Scientific Name Error', 'Catalog of Life Error: "{}".\nScientific name not updated!'.format(results[1]))
+                    return currentSciName
+
                 sciName = str(results[0])
                 auth = str(results[1])
                 if currentSciName != sciName:   #If scientific name needs updating, ask. Don't ask about new authority in this case.
@@ -3249,7 +3327,7 @@ class Table(Canvas):
 
                 elif sciAuthorAtRow == '':  #if author is empty, update it without asking.
                     return (currentSciName + sciNameSuffix, auth)
-                elif sciAuthorAtRow != auth:  #If only Author needs updating, ask and keep origional scientific name (we've covered if itis wrong already)
+                elif sciAuthorAtRow != auth:  #If only Author needs updating, ask and keep origional scientific name (we've covered if it is wrong already)
                     if messagebox.askyesno('Authority at row {}'.format(currentRow+1), 'Would you like to update the authorship for {} from {} to {}?'.format(sciNameAtRow,sciAuthorAtRow,auth)):
                         return (currentSciName + sciNameSuffix, auth)
                     else:
@@ -3258,9 +3336,10 @@ class Table(Canvas):
                     return (currentSciName + sciNameSuffix, sciAuthorAtRow)
                     
             elif isinstance(results, str):
-                if results == 'not_accepted_or_syn':
-                    messagebox.showinfo("Scientific Name Error", "No scientific name update!")
-                elif results == 'empty_string':
+         #       if results == 'not_accepted_or_syn':
+         #           messagebox.showinfo("Scientific Name Error", "No scientific name update!")
+         #           return currentSciName
+                if results == 'empty_string':
                     messagebox.showinfo("Scientific Name Error", "Row " + str(currentRow+1) + " has no scientific name.")
                     if messagebox.askyesno("Sci-Name", "Would you like to add scientific name to row " + str(currentRow+1)):
                         self.setSelectedRow(currentRow)
@@ -3344,7 +3423,7 @@ class Table(Canvas):
 
         if self.filename:
             dfForExport = copy.deepcopy(self.model.df)
-            dfForExport['othercatalognumbers'] = dfForExport['othercatalognumbers'].apply(lambda x: ("'")+str(x))
+            dfForExport['otherCatalogNumbers'] = dfForExport['otherCatalogNumbers'].apply(lambda x: ("'")+str(x))
             exportColumns = []
             for item in dfForExport.columns.values.tolist():
                 if item not in ['site#', 'specimen#' ,'-']:
@@ -3386,7 +3465,7 @@ class Table(Canvas):
         #To prevent data loss mobile app sends field numbers with a leading " ' " which we don't want.
 
             df = pd.read_csv(filename, encoding = 'utf-8',keep_default_na=False, dtype=str,)
-            df['othercatalognumbers'] = df['othercatalognumbers'].apply(lambda x: x.lstrip("'"))
+            df['otherCatalogNumbers'] = df['otherCatalogNumbers'].apply(lambda x: x.lstrip("'"))
             df['-'] = '-'
             df.fillna('')
             self.refreshSpecimenSiteNums(df)
@@ -3458,8 +3537,8 @@ class Table(Canvas):
                 return ''
         df = dframe
         if self.column_order:
-            df['site#'] = df['othercatalognumbers'].apply(lambda x: siteNumExtract(x))
-            df['specimen#'] = df['othercatalognumbers'].apply(lambda x: specimenNumExtract(x))
+            df['site#'] = df['otherCatalogNumbers'].apply(lambda x: siteNumExtract(x))
+            df['specimen#'] = df['otherCatalogNumbers'].apply(lambda x: specimenNumExtract(x))
             for item in df.columns.values.tolist():
                 if item not in self.column_order:
                     self.column_order.append(item)
@@ -3486,6 +3565,17 @@ class Table(Canvas):
         self.main.destroy()
         return
 
+    def saveBarPrefs(self):
+        """ saves the CollectionDataEntryBar settings """
+        # Save CollectionDataEntry Bar settings
+        self.prefs.set('collName', CollectionDataEntryBar.collNameVar.get())
+        self.prefs.set('detName',CollectionDataEntryBar.detNameVar.get())        
+        self.prefs.set('useDetDate',CollectionDataEntryBar.useDetDateVar.get())
+        # Save Cat Number Bar settings
+        self.prefs.set('catPrefix',CatNumberBar.catPrefixVar.get())
+        self.prefs.set('catDigits',CatNumberBar.catDigitsVar.get())
+        self.prefs.set('catStart',CatNumberBar.catStartVar.get())
+
 class CollectionDataEntryBar(Frame):
     """Uses the parent instance to store collection specific data and application functions"""
 
@@ -3496,13 +3586,14 @@ class CollectionDataEntryBar(Frame):
             self.parentframe = parent
             self.parentapp = parentapp
             #Collection Name Stuff
-            
+
+           
             self.labelCollText = StringVar()
             self.labelCollText.set("Collection Name:")
             self.labelColl = Label(self, textvariable=self.labelCollText)
             self.labelColl.grid(row=0, column=1, rowspan = 1, sticky='news', pady=1, ipady=1)
-            self.collName = StringVar(None) #Variable for collection name
-            self.collEntryBox = Entry(self,textvariable=self.collName, width=40)
+            #self.collName = StringVar() #Variable for collection name
+            self.collEntryBox = Entry(self,textvariable=self.collNameVar, width=40)
             self.collEntryBox.grid(row=0, column=2, rowspan = 2, sticky='news', pady=1, ipady=1)
 
             self.addCollNameButton = Button(self, text = 'Add', command = self.addCollectionName, width = 5)
@@ -3512,17 +3603,17 @@ class CollectionDataEntryBar(Frame):
             ToolTip.createToolTip(self.delCollNameButton,'Remove collection name from all records')
             self.delCollNameButton.grid(row=0, column=4, rowspan =1, sticky ='news', pady=1, ipady=1)
             #Determined By Stuff
-            
             self.labelDetText = StringVar()
             self.labelDetText.set("Determined By:")
             self.labelDet = Label(self, textvariable=self.labelDetText)
             self.labelDet.grid(row=0, column=5, rowspan = 1, sticky='news', pady=1, ipady=1)
-            self.detName = StringVar(None) #Variable for collection name
-            self.detEntryBox = Entry(self,textvariable=self.detName, width=20)
+            self.detName = StringVar() #Variable for Determiner name
+            self.detEntryBox = Entry(self,textvariable=self.detNameVar, width=20)
             self.detEntryBox.grid(row=0, column=6, rowspan = 2, sticky='news', pady=1, ipady=1)
 
-            self.useDetDateVar = IntVar(0) #Variable for Determination date Preference
+            #self.useDetDateVar = IntVar() #Variable for Determination date Preference
             self.useDetDateCheckButton = Checkbutton(self, text="Date", variable=self.useDetDateVar)
+
             ToolTip.createToolTip(self.useDetDateCheckButton,"Add today's date as the determination date")
             self.useDetDateCheckButton.grid(row=0, column=7, rowspan=1, sticky ='news', pady=1, ipady=1)
             self.addDetByNameButton = Button(self, text = 'Add', command = self.addDetByName, width = 5)
@@ -3535,7 +3626,7 @@ class CollectionDataEntryBar(Frame):
 #Functions to operate within the CollectionDataEntryBar's tkinter space.
 
     def addCollectionName(self):
-        collName = self.collName.get()
+        collName = self.collNameVar.get()
         self.parentapp.model.df['collectionName'] = collName
         self.parentapp.redraw()
 
@@ -3546,8 +3637,8 @@ class CollectionDataEntryBar(Frame):
             pass
         self.parentapp.redraw()
 
-    def addDetByName(self):
-        detName = self.detName.get()
+    def addDetByName(self): # Any reason to believe this will overwrite other data? Would multiple determinations exist on import?
+        detName = self.detNameVar.get()
         self.parentapp.model.df['identifiedBy'] = detName
         if self.useDetDateVar.get() == 1:
             from datetime import date
@@ -3555,7 +3646,7 @@ class CollectionDataEntryBar(Frame):
             self.parentapp.model.df['dateIdentified'] = isoDate
         self.parentapp.redraw()
 
-    def delDetByName(self):
+    def delDetByName(self): # Should this only remove the "added" names?
         try:
             self.parentapp.model.df.drop('identifiedBy', axis=1, inplace=True)
             self.parentapp.model.df.drop('dateIdentified', axis=1, inplace=True)
@@ -3574,41 +3665,29 @@ class CatNumberBar(Frame):
             self.parentapp = parentapp
 
             #Catalog Number Stuff
-
-            #self.useCatNumVar = IntVar(0) #Variable for Determination date Preference
-            #self.useCatNumCheckButton = Checkbutton(self, text='Catalog Numbers',command = self.parentapp.redraw, variable=self.useCatNumVar)
-            #ToolTip.createToolTip(self.useCatNumCheckButton,'Generate catalog numbers for records')
-            #self.useCatNumCheckButton.grid(row=1, column=0, rowspan=1, sticky ='news', pady=1, ipady=1)
-            #if self.useCatNumVar.get() == 1:
-            #    catStatus = NORMAL
-            #else:
-            #    catStatus = DISABLED
             catStatus = NORMAL
-                
             self.labelCatNumText = StringVar()
             self.labelCatNumText.set('Catalog Number Prefix:')
             self.labelCatPrefix = Label(self, textvariable=self.labelCatNumText)
             self.labelCatPrefix.grid(row=1, column=1, rowspan = 1, sticky='news', pady=1, ipady=1)
-            self.catPrefix = StringVar('') #Variable for catalog number prefix
-            self.catPrefixEntryBox = Entry(self,textvariable=self.catPrefix, width=12, state=catStatus)
+
+            self.catPrefixEntryBox = Entry(self,textvariable=self.catPrefixVar, width=12, state=catStatus)
             self.catPrefixEntryBox.grid(row=1, column=2, rowspan = 1, sticky='news', pady=1, ipady=1)
 
             self.labelCatDigitsText = StringVar()
             self.labelCatDigitsText.set('Digits:')
             self.labelCatDigits = Label(self, textvariable=self.labelCatDigitsText)
             self.labelCatDigits.grid(row=1, column=3, rowspan = 1, sticky='news', pady=1, ipady=1)
-            self.catDigits = IntVar(0) #Variable for catalog number prefix
-            self.catDigits.set(1)
-            self.catDigitsEntryBox = Entry(self,textvariable=self.catDigits, width=3, state=catStatus)
+
+            self.catDigitsEntryBox = Entry(self,textvariable=self.catDigitsVar, width=3, state=catStatus)
             self.catDigitsEntryBox.grid(row=1, column=4, rowspan = 1, sticky='news', pady=1, ipady=1)
 
             self.labelCatStartText = StringVar()
             self.labelCatStartText.set('Start:')
             self.labelCatStart = Label(self, textvariable=self.labelCatStartText)
             self.labelCatStart.grid(row=1, column=5, rowspan = 1, sticky='news', pady=1, ipady=1)
-            self.catStart = IntVar(0) #Variable for catalog starting number
-            self.catStart.set(1)
-            self.catStartEntryBox = Entry(self,textvariable=self.catStart, width=5, state=catStatus)
+
+            self.catStartEntryBox = Entry(self,textvariable=self.catStartVar, width=5, state=catStatus)
             self.catStartEntryBox.grid(row=1, column=6, rowspan = 1, sticky='news', pady=1, ipady=1)
             
             self.catPreviewText = StringVar()
@@ -3632,9 +3711,9 @@ class CatNumberBar(Frame):
 
     def genCatNumPreview(self):
         """Generate catalog number preview ..."""
-
-        prefix = self.catPrefix.get()
-        digits = self.catDigits.get()
+        self.parentapp.savePrefs()
+        prefix = self.catPrefixVar.get()
+        digits = self.catDigitsVar.get()
         start = str(self.catStartEntryBox.get()).zfill(digits)
         if len(start) > digits:
             messagebox.showwarning("Starting Value Error", "Starting Catalog Number Value Exceeds Entered The Max Digits")
@@ -3645,25 +3724,30 @@ class CatNumberBar(Frame):
     def addCatalogNumbers(self):
         """Add catalog numbers..."""
 
-        prefix = self.catPrefix.get()
-        digits = self.catDigits.get()
-        start = self.catStartEntryBox.get()
-        if len(start) > digits:
+        prefix = self.catPrefixVar.get()
+        digits = self.catDigitsVar.get()
+        start = self.catStartVar.get()
+        if len(str(start)) > digits: #check that the starting value does not require more decimal places than the entered digit length
             messagebox.showwarning("Starting Value Error", "Starting Catalog Number Value Exceeds Entered The Max Digits")
         else:
-            catalogValues = [prefix + str(x + int(start)).zfill(digits) for x in range(len(self.parentapp.getOnlySpecimenRecords()))]
-            self.catStart.set(len(catalogValues) + int(start))
-            self.parentapp.model.df['catalogNumber'] = ''
-            self.parentapp.model.df.iloc[self.parentapp.getOnlySpecimenRecords(),self.parentapp.model.df.columns.get_loc('catalogNumber')] = catalogValues
+            try: # try and isolate the records which need a catalog number
+                groupNeedingBarcodes = self.parentapp.model.df['catalogNumber'].str.len() != (len(str(prefix)) + digits)
+            except KeyError: #if no 'catalogNumber column exists, generate it
+                self.parentapp.model.df['catalogNumber'] = ''
+                groupNeedingBarcodes = self.parentapp.model.df['catalogNumber'].str.len() != (len(str(prefix)) + digits) #probably could simplify this.
+
+            groupNeedingBarcodes = self.parentapp.model.df[groupNeedingBarcodes] #change the boolean values into a df slice
+            catalogValues = [prefix + str(x + int(start)).zfill(digits) for x in range(len(groupNeedingBarcodes))] #Generate a list of the barcodes to assign
+            self.catStartVar.set(len(catalogValues) + int(start)) # update the starting view by the quanity being added
+            self.parentapp.model.df.loc[groupNeedingBarcodes.index,'catalogNumber'] = catalogValues #apply the selective changes
             self.parentapp.redraw()
                 
     def delCatalogNumbers(self):
-        """Delete catalog numbers..."""
-
+        """Blindly removes the catalogNumber column..."""
         try:
             self.parentapp.model.df.drop('catalogNumber', axis=1, inplace=True)
             if messagebox.askyesno("Roll Back Starting Catalog Number?", "Would you like to reduce the starting catalog value by the quantity removed from the table?"):
-                self.catStartEntryBox.set(str(self.catStartEntryBox.get() - len(self.parentapp.getOnlySpecimenRecords())))
+                self.catStartVar.set(str(self.catStartVar.get() - len(self.parentapp.getOnlySpecimenRecords())))              
         except ValueError:
             pass
         self.parentapp.redraw()
@@ -3698,6 +3782,10 @@ class ToolBar(Frame):
         
         img = images.cross()
         addButton(self, 'Help', self.parentapp.helpDocumentation , img , 'Help Documentation', side=LEFT)
+
+        
+        img = images.fit()
+        addButton(self, 'Save Settings', self.parentapp.saveBarPrefs , img , 'Save Collection Bar Settings', side=LEFT)
 
         # List of unused button assets (for temp use before we get in our assets.
         # img = images.open_proj()

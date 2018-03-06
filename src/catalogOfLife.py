@@ -44,18 +44,26 @@ def colNameSearch(givenScientificName):
                 return 'http_Error'
     #<status>accepted name|ambiguous synonym|misapplied name|privisionally acceptedname|synomym</status>  List of potential name status
 
+    #Check if CoL returned an Error
+    if len(CoLQuery.get('error_message')) > 0:
+        return ('ERROR', str(CoLQuery.get('error_message')))
+    #if not an error, then pull all the results
     for result in CoLQuery.findall('result'):
+    #start checking the results for the first instance of an accepted name.
         nameStatus = result.find('name_status').text
         if nameStatus == 'accepted name':
             name = result.find('name').text
-            try:
+            try: #Try to locate an instance in which the name is italicized (because CoL returns an HTML name with authority)
                 authorityName = result.find('name_html').find('i').tail
             except AttributeError:
                 try:
+                    # Try another method to find the HTML name with authority
                     authorityName = html.unescape(result.find('name_html').text)
                     authorityName = authorityName.split('</i> ')[1]
                 except IndexError:
+                    # Give up looking for authority
                     authorityName = ''
+                #cleaning the author name up.
             authorityName = re.sub(r'\d+','',str(authorityName))
             authorityName = authorityName.strip().rstrip(',')
             return (name,authorityName)
