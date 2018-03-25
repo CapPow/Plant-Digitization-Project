@@ -3085,7 +3085,7 @@ class Table(Canvas):
                 self.model.setValueAt(associatedCollectors, currentRow, assCollectorColumn)
                 resultLocality = self.genLocality(currentRow)
                 # missing gps coordinates
-                if resultLocality == "loc_error_no_gps":
+                if resultLocality in ["loc_error_no_gps","loc_apierr_no_retry"]:
                     #if fails to generate locality from GPS coords, try with local fields
                     # TODO This could probably use a try except block for whatever imaginable errors?
                     resultLocality = self.genLocalityNoAPI(currentRow)
@@ -3127,12 +3127,16 @@ class Table(Canvas):
                 self.redraw()
 
         self.model.df = self.model.df.groupby('site#').apply(self.genAssociatedTaxa).reset_index(drop=True)#group by 'site#', apply genAssociatedTaxa groupwise
-        #this for loop rectifies the scientific name's presence also being in associated Taxa. It would be ideal to do this in associatedTaxa
+        #this loop fixes the scientific name's presence also being in associated Taxa. It would be ideal to do this in associatedTaxa
         for recordRow in range(self.model.getRowCount()):
-            recordAssociatedTaxa = self.model.getValueAt(recordRow, assocTaxaColumn)
-            recordAssociatedTaxa = recordAssociatedTaxa.split(', ')
+            recordAssociatedTaxa = self.model.getValueAt(recordRow, assocTaxaColumn) # identify associated taxa cell
+            recordAssociatedTaxa = recordAssociatedTaxa.split(',') # split it into a list of strings on ','
+            recordAssociatedTaxa = [x.strip() for x in recordAssociatedTaxa]
+            print(recordAssociatedTaxa)
+            print(self.model.getValueAt(recordRow,scientNameColumn))
             if self.model.getValueAt(recordRow,scientNameColumn) in recordAssociatedTaxa:
-                recordAssociatedTaxa.remove(self.model.getValueAt(recordRow,scientNameColumn))            
+                recordAssociatedTaxa.remove(self.model.getValueAt(recordRow,scientNameColumn))
+                print(recordAssociatedTaxa)
             
             recordAssociatedTaxa = ', '.join(recordAssociatedTaxa).strip().strip(', ')
             self.model.setValueAt(recordAssociatedTaxa, recordRow, assocTaxaColumn)
@@ -3170,7 +3174,7 @@ class Table(Canvas):
         groupScientificNameList = sorted(list(set(groupScientificNameList)),key=str.lower) #clean the list
 #join the lists keeping user entered fields at the start of the list.
         groupAssociatedTaxa = associatedTaxaList + groupScientificNameList
-        groupAssociatedTaxa = ', '.join(groupAssociatedTaxa).strip().strip(', ').replace(', , ', ', ')
+        groupAssociatedTaxa = ', '.join(groupAssociatedTaxa).strip().replace(', , ', ', ')
         siteGroup['associatedTaxa'] = groupAssociatedTaxa #Update associated taxa according to the group with the final list.
         return siteGroup    #Return the groups with modified associatedTaxa Fields.
         
@@ -3194,6 +3198,7 @@ class Table(Canvas):
             newLocality = [x for x in localityFields if x.lower() not in currentLocality.lower()]
             #join the list into a single string
             newLocality = ', '.join(newLocality)
+            newLocality = '{}, {}'.format(newLocality,currentLocality).rstrip(', ').lstrip(', ')
             return newLocality
 
         except ValueError:
@@ -3239,13 +3244,11 @@ class Table(Canvas):
                     if addressComponent['types'][0] == 'route':
                         # path could be Unamed Road
                         # probably don't want this as a result?
-
                         # Testing the idea of ALWAYS adding "near" to route/path level detail.
-
                         #path = addressComponent['long_name']
                         #if currentLocality == '':
                             #path = 'near '+ path
-                        path = 'near '+ addressComponent['long_name']
+                        path = 'near {}'.format(addressComponent['long_name'])
                         
                         newLocality.append(path)
                         self.model.setValueAt(path, currentRow, pathColumn)
@@ -3265,20 +3268,25 @@ class Table(Canvas):
                         country = addressComponent['short_name']
                         newLocality.append(country)
                         self.model.setValueAt(country, currentRow, countryColumn)
-                newLocality = ', '.join(newLocality[::-1])
+                newLocality = ', '.join(newLocality[::-1]) # build it in reverse order because the list is oddly being built incorrectly.
                 if newLocality not in currentLocality:
                     newLocality = newLocality + ', ' + currentLocality
+                    newLocality = newLocality.rstrip() #clean up the string
+                    if newLocality.endswith(','):   #if it ends with a comma, strip the final one out.
+                        newLocality = newLocality.rstrip(',').lstrip(', ')
                     return newLocality
                 else:
                     return currentLocality
             # Google API call returned error/status string
             else:
                 apiErrorMessage = address
-                messagebox.showinfo("Locality Error", "Row " + str(currentRow+1) + " API Error: " + str(apiErrorMessage))
-                if messagebox.askyesno("Locality Error", "This function requires an internet connection, would you like to retry?"):
-                    self.genLocality(currentRow)
-                else:
-                    return "loc_apierr_no_retry"
+                messagebox.showinfo("Locality Error", "Row {} Location lookup error: '{}'.\nThis is often due to internet connection problems or an invalid GPS value".format(str(currentRow+1),str(apiErrorMessage)))
+#Commenting out for now, not sure we want people clicking yes retry repeatedly
+#                if messagebox.askyesno("Locality Error", "This function requires an internet connection, would you like to retry?"):
+#                    self.genLocality(currentRow)
+#                else:
+#                    return "loc_apierr_no_retry"
+                return "loc_apierr_no_retry"
         else:
             messagebox.showinfo("Locality Error", "Locality generation requires GPS coordinates and a column named locality!")
             return
@@ -3296,7 +3304,6 @@ class Table(Canvas):
         sciAuthorAtRow = str(self.model.getValueAt(currentRow, authorColumn))
         if sciNameAtRow != '':            
             exclusionWordList = ['sp.','sp','spp','spp.','ssp','ssp.','var','var.']
-            #exclusionWordList = ['sp.','Sp.','Sp','sp','spp','spp.','Spp','Spp.','Ssp','var','var.','Var','Var.']
 
             #this intends to exclude only those instances where the final word is one from the exclusion list.
             if sciNameAtRow.lower().split(' ')[-1].lower() in exclusionWordList:    #If an excluded word is in scientific name then modify.
@@ -3314,13 +3321,13 @@ class Table(Canvas):
             results = colNameSearch(currentSciName)
             if isinstance(results, tuple):
                 if results[0] == 'ERROR':
-                    messagebox.showinfo('Scientific Name Error', 'Catalog of Life Error: "{}".\nScientific name not updated!'.format(results[1]))
+                    messagebox.showinfo('Scientific name at row {} Error'.format(currentRow+1), 'Catalog of Life Error at row {}: "{}".\nScientific name {} not verified!'.format(currentRow+1, results[1], currentSciName))
                     return currentSciName
 
                 sciName = str(results[0])
                 auth = str(results[1])
                 if currentSciName != sciName:   #If scientific name needs updating, ask. Don't ask about new authority in this case.
-                    if messagebox.askyesno('Sci-Name at row {}'.format(currentRow+1), 'Would you like to change {} to {} and update the authority?'.format(sciNameAtRow,sciName)):
+                    if messagebox.askyesno('Scientific name at row {}'.format(currentRow+1), 'Would you like to change {} to {} and update the authority?'.format(sciNameAtRow,sciName)):
                         return (sciName, auth)
                     else:
                         return (currentSciName + sciNameSuffix, sciAuthorAtRow) #if user declines the change return the old stuff.
@@ -3340,7 +3347,7 @@ class Table(Canvas):
          #           messagebox.showinfo("Scientific Name Error", "No scientific name update!")
          #           return currentSciName
                 if results == 'empty_string':
-                    messagebox.showinfo("Scientific Name Error", "Row " + str(currentRow+1) + " has no scientific name.")
+                    messagebox.showinfo("Scientific name error", "Row " + str(currentRow+1) + " has no scientific name.")
                     if messagebox.askyesno("Sci-Name", "Would you like to add scientific name to row " + str(currentRow+1)):
                         self.setSelectedRow(currentRow)
                         self.setSelectedCol(sciNameColumn)
@@ -3784,8 +3791,6 @@ class ToolBar(Frame):
         addButton(self, 'Help', self.parentapp.helpDocumentation , img , 'Help Documentation', side=LEFT)
 
         
-        img = images.fit()
-        addButton(self, 'Save Settings', self.parentapp.saveBarPrefs , img , 'Save Collection Bar Settings', side=LEFT)
 
         # List of unused button assets (for temp use before we get in our assets.
         # img = images.open_proj()
