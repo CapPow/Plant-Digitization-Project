@@ -451,7 +451,6 @@ class Table(Canvas):
         rows = self.visiblerows
         for col in self.visiblecols:
             coldata = df.iloc[rows,col]
-            #print (col, coldata.dtype)
             if prec != 0:
                 if coldata.dtype == 'float64':
                     coldata = coldata.apply(lambda x: set_precision(x, prec), 1)
@@ -3132,12 +3131,9 @@ class Table(Canvas):
             recordAssociatedTaxa = self.model.getValueAt(recordRow, assocTaxaColumn) # identify associated taxa cell
             recordAssociatedTaxa = recordAssociatedTaxa.split(',') # split it into a list of strings on ','
             recordAssociatedTaxa = [x.strip() for x in recordAssociatedTaxa]
-            print(recordAssociatedTaxa)
-            print(self.model.getValueAt(recordRow,scientNameColumn))
             if self.model.getValueAt(recordRow,scientNameColumn) in recordAssociatedTaxa:
                 recordAssociatedTaxa.remove(self.model.getValueAt(recordRow,scientNameColumn))
-                print(recordAssociatedTaxa)
-            
+              
             recordAssociatedTaxa = ', '.join(recordAssociatedTaxa).strip().strip(', ')
             self.model.setValueAt(recordAssociatedTaxa, recordRow, assocTaxaColumn)
 
