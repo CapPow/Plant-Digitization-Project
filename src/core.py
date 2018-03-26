@@ -161,7 +161,7 @@ class Table(Canvas):
             'county',
             'municipality',
             'path',
-            's',
+            'otherCatalogNumbers',
             ]
         
         return
@@ -412,7 +412,6 @@ class Table(Canvas):
             if self.rows == 0:
                 self.visiblerows = []
                 self.rowheader.redraw()
-                #self.rowwidgetcolumn.redraw()
             return
         self.tablewidth = (self.cellwidth) * self.cols
         self.configure(bg=self.cellbackgr)
@@ -472,7 +471,6 @@ class Table(Canvas):
         self.colorRows()
         self.tablecolheader.redraw()
         self.rowheader.redraw(align=self.align)
-        #self.rowwidgetcolumn.redraw(align=self.align)
         self.rowindexheader.redraw()
         self.drawSelectedRow()
         self.drawSelectedRect(self.currentrow, self.currentcol)
@@ -772,17 +770,6 @@ class Table(Canvas):
             self.pf.updateData()
         return
 
-    # def flattenIndex(self):
-    #     """FLatten multiindex"""
-
-    #     df = self.model.df
-    #     df.columns = df.columns.get_level_values(0)
-    #     #self.model.df
-    #     self.redraw()
-    #     if hasattr(self, 'pf'):
-    #         self.pf.updateData()
-    #     return
-
     def copyIndex(self):
         """Copy index to a column"""
 
@@ -806,7 +793,6 @@ class Table(Canvas):
         """Show the row index"""
 
         self.rowheader.showindex = True
-        #self.rowwidgetcolumn.showindex = True
         return
 
     def update_rowcolors(self):
@@ -830,7 +816,6 @@ class Table(Canvas):
 
         self.yview(*args)
         self.rowheader.yview(*args)
-        #self.rowwidgetcolumn.yview(*args)
         self.redrawVisible()
         return
 
@@ -3066,7 +3051,7 @@ class Table(Canvas):
         assocTaxaColumn = self.findColumnIndex('associatedTaxa')
         associatedTaxa = []
         # an indication of record processing
-        self.parentframe.master.title("KralDesk (Processing Records...)")
+        self.parentframe.master.title("PD-Desktop (Processing Records...)")
 
         while currentRow < int(self.model.getRowCount()):
             try:
@@ -3091,7 +3076,7 @@ class Table(Canvas):
                     self.model.setValueAt(resultLocality, currentRow, localityColumn)
                     self.redraw()
                 elif resultLocality == "user_set_gps":
-                    self.parentframe.master.title("KralDesk")
+                    self.parentframe.master.title("PD-Desktop")
                     self.redraw()
                     return
                 # modify to set value here
@@ -3103,7 +3088,7 @@ class Table(Canvas):
                 resSci = self.genScientificName(currentRow)
                 # missing scientific name
                 if resSci == "user_set_sciname":
-                    self.parentframe.master.title("KralDesk")
+                    self.parentframe.master.title("PD-Desktop")
                     self.redraw()
                     return
                 else:
@@ -3122,7 +3107,7 @@ class Table(Canvas):
                 self.gotonextRow()
                 self.redraw()
             except IndexError:
-                self.parentframe.master.title("KralDesk")
+                self.parentframe.master.title("PD-Desktop")
                 self.redraw()
 
         self.model.df = self.model.df.groupby('site#').apply(self.genAssociatedTaxa).reset_index(drop=True)#group by 'site#', apply genAssociatedTaxa groupwise
@@ -3137,7 +3122,7 @@ class Table(Canvas):
             recordAssociatedTaxa = ', '.join(recordAssociatedTaxa).strip().strip(', ')
             self.model.setValueAt(recordAssociatedTaxa, recordRow, assocTaxaColumn)
 
-        self.parentframe.master.title("KralDesk")
+        self.parentframe.master.title("PD-Desktop")
         self.setSelectedRow(0)
         self.redraw()
 
@@ -3526,7 +3511,7 @@ class Table(Canvas):
                     return int(result)
                 else:
                     return '!AddSITE'
-            except (ValueError, IndexError) as e:
+            except (ValueError, IndexError, AttributeError) as e:
                 return '!AddSITE'
 
         def siteNumExtract(catNum):
@@ -3536,7 +3521,8 @@ class Table(Canvas):
                     return int(result)
                 else:
                     return ''
-            except ValueError:
+            #except ValueError:
+            except (ValueError, IndexError, AttributeError) as e:
                 return ''
         df = dframe
         if self.column_order:
