@@ -3,7 +3,6 @@ from reportlab.platypus import Image, Table, TableStyle, Flowable, SimpleDocTemp
 from reportlab.platypus import Frame as platypusFrame   #NOTE SEE Special case import here to avoid namespace conflict with "Frame"
 from reportlab.platypus.flowables import Spacer
 from reportlab.platypus.paragraph import Paragraph
-#from reportlab.platypus.doctemplate import LayoutError #Prep for font scaling handling
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.enums import TA_LEFT, TA_RIGHT, TA_CENTER, TA_JUSTIFY
 from reportlab.graphics.barcode import code39 #Note, overriding a function from this import in barcode section
@@ -32,7 +31,7 @@ def genPrintLabelPDFs(labelDataInput):
     xMargin = xMarginProportion * xPaperSize        #Margin set up (dynamically depending on paper sizes. Hopefully logical stuff).
     yMargin = xMarginProportion * yPaperSize
 
-    #Style sheets below (lots of stuff.. all style)
+    #Style sheets below (many lines.. for various styles)
     def stylesheet(key):
         styles= {
             'default': ParagraphStyle(
@@ -57,7 +56,7 @@ def genPrintLabelPDFs(labelDataInput):
                 borderRadius= None,
                 allowWidows= 1,
                 allowOrphans= 0,
-                textTransform=None,  # 'uppercase' | 'lowercase' | None
+                textTransform=None,  # options: 'uppercase' | 'lowercase' | None
                 endDots=None,         
                 splitLongWords=1,
             ),
@@ -218,10 +217,10 @@ def genPrintLabelPDFs(labelDataInput):
             return ''
 
 
-    elements = []      #A list to dump the flowables into for pdf generation
+    elements = []      # a list to dump the flowables into for pdf generation
     for labelFieldsDict in labelData:
-        def dfl(key):                       #dict lookup helper function
-            value = labelFieldsDict.get(key,'') #return empty string if no result from lookup.
+        def dfl(key):                       # dict lookup helper function
+            value = labelFieldsDict.get(key,'') # return empty string if no result from lookup.
             return str(value)
 
     #Building list of flowable elements below
@@ -333,7 +332,7 @@ def genPrintLabelPDFs(labelDataInput):
 
         row6_5 = Table([[
             Para('locationRemarks','default','Location Remarks: ')]],style=tableSty)
-#Note locationRemarks is testing, may not stay!
+      #Note locationRemarks is in testing, may not stay!
 
         row6_7 = Table([[
                     Para('occurrenceRemarks','default','Occurence Remarks: ')]],style=tableSty)
@@ -370,7 +369,7 @@ def genPrintLabelPDFs(labelDataInput):
             colWidths = (xPaperSize * .33, xPaperSize * .65), rowHeights = None,style=tableSty)
             tableList.append([row8])
                    
-        docTableStyle = [                           #Cell alignment and padding settings (not text align within cells)
+        docTableStyle = [                             #Cell alignment and padding settings (not text align within cells)
                 ('VALIGN',(0,3),(0,-1),'BOTTOM'),     #Rows 4-end align to bottom
                 ('ALIGN',(0,0),(-1,-1),'CENTER'),     #All rows align to center
                 ('LEFTPADDING',(0,0),(-1,-1), 0),     #ALL Rows padding on left to none
@@ -381,7 +380,7 @@ def genPrintLabelPDFs(labelDataInput):
                 ('TOPPADDING',(0,1),(0,1), 6),        #Row 2 top padding to 6
                 ('TOPPADDING',(0,2),(0,2), 6),        #Row 3 top padding to 6
                 ('BOTTOMPADDING',(0,2),(0,2), 6),     #Row 3 bottom padding to 6
-                #('NOSPLIT', (0,0),(-1,-1)),           #Makes Error if it won't fit. We should raise this error to user!
+                #('NOSPLIT', (0,0),(-1,-1)),          #Makes Error if it won't fit. We should raise this error to user!
                             ]
         
         docTable = Table(tableList, style = docTableStyle ) #build the table to test it's height
