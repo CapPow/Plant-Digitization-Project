@@ -19,7 +19,6 @@ from tkinter import filedialog
 
 def genPrintLabelPDFs(labelDataInput):
     labelData = labelDataInput
-
     xPaperSize = 5.50 * inch   #These values should be user preferences! (But it'll be a PITA to do)
     yPaperSize = 3.50 * inch
     customPageSize = (xPaperSize,yPaperSize)        #set up Paper size for labels, this should be user selectable in time.
@@ -116,6 +115,14 @@ def genPrintLabelPDFs(labelDataInput):
             parent=styles['default'],
             fontSize= relFont * .80,
         )
+
+        styles['verifiedBySTY'] = ParagraphStyle(
+            'verifiedBySTY',
+            parent=styles['default'],
+            fontSize= relFont * .80,
+            alignment=TA_CENTER,
+            borderPadding=2,
+        )
         styles['rightSTY'] = ParagraphStyle(
             'rightSTY',
             parent=styles['default'],
@@ -156,6 +163,12 @@ def genPrintLabelPDFs(labelDataInput):
     def Para(textField1,styleKey,prefix = '',suffix = ''):
         if len(dfl(textField1)) > 0 :                #If the field has a value insert it, otherwise blank row
             return Paragraph(('<b>{}</b>'.format(prefix)) + dfl(textField1) + suffix,style = stylesheet(styleKey))
+        else:
+            return Paragraph('', style = stylesheet(styleKey))
+
+    def verifiedByPara(textField1,styleKey):
+        if len(dfl(textField1)) > 0 :                #If the field has a value insert it, otherwise blank row
+            return Paragraph('<i>Verified by {}</i>'.format(dfl(textField1)),style = stylesheet(styleKey))
         else:
             return Paragraph('', style = stylesheet(styleKey))
 
@@ -240,8 +253,14 @@ def genPrintLabelPDFs(labelDataInput):
             row0 = Para('collectionName','collectionNameSTY')
                 
         
-        row1 = Para('samplingEffort','samplingEffortSTY')
-
+        row1 = Table([
+            [Para('samplingEffort','samplingEffortSTY')],
+            [verifiedByPara('verifiedBy','verifiedBySTY')]],
+                     colWidths = xPaperSize *.98, rowHeights = None,
+                     style = [
+                    ('BOTTOMPADDING',(0,0),(-1,-1), 2)]
+                     )
+#bookmark
 #ScientificName Row Dynamic Formatting
     
         scientificNameElement = sciName('scientificName','scientificNameAuthorship','sciNameSTY')

@@ -203,6 +203,9 @@ class Table(Canvas):
         self.catPrefix = ''
         self.catDigits = 0
         self.catStart = 0
+        #Student Collection entry bar defaults
+        self.stuCollVerifyBy = ''
+        self.stuCollCheckBox = 0
         return
 
     def setFontSize(self):
@@ -2873,7 +2876,10 @@ class Table(Canvas):
                         #CatNumberBar stuff
                         'catPrefix':self.catPrefix,
                         'catDigits':self.catDigits,
-                        'catStart':self.catStart
+                        'catStart':self.catStart,
+                        #student collection status stuff
+                        'stuCollVerifyBy': self.stuCollVerifyBy,
+                        'stuCollCheckBox': self.stuCollCheckBox
                         }
      
 
@@ -2932,6 +2938,14 @@ class Table(Canvas):
         CatNumberBar.catDigitsVar.set(self.prefs.get('catDigits'))
         CatNumberBar.catStartVar = IntVar()
         CatNumberBar.catStartVar.set(self.prefs.get('catStart'))
+
+        #Student collection
+        # box for the "verified by" name
+        CatNumberBar.stuCollVerifyByVar = StringVar()
+        CatNumberBar.stuCollVerifyByVar.set(self.prefs.get('stuCollVerifyBy'))
+        # checkbox for the "Student collection" status.
+        CatNumberBar.stuCollCheckBoxVar = IntVar()
+        CatNumberBar.stuCollCheckBoxVar.set(self.prefs.get('stuCollCheckBox'))
         return
 
     def savePrefs(self):
@@ -2963,7 +2977,6 @@ class Table(Canvas):
             self.rowheaderwidth = self.rowheaderwidthvar.get()
             # self.thefont = (self.prefs.get('celltextfont'), self.prefs.get('celltextsize'))
             self.fontsize = self.prefs.get('celltextsize')
-
         except ValueError as e:
             print('prefs error: ', e)
             pass
@@ -3356,8 +3369,11 @@ class Table(Canvas):
         for physical plant records."""
 
         toPrintDataFrame = self.getSelectedLabelDict()  #function returns a list of dicts (one for each record to print)
-        for record in toPrintDataFrame:         #for each dict, verify that the associatedTaxa string does not consist of >15 items.
-            associatedTaxaItems = record.get('associatedTaxa').split(', ')
+        for record in toPrintDataFrame:   
+            if CatNumberBar.stuCollCheckBoxVar.get() == 1: # for each dict, if it is student collection
+                record['verifiedBy'] = CatNumberBar.stuCollVerifyByVar.get() #then add the verified by name to the dict.
+
+            associatedTaxaItems = record.get('associatedTaxa').split(', ') #for each dict, verify that the associatedTaxa string does not consist of >15 items.
             if len(associatedTaxaItems) > 15:   #if it is too large, trunicate it at 15, and append "..." to indicate trunication.
                 record['associatedTaxa'] = ', '.join(associatedTaxaItems[:15])+' ...'
         genPrintLabelPDFs(toPrintDataFrame)     #sent modified list of dicts to the printLabelPDF module without editing actual data fields.
@@ -3564,6 +3580,9 @@ class Table(Canvas):
         self.prefs.set('catPrefix',CatNumberBar.catPrefixVar.get())
         self.prefs.set('catDigits',CatNumberBar.catDigitsVar.get())
         self.prefs.set('catStart',CatNumberBar.catStartVar.get())
+        # Save student collection settings
+        self.prefs.set('stuCollVerifyBy',CatNumberBar.stuCollVerifyByVar.get())
+        self.prefs.set('stuCollCheckBox',CatNumberBar.stuCollCheckBoxVar.get())
 
 class CollectionDataEntryBar(Frame):
     """Uses the parent instance to store collection specific data and application functions"""
@@ -3582,7 +3601,7 @@ class CollectionDataEntryBar(Frame):
             self.labelColl = Label(self, textvariable=self.labelCollText)
             self.labelColl.grid(row=0, column=1, rowspan = 1, sticky='news', pady=1, ipady=1)
             #self.collName = StringVar() #Variable for collection name
-            self.collEntryBox = Entry(self,textvariable=self.collNameVar, width=40)
+            self.collEntryBox = Entry(self,textvariable=self.collNameVar, width=45)
             self.collEntryBox.grid(row=0, column=2, rowspan = 2, sticky='news', pady=1, ipady=1)
 
             self.addCollNameButton = Button(self, text = 'Add', command = self.addCollectionName, width = 5)
@@ -3646,7 +3665,6 @@ class CollectionDataEntryBar(Frame):
 
 class CatNumberBar(Frame):
     """Uses the parent instance to store collection specific data and application functions"""
-
     def __init__(self, parent=None, parentapp=None):
 
             Frame.__init__(self, parent, width=600, height=40)
@@ -3676,12 +3694,12 @@ class CatNumberBar(Frame):
             self.labelCatStart = Label(self, textvariable=self.labelCatStartText)
             self.labelCatStart.grid(row=1, column=5, rowspan = 1, sticky='news', pady=1, ipady=1)
 
-            self.catStartEntryBox = Entry(self,textvariable=self.catStartVar, width=5, state=catStatus)
+            self.catStartEntryBox = Entry(self,textvariable=self.catStartVar, width=10, state=catStatus)
             self.catStartEntryBox.grid(row=1, column=6, rowspan = 1, sticky='news', pady=1, ipady=1)
             
             self.catPreviewText = StringVar()
             self.catPreviewText.set('')
-            self.labelCatPreview = Label(self, textvariable=self.catPreviewText, state=catStatus, foreground ="gray25",  width = 20)
+            self.labelCatPreview = Label(self, textvariable=self.catPreviewText, state=catStatus, foreground ="gray25",  width = 18)
             self.labelCatPreview.grid(row=1, column=7, rowspan = 1, sticky='e', pady=1, ipady=1)
             
             self.previewCatButton = Button(self, text = 'Preview', command = self.genCatNumPreview, width = 7, state=catStatus)
@@ -3696,7 +3714,32 @@ class CatNumberBar(Frame):
             ToolTip.createToolTip(self.delCatNumButton,'Remove catalog numbers from all records')
             self.delCatNumButton.grid(row=1, column=10, rowspan =1, sticky ='news', pady=1, ipady=1)
 
+            #add student collection widgets
+            self.stuCollCheckBox = Checkbutton(self, text="Student Collection", variable = self.stuCollCheckBoxVar, command = self.stuCollCheckBoxChange)
+            #variable=self.stuCollCheckBox
+            ToolTip.createToolTip(self.stuCollCheckBox,"Add a 'Verified By:' notice on labels for student collections")
+            self.stuCollCheckBox.grid(row=2, column=1, rowspan = 1, sticky='news', pady=1, ipady=1)
+
+            self.stuCollVerifyByText = StringVar()
+            self.stuCollVerifyByText.set('Verified By:')
+            self.stuCollVerifyBylabel = Label(self, textvariable=self.stuCollVerifyByText)
+            self.stuCollVerifyBylabel.grid(row=2, column=2, rowspan = 1, sticky='news', pady=1, ipady=1)
+
+            if self.stuCollCheckBoxVar.get() == 1:
+                stuCollState = NORMAL
+            else:
+                stuCollState = DISABLED
+            self.stuCollVerifyBy = Entry(self,textvariable=self.stuCollVerifyByVar, width=16, state=stuCollState)
+            self.stuCollVerifyBy.grid(row=2, column=3, rowspan = 1,columnspan = 4, sticky='news', pady=1, ipady=1)
 #Functions to operate within the CatNumberBar's tkinter space.
+
+    def stuCollCheckBoxChange(self):
+        """disables or enables the stuCollVerifyBy entry field depending on the checkbox Status"""
+        if self.stuCollCheckBoxVar.get() == 1:
+            self.stuCollVerifyBy.configure(state=NORMAL)
+        else:
+            self.stuCollVerifyBy.configure(state=DISABLED)
+        self.parentapp.saveBarPrefs()
 
     def genCatNumPreview(self):
         """Generate catalog number preview ..."""
