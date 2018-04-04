@@ -3215,6 +3215,8 @@ class Table(Canvas):
         countryColumn = self.findColumnIndex('country')
         latitudeColumn = self.findColumnIndex('decimalLatitude')
         longitudeColumn = self.findColumnIndex('decimalLongitude')
+        coordUncertaintyColumn = self.findColumnIndex('coordinateUncertaintyInMeters')
+        
 
         if localityColumn != '':
             currentLocality = self.model.getValueAt(currentRow, localityColumn)
@@ -3238,14 +3240,15 @@ class Table(Canvas):
                     if addressComponent['types'][0] == 'route':
                         # path could be Unamed Road
                         # probably don't want this as a result?
-                        # Testing the idea of ALWAYS adding "near" to route/path level detail.
-                        #path = addressComponent['long_name']
-                        #if currentLocality == '':
-                            #path = 'near '+ path
-                        path = 'near {}'.format(addressComponent['long_name'])
                         
-                        newLocality.append(path)
-                        self.model.setValueAt(path, currentRow, pathColumn)
+        #bookmark
+                        #Testing the idea of excluding the "path" if the coord uncertainty is over a threshold.
+                        #the threshold of 200 meters was chosen arbitrarily and should be reviewed.
+                        coordUncertainty = int((self.model.getValueAt(currentRow, coordUncertaintyColumn)))
+                        if coordUncertainty < 200:
+                            path = 'near {}'.format(addressComponent['long_name'])
+                            newLocality.append(path)
+                            self.model.setValueAt(path, currentRow, pathColumn)
                     if addressComponent['types'][0] == 'administrative_area_level_1':
                         stateProvince = addressComponent['long_name']
                         newLocality.append(stateProvince)
