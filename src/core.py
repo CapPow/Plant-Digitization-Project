@@ -481,6 +481,8 @@ class Table(Canvas):
             self.rowheader.drawSelectedRows(self.multiplerowlist)
             self.drawMultipleRows(self.multiplerowlist)
             self.drawMultipleCells()
+#bookmark
+        self.tableChanged()
         self.refreshSpecimenSiteNums(df)
 
         return
@@ -2473,6 +2475,7 @@ class Table(Canvas):
         self.drawText(row, col, value, align=self.align)
         self.delete('entry')
         self.gotonextCell()
+        #bookmark 
         return
 
     def drawCellEntry(self, row, col, text=None):
