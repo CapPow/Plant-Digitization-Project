@@ -5,7 +5,7 @@
 plantdigitizationprojectutc@gmail.com
 
 ## In leiu of proper documentation, here is a slideshow:
-https://docs.google.com/presentation/d/1kz0K0Dbt2jrnNswKCHjEv63JSkq-e8NZkxNaLzXK5mg/edit?usp=sharing
+https://docs.google.com/presentation/d/1nAT_hqp6Nm3DC7_e7dxPvbbaXLJTOYzcXJ5dSW2nkHk/edit?usp=sharing
 
 ## Check out the Wiki for more info!
 [Wiki Home](https://github.com/j-h-m/Plant-Digitization-Project/wiki)
