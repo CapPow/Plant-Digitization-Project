@@ -2141,7 +2141,7 @@ class Table(Canvas):
                         "Delete Row(s)" : lambda: self.deleteRow(),
                         "Add Column(s)" : lambda: self.addColumn(),
                         "Delete Column(s)" : lambda: self.deleteColumn(),
-                        "Clear Data" : lambda: self.deleteCells(rows, cols), # could potentially be removed
+                        "Clear Data" : lambda: self.deleteCells(rows, cols),
                         "Select All" : self.selectAll,
                         "Auto Fit Columns" : self.autoResizeColumns,
                         "Table Info" : self.showInfo, # could potentially be removed
@@ -3240,7 +3240,7 @@ class Table(Canvas):
                         #Testing the idea of excluding the "path" if the coord uncertainty is over a threshold.
                         #the threshold of 200 meters was chosen arbitrarily and should be reviewed.
                         coordUncertainty = (self.model.getValueAt(currentRow, coordUncertaintyColumn))
-                        if float(coordUncertainty) < 200:
+                        if not isinstance(coordUncertainty, str) and (float(coordUncertainty) < 200):
                             path = 'near {}'.format(addressComponent['long_name'])
                             newLocality.append(path)
                             self.model.setValueAt(path, currentRow, pathColumn)
