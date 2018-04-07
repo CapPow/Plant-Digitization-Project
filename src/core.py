@@ -161,6 +161,9 @@ class Table(Canvas):
             'county',
             'municipality',
             'path',
+            'catalogNumber',
+            'identifiedBy',
+            'dateIdentified',
             'otherCatalogNumbers',
             ]
         
@@ -222,13 +225,11 @@ class Table(Canvas):
         if event.num == 5 or event.delta == -120:
             event.widget.yview_scroll(1, UNITS)
             self.rowheader.yview_scroll(1, UNITS)
-            #self.rowwidgetcolumn.yview_scroll(1, UNITS)
         if event.num == 4 or event.delta == 120:
             if self.canvasy(0) < 0:
                 return
             event.widget.yview_scroll(-1, UNITS)
             self.rowheader.yview_scroll(-1, UNITS)
-            #self.rowwidgetcolumn.yview_scroll(-1, UNITS)
         self.redrawVisible()
         return
 
@@ -283,7 +284,6 @@ class Table(Canvas):
         self.rowheader = RowHeader(self.parentframe, self, width=self.rowheaderwidth)
         self.tablecolheader = ColumnHeader(self.parentframe, self)
         self.rowindexheader = IndexHeader(self.parentframe, self)
-        #self.rowwidgetcolumn = RowWidgetColumn(self.parentframe, self)
         self.Yscrollbar = AutoScrollbar(self.parentframe,orient=VERTICAL,command=self.set_yviews)
         self.Yscrollbar.grid(row=4,column=3,rowspan=1,sticky='news',pady=0,ipady=0)
         self.Xscrollbar = AutoScrollbar(self.parentframe,orient=HORIZONTAL,command=self.set_xviews)
@@ -292,16 +292,13 @@ class Table(Canvas):
         self['yscrollcommand'] = self.Yscrollbar.set 
         self.tablecolheader['xscrollcommand'] = self.Xscrollbar.set
         self.rowheader['yscrollcommand'] = self.Yscrollbar.set
-        #self.rowwidgetcolumn['yscrollcommand'] = self.Yscrollbar.set
         self.parentframe.rowconfigure(4,weight=1)
         self.parentframe.columnconfigure(2,weight=1)
 
         self.rowindexheader.grid(row=3,column=1,rowspan=1,sticky='news')
         self.tablecolheader.grid(row=3,column=2,rowspan=1,sticky='news')
         self.rowheader.grid(row=4,column=1,rowspan=1,sticky='news')
-
-        #self.rowwidgetcolumn.grid(row=4,column=0,rowspan=1,sticky='news')        
-
+        
         self.grid(row=4,column=2,rowspan=1,sticky='news',pady=0,ipady=0)
 
         self.adjustColumnWidths()
@@ -456,7 +453,6 @@ class Table(Canvas):
             if prec != 0:
                 if coldata.dtype == 'float64':
                     coldata = coldata.apply(lambda x: set_precision(x, prec), 1)
-                    #print (coldata)
             coldata = coldata.astype(object).fillna('')
             offset = rows[0]
             for row in self.visiblerows:
@@ -481,8 +477,8 @@ class Table(Canvas):
             self.rowheader.drawSelectedRows(self.multiplerowlist)
             self.drawMultipleRows(self.multiplerowlist)
             self.drawMultipleCells()
-#bookmark
-        self.tableChanged()
+            
+        self.tableChanged()  #is it excessive we set table changes every redraw?
         self.refreshSpecimenSiteNums(df)
 
         return
@@ -500,7 +496,7 @@ class Table(Canvas):
     def redraw(self, event=None, callback=None):
         """Redraw table"""
         self.redrawVisible(event, callback)
-        self.saveBarPrefs()
+        self.saveBarPrefs() # is it excessive to save this every redraw? are we writing way too often?
         if hasattr(self, 'statusbar'):
             self.statusbar.update()
         return
@@ -642,13 +638,14 @@ class Table(Canvas):
         for col in range(self.cols):
             colname = self.model.getColumnName(col)
             if colname == 'site#':
-                l = 3
+                l = 4
             if colname == '-':
                 l = 1
             if colname == 'specimen#':
                 l = 6
             elif colname in self.model.columnwidths:
                 w = self.model.columnwidths[colname]
+                l = self.model.getlongestEntry(col)
             else:
                 w = self.cellwidth
                 l = self.model.getlongestEntry(col)
@@ -825,11 +822,12 @@ class Table(Canvas):
         return
 
     def addRowFromSite(self, event=None):
-        """Helper function to pass row and column to addRowFromSite
+        """Helper function to pass row to addRowFromSite
            in data.py"""
 
+
         row = self.getSelectedRow()
-        siteData = self.model.df.loc[row].to_dict() #occasional error, this func adds incorrect site Num row (see 36-# in problems
+        siteData = self.model.df.loc[row].to_dict() #occasional error, this func adds incorrect site Num row
         oldOtherSiteNum = siteData.get('site#')
         siteData.pop('specimen#', None)
         specimenNumbers = self.model.df['specimen#'].tolist()
@@ -844,8 +842,7 @@ class Table(Canvas):
         self.refreshSpecimenSiteNums(self.model.df)
         self.sortTable([self.model.df.columns.get_loc('site#'),self.model.df.columns.get_loc('specimen#')])
         self.setSelectedRow(row)
-        self.redrawVisible()
-
+        self.redraw()
         return
 
     def addRow(self):
@@ -897,12 +894,11 @@ class Table(Canvas):
                 self.model.addColumn(newname, dtype)
                 self.parentframe.configure(width=self.width)
                 self.redraw()
-                self.tableChanged()
+                
         return
 
     def deleteRow(self):
         """Delete a row"""
-
         if len(self.multiplerowlist)>1:
             n = messagebox.askyesno("Delete",
                                       "Delete selected rows?",
@@ -913,6 +909,7 @@ class Table(Canvas):
                 self.model.deleteRows(rows)
                 self.setSelectedRow(0)
                 self.clearSelected()
+                self.model.resetIndex()
                 self.redraw()
         else:
             n = messagebox.askyesno("Delete",
@@ -941,13 +938,11 @@ class Table(Canvas):
         self.setSelectedCol(0)
         self.redraw()
         self.drawSelectedCol()
-        self.tableChanged()
         return
 
     def tableChanged(self):
         """Callback to be used when dataframe changes so that other
             widgets and data can be updated"""
-
         self.updateFunctions()
         if hasattr(self, 'pf'):
             self.pf.updateData()
@@ -1006,7 +1001,6 @@ class Table(Canvas):
         model = TableModel(pd.DataFrame())
         self.updateModel(model)
         self.redraw()
-        self.tableChanged()
         return
 
     def autoAddColumns(self, numcols=None):
@@ -1252,7 +1246,6 @@ class Table(Canvas):
             self.placeColumn(colname, cols[-1])
 
         self.redraw()
-        self.tableChanged()
         return
 
     def showAll(self):
@@ -1932,66 +1925,7 @@ class Table(Canvas):
             self.createChildTable(g, 'aggregated', index=True)
         return
 
-    # def melt(self):
-    #     """Melt table"""
 
-    #     df = self.model.df
-    #     cols = list(df.columns)
-    #     valcols = list(df.select_dtypes(include=[np.float64,np.int32]))
-    #     d = MultipleValDialog(title='Melt',
-    #                             initialvalues=(cols,valcols,'var'),
-    #                             labels=('ID vars:', 'Value vars:', 'var name:'),
-    #                             types=('combobox','listbox','entry'),
-    #                             tooltips=('Column(s) to use as identifier variables',
-    #                                       'Column(s) to unpivot',
-    #                                       'name of variable column'),
-    #                             parent = self.parentframe)
-    #     idvars = d.results[0]
-    #     valuevars = d.results[1]
-    #     varname = d.results[2]
-    #     if valuevars == '':
-    #         valuevars = None
-    #     elif len(valuevars) == 1:
-    #         valuevars = valuevars[0]
-    #     t = pd.melt(df, id_vars=idvars, value_vars=valuevars,
-    #              var_name=varname,value_name='value')
-    #     #print(t)
-    #     self.createChildTable(t, '', index=True)
-    #     return
-
-    # def pivot(self):
-    #     """Pivot table"""
-
-    #     self.convertNumeric()
-    #     df = self.model.df
-    #     cols = list(df.columns)
-    #     valcols = list(df.select_dtypes(include=[np.float64,np.int32]))
-    #     funcs = ['mean','sum','count','max','min','std','first','last']
-    #     d = MultipleValDialog(title='Pivot',
-    #                             initialvalues=(cols,cols,valcols,funcs),
-    #                             labels=('Index:', 'Column:', 'Values:','Agg Function:'),
-    #                             types=('combobox','combobox','listbox','combobox'),
-    #                             tooltips=('a unique index to reshape on','column with variables',
-    #                                 'selecting no values uses all remaining cols',
-    #                                 'function to aggregate on'),
-    #                             parent = self.parentframe)
-    #     if d.result == None:
-    #         return
-    #     index = d.results[0]
-    #     column = d.results[1]
-    #     values = d.results[2]
-    #     func = d.results[3]
-    #     if values == '': values = None
-    #     elif len(values) == 1: values = values[0]
-
-    #     p = pd.pivot_table(df, index=index, columns=column, values=values, aggfunc=func)
-    #     print (p)
-    #     if type(p) is pd.Series:
-    #         p = pd.DataFrame(p)
-    #     self.createChildTable(p, 'pivot-%s-%s' %(index,column), index=True)
-    #     return
-
-    # probably don't need this
     def doCombine(self):
         """Do combine/merge operation"""
 
@@ -2054,7 +1988,6 @@ class Table(Canvas):
         elif upper == 1:
             df.columns = df.columns.str.upper()
         self.redraw()
-        self.tableChanged()
         return
 
     def convertNumeric(self):
@@ -2475,7 +2408,6 @@ class Table(Canvas):
         self.drawText(row, col, value, align=self.align)
         self.delete('entry')
         self.gotonextCell()
-        #bookmark 
         return
 
     def drawCellEntry(self, row, col, text=None):
@@ -3036,16 +2968,71 @@ class Table(Canvas):
     def new(self):
         """Clears all the data and makes a new table"""
 
-        mpDlg = MultipleValDialog(title='Create new table',
-                                    initialvalues=(50, 10),
-                                    labels=('rows','columns'),
-                                    types=('int','int'),
-                                    parent=self.parentframe)
-        if mpDlg.result == True:
-            rows = mpDlg.results[0]
-            cols = mpDlg.results[1]
-            model = TableModel(rows=rows,columns=cols)
-            self.updateModel(model)
+        if messagebox.askyesno('New Data', 'Load a blank data set? (any unsaved progress will be lost)'):
+            #bookmark
+            newDFDict = {
+            'otherCatalogNumbers':['1-#','1-1'],
+            'family':['',''],
+            'scientificName':['',''],
+            'genus':['',''],
+            'scientificNameAuthorship':['',''],
+            'taxonRemarks':['',''],
+            'identifiedBy':['',''],
+            'dateIdentified':['',''],
+            'identificationReferences':['',''],
+            'identificationRemarks':['',''],
+            'collector':['',''],
+            'collectorNumber':['',''],
+            'associatedCollectors':['',''],
+            'eventDate':['',''],
+            'verbatimEventDate':['',''],
+            'habitat':['',''],
+            'substrate':['',''],
+            'occurrenceRemarks':['',''],
+            'informationWithheld':['',''],
+            'associatedOccurrences':['',''],
+            'dataGeneralizations':['',''],
+            'associatedTaxa':['',''],
+            'dynamicProperties':['',''],
+            'description':['',''],
+            'reproductiveCondition':['',''],
+            'cultivationStatus':['',''],
+            'establishmentMeans':['',''],
+            'lifeStage':['',''],
+            'sex':['',''],
+            'individualCount':['',''],
+            'country':['',''],
+            'stateProvince':['',''],
+            'county':['',''],
+            'municipality':['',''],
+            'locality':['',''],
+            'localitySecurity':['',''],
+            'decimalLatitude':['',''],
+            'decimalLongitude':['',''],
+            'geodeticDatum':['',''],
+            'coordinateUncertaintyInMeters':['',''],
+            'verbatimCoordinates':['',''],
+            'minimumElevationInMeters':['',''],
+            'maximumElevationInMeters':['',''],
+            'verbatimElevation':['',''],
+            'duplicateQuantity':['',''],
+            'labelProject':['','']}
+
+        newDF = pd.DataFrame.from_dict(newDFDict)
+        newDF['-'] = '-' # add in the little "-" seperator.
+        newDF.fillna('') # make any nans into empty strings.
+        self.refreshSpecimenSiteNums(newDF)
+        model = TableModel(dataframe=newDF)
+        self.updateModel(model)
+        self.sortTable([self.model.df.columns.get_loc('site#'),self.model.df.columns.get_loc('specimen#')])
+        self.adjustColumnWidths()
+        #this solves addressing errors related to index at row 1 = 1 on import, and various functions later properly reset the index to 0
+        self.model.resetIndex()
+        self.redraw()
+        self.setSelectedRow(0)
+        self.drawSelectedRow()
+        self.drawSelectedRect(0,0)
+
         return
 
     # runs through table automatically
@@ -3142,17 +3129,6 @@ class Table(Canvas):
         self.setSelectedRow(0)
         self.redraw()
 
-#Automatically captalizing names is currently axed due to names like "McNabb," people just have to enter their name as they want it.
-#    def cleanCollectorNames(self, currentRowArg):
-#        currentRow = currentRowArg
-#        #change primary collector ('recordedBy') to title case
-#        recordedByColumn = self.findColumnIndex('recordedBy')
-#        self.model.setValueAt(str(self.model.getValueAt(currentRow, recordedByColumn)).title(), currentRow, recordedByColumn)
-#        #change ALL words in associated collector field ('associatedCollectors') to title case
-#        associatedCollColumn = self.findColumnIndex('associatedCollectors')
-#        self.model.setValueAt(str(self.model.getValueAt(currentRow, associatedCollColumn)).title(), currentRow, associatedCollColumn)
-#        return
-        
     def genAssociatedTaxa(self, siteGroup):
         """Generate Associated Taxa gets all associated taxa
         for a given record (specimen)."""
@@ -3164,11 +3140,15 @@ class Table(Canvas):
                 recordAssociatedTaxa = recordAssociatedTaxa.split(',')      #if exists, try to split by commas
                 recordAssociatedTaxa = [x.strip(' ') for x in recordAssociatedTaxa] #strip extra space from each item.
                 associatedTaxaList = associatedTaxaList + recordAssociatedTaxa #Add each item individually to a list
-        associatedTaxaList = sorted(list(set(associatedTaxaList)),key=str.lower) #clean the list
+        
+        associatedTaxaList = list(dict.fromkeys(associatedTaxaList)) # remove duplicate entries, while preserving the order.
+                
 #then generate a list of all scientificNames in the group which are not already present in the associatedTaxaList.
-        groupSciNameList = [x for x in siteGroup['scientificName'].tolist() if str(x) not in ['', 'nan']]
-        groupScientificNameList = [y.strip(' ') for y in siteGroup['scientificName'].tolist() if y not in associatedTaxaList]
-        groupScientificNameList = sorted(list(set(groupScientificNameList)),key=str.lower) #clean the list
+        cleanGroupSciNameList = [str(x) for x in siteGroup['scientificName'].tolist() if str(x) not in ['', 'nan']]
+
+        groupScientificNameList = [y.strip(' ') for y in cleanGroupSciNameList if y not in associatedTaxaList]
+        #groupScientificNameList = [y.strip(' ') for y in siteGroup['scientificName'].tolist() if y not in associatedTaxaList]
+        groupScientificNameList = sorted(list(set(groupScientificNameList)),key=str.lower) #clean and sort the list
 #join the lists keeping user entered fields at the start of the list.
         groupAssociatedTaxa = associatedTaxaList + groupScientificNameList
         groupAssociatedTaxa = ', '.join(groupAssociatedTaxa).strip().replace(', , ', ', ')
@@ -3176,7 +3156,9 @@ class Table(Canvas):
         return siteGroup    #Return the groups with modified associatedTaxa Fields.
         
     def genLocalityNoAPI(self, currentRowArg):
-# both locality functions would benefit from some systemic methid of determining when to add italics to binomial (scientific) names.
+        """ Attempts to improve the locality string using existing geography data.
+        This function complains more than the inlaws."""
+# both locality functions would benefit from some systemic method of determining when to add italics to binomial (scientific) names.
 # such the italic tags "<i> and </i>" would need to be stripped before exporting for database submission.
         currentRow = currentRowArg
         pathColumn = self.findColumnIndex('path')
@@ -3195,12 +3177,24 @@ class Table(Canvas):
             newLocality = [x for x in localityFields if x.lower() not in currentLocality.lower()]
             #join the list into a single string
             newLocality = ', '.join(newLocality)
-            newLocality = '{}, {}'.format(newLocality,currentLocality).rstrip(', ').lstrip(', ')
+            userWarnedAboutGeo = False # set a trigger to restrict the amount of times we complain about their slack gps data.
+            for geoGeographyField in [stateColumn, countyColumn]:
+                if self.model.getValueAt(currentRow, geoGeographyField) in['','nan']:
+                    messagebox.showinfo('LIMITED Location data at row {}'.format(currentRow+1), 'Row {} is missing important geographic data!\nYou may need to manually enter data into location fields (such as State, and County).'.format(currentRow+1))
+                    userWarnedAboutGeo = True
+                    break
+            if not userWarnedAboutGeo:
+                if newLocality != currentLocality: # if we actually changed something give the user a heads up the methods were sub-par.
+                    newLocality = '{}, {}'.format(newLocality,currentLocality).rstrip(', ').lstrip(', ')
+                    messagebox.showinfo('LIMITED Location data at row {}'.format(currentRow+1), 'Locality at row {} was generated using limited methods'.format(currentRow+1))
+                else:# if we could infer nothing from existing geographic fields, AND we have no GPS values then they have work to do!
+                    messagebox.showinfo('LIMITED Location data at row {}'.format(currentRow+1), 'Row {} is missing important geographic data!\nYou may need to manually enter data into location fields (such as State, and County).'.format(currentRow+1))
+
             return newLocality
 
         except ValueError:
             #if some lookup fails, toss value error and return empty
-            messagebox.showinfo( "Locality generation requires at least a column named locality!")
+            messagebox.showinfo('Location ERROR at row {}'.format(currentRow+1), "Offline Locality generation requires atleast a column named locality.")
             return
 
     def genLocality(self, currentRowArg):
@@ -3229,8 +3223,7 @@ class Table(Canvas):
                 if latitude == '' or longitude == '':
                     raise ValueError("Latitude/Longitude have no values")
             except ValueError:
-                messagebox.showinfo("Locality Error", "Row " + str(currentRow+1) + " has no GPS coordinates!")
-                if messagebox.askyesno("Locality Error", "Would you like to manually enter GPS coordinates for row " + str(currentRow+1)):
+                if messagebox.askyesno('MISSING GPS at row {}'.format(currentRow+1), 'Would you like to halt record processing to add GPS coordinates for row {}?'.format(currentRow+1)):
                     self.setSelectedRow(currentRow)
                     self.setSelectedCol(latitudeColumn)
                     return "user_set_gps"
@@ -3244,11 +3237,10 @@ class Table(Canvas):
                         # path could be Unamed Road
                         # probably don't want this as a result?
                         
-        #bookmark
                         #Testing the idea of excluding the "path" if the coord uncertainty is over a threshold.
                         #the threshold of 200 meters was chosen arbitrarily and should be reviewed.
-                        coordUncertainty = int((self.model.getValueAt(currentRow, coordUncertaintyColumn)))
-                        if coordUncertainty < 200:
+                        coordUncertainty = (self.model.getValueAt(currentRow, coordUncertaintyColumn))
+                        if float(coordUncertainty) < 200:
                             path = 'near {}'.format(addressComponent['long_name'])
                             newLocality.append(path)
                             self.model.setValueAt(path, currentRow, pathColumn)
@@ -3280,7 +3272,7 @@ class Table(Canvas):
             # Google API call returned error/status string
             else:
                 apiErrorMessage = address
-                messagebox.showinfo("Locality Error", "Row {} Location lookup error: '{}'.\nThis is often due to internet connection problems or an invalid GPS value".format(str(currentRow+1),str(apiErrorMessage)))
+                messagebox.showinfo('MISSING GPS at row {}'.format(currentRow+1), 'Location lookup error at row {}:\nGoogle reverse Geolocate service responded with: "{}"/nThis may be internet connection problems, or invalid GPS values.'.format(currentRow+1,str(apiErrorMessage)))
 #Commenting out for now, not sure we want people clicking yes retry repeatedly
 #                if messagebox.askyesno("Locality Error", "This function requires an internet connection, would you like to retry?"):
 #                    self.genLocality(currentRow)
@@ -3288,14 +3280,13 @@ class Table(Canvas):
 #                    return "loc_apierr_no_retry"
                 return "loc_apierr_no_retry"
         else:
-            messagebox.showinfo("Locality Error", "Locality generation requires GPS coordinates and a column named locality!")
+            messagebox.showinfo('Location ERROR at row {}'.format(currentRow+1), "Locality generation requires GPS coordinates, and a column named locality.")
             return
         return
 
     def genScientificName(self, currentRowArg):
-        """Generate scientific name calls API to get
-        most up-to-date scientific name for the specimen
-        in question."""
+        """Generate scientific name calls Catalog of Life to get
+        most up-to-date scientific name for the specimen in question."""
 
         currentRow = currentRowArg
         sciNameColumn = self.findColumnIndex('scientificName')
@@ -3321,7 +3312,7 @@ class Table(Canvas):
             results = colNameSearch(currentSciName)
             if isinstance(results, tuple):
                 if results[0] == 'ERROR':
-                    messagebox.showinfo('Scientific name at row {} Error'.format(currentRow+1), 'Catalog of Life Error at row {}: "{}".\nScientific name {} not verified!'.format(currentRow+1, results[1], currentSciName))
+                    messagebox.showinfo('Name ERROR at row {}'.format(currentRow+1), 'Name Verification Error at row {}:\nWhen asked about "{}",\nCatalog of Life responded with: "{}."\nName unverified! (probably a typo)'.format(currentRow+1,currentSciName,results[1]))
                     return currentSciName
 
                 sciName = str(results[0])
@@ -3347,32 +3338,31 @@ class Table(Canvas):
          #           messagebox.showinfo("Scientific Name Error", "No scientific name update!")
          #           return currentSciName
                 if results == 'empty_string':
-                    messagebox.showinfo("Scientific name error", "Row " + str(currentRow+1) + " has no scientific name.")
-                    if messagebox.askyesno("Sci-Name", "Would you like to add scientific name to row " + str(currentRow+1)):
+                    #messagebox.showinfo("Scientific name error", "Row " + str(currentRow+1) + " has no scientific name.") # 2 dialog boxes is sort of rude.
+                    if messagebox.askyesno('MISSING Name at row {}'.format(currentRow+1), "Would you like to halt record processing to add a Scientific Name to row {}?".format(currentRow+1)):
                         self.setSelectedRow(currentRow)
                         self.setSelectedCol(sciNameColumn)
                         return "user_set_sciname"
                 elif results == 'http_Error':
-                     messagebox.showinfo("Scientific Name Error", "Catalog of Life Error, the webservice might be down. Try again later, if this issue persists please contact us: plantdigitizationprojectutc@gmail.com")
-        else:
-            messagebox.showinfo("Scientific Name Error", "Row " + str(currentRow+1) + " has no scientific name.")
-            if messagebox.askyesno("Sci-Name", "Would you like to add scientific name to row " + str(currentRow+1)):
+                     messagebox.showinfo('Name ERROR at row {}'.format(currentRow+1, "Catalog of Life, the webservice might be down. Try again later, if this issue persists please contact us: plantdigitizationprojectutc@gmail.com"))
+        else: # Can this ever catch anything? 
+            if messagebox.askyesno('MISSING Name at row {}'.format(currentRow+1), "Would you like to halt record processing to add a Scientific Name to row {}?".format(currentRow+1)):
                 self.setSelectedRow(currentRow)
                 self.setSelectedCol(sciNameColumn)
                 return "user_set_sciname"
-            return currentSciName
-
-    # causes a pdf to be saved (uses dialog to get save name.
-    # causes a pdf to be opened with default pdf reader.
-    # if inproper data passed, returns empty return.
-    # expects a dataframe or a series
-    # a row should be a series
-    # getSelectedDataFrame(self) should be a dataframe
-    # http://pandastable.readthedocs.io/en/latest/_modules/pandastable/core.html#Table.getSelectedDataFrame
+            return sciNameAtRow
 
     def genLabelPDF(self):
         """Generate Label PDF. Print specimen labels
-        for physical plant records."""
+        for physical plant records.
+        # causes a pdf to be saved (uses dialog to get save name.
+        # causes a pdf to be opened with default pdf reader.
+        # if inproper data passed, returns empty return.
+        # expects a dataframe or a series
+        # a data row(record) should be a series
+        # getSelectedDataFrame(self) should be a dataframe
+        # http://pandastable.readthedocs.io/en/latest/_modules/pandastable/core.html#Table.getSelectedDataFrame
+        """
 
         toPrintDataFrame = self.getSelectedLabelDict()  #function returns a list of dicts (one for each record to print)
         for record in toPrintDataFrame:   
@@ -3381,8 +3371,10 @@ class Table(Canvas):
 
             associatedTaxaItems = record.get('associatedTaxa').split(', ') #for each dict, verify that the associatedTaxa string does not consist of >15 items.
             if len(associatedTaxaItems) > 15:   #if it is too large, trunicate it at 15, and append "..." to indicate trunication.
-                record['associatedTaxa'] = ', '.join(associatedTaxaItems[:15])+' ...'
-        genPrintLabelPDFs(toPrintDataFrame)     #sent modified list of dicts to the printLabelPDF module without editing actual data fields.
+                record['associatedTaxa'] = ', '.join(associatedTaxaItems[:15])+' ...'   
+
+        pdfFileName = self.filename.replace('.csv', '.pdf').split('/')[-1] # prep the default file name
+        genPrintLabelPDFs(toPrintDataFrame, pdfFileName)     #sent modified list of dicts to the printLabelPDF module without editing actual data fields.
         return
 
     
@@ -3422,32 +3414,67 @@ class Table(Canvas):
             self.redraw()
         return
 
-    def saveAs(self, filename=None):
+    def saveAs(self, filename=None, dbReady = False):
         """Save dataframe to file"""
-
-        filename = filedialog.asksaveasfilename(parent=self.master,
-                                                    defaultextension='.csv',
-                                                    initialfile = filename,
-                                                    initialdir = self.currentdir,
-                                                    filetypes=[("csv","*.csv")])
-
-        if self.filename:
-            dfForExport = copy.deepcopy(self.model.df)
-            dfForExport['otherCatalogNumbers'] = dfForExport['otherCatalogNumbers'].apply(lambda x: ("'")+str(x))
-            exportColumns = []
-            for item in dfForExport.columns.values.tolist():
-                if item not in ['site#', 'specimen#' ,'-']:
+        if filename: # this is really only checking that we've ever initially loaded ... something. (I believe)
+            dfForExport = copy.deepcopy(self.model.df) # deep copy the existing model before we make changes to the data.
+            exportColumns = [] # build a list of columns to be saved (outgoing columns)
+            for item in dfForExport.columns.values.tolist(): # this should probably be a list comprehension
+                if item not in ['site#', 'specimen#' ,'-']: # never export these helper columns (else we'll multiply them each import)
                     exportColumns.append(item)
+
+            # if this function was passed with the 'dbReady' set to True. Meaning, it should be "database ready"
+            if dbReady:
+                fileNamePreamble = 'DBReady'  # to avoid people overwriting their source data, suggest a preamble string to the file name
+                exclusionList = ['path','collectionName'] # stuff we invented, and don't need to be sending to the portals.
+                exportColumns = [colLabel for colLabel in exportColumns if colLabel not in exclusionList]
+
+                # limit the dataframe for export to actual record specimens, by excluding "site" level records.
+                #Explination for the filter below: dfForExport rows which do not include '#' or '!AddSITE' in the 'specimen#' column.
+                dfForExport = dfForExport[~dfForExport['specimen#'].isin(['#','!AddSITE'])]
+
+            # if we're just saving this work because we've made progress on it, keep it excel friendly.
+            else:
+                fileNamePreamble = 'Processed'  # to avoid people overwriting their source data, suggest a preamble string to the file name
+
+                #Excel is interpreting site numbers < 12 as dates and converting them. Ex: 08-16 to Aug-16.
+                #Also, many spreadsheet programs are altering the iso date format.
+                #If dbReady = False, then include a " ' " before the problem values so that they're
+                numericColumnsToCheck = ['otherCatalogNumbers','eventDate','dateIdentified']
+                for numericColumn in numericColumnsToCheck:
+                    try:
+                        dfForExport[numericColumn] = dfForExport[numericColumn].apply(lambda x: ("'")+str(x))
+                    except (KeyError):
+                        print('KeyError attempting to save the {} in a spreadsheet friendly format'.format(numericColumn))
+                    pass
+
+            # prep the file name using the conditionally generated preamble.
+            defFileName = self.filename.split('/')[-1] # prep the default suggested filename.
+            if defFileName.split()[0] != fileNamePreamble: # ensure this file does not already have the preamble string
+                defFileName = '{} {}'.format(fileNamePreamble,defFileName) # if it passes this ocndition, add preamble.
+            filename = filedialog.asksaveasfilename(parent=self.master,
+                                                        defaultextension='.csv',
+                                                        initialfile = defFileName,
+                                                        initialdir = os.getcwd(),
+                                                        filetypes=[("csv","*.csv")])
+
+
             dfForExport.to_csv(filename, encoding = 'utf-8', index = False, columns = exportColumns)
-
+        else: 
             return
-        else:
-            
-            return
+    def saveForDatabase(self):
+        """ simply calls "saveAs(filename, dbReady = True)
+        Allowing us to make a button to generate a csv file which is ready for portal submission.
+        The distinction is necessary because of the leading " ' " in some fields which are necessary
+        for friendly input and output from common spreadsheet programs."""
 
+        self.saveAs(self.filename, dbReady = True)
+        
+        
     def save(self):
         """Save current file"""
-
+    # It's probably annoying we've stripped this and made it into a "save as" function
+    # I'd rather be slightly annoying than risk loss overwriting the researchers field data.
         self.saveAs(self.filename)
         
     def importCSV(self, filename=None, dialog=False, **kwargs):
@@ -3464,25 +3491,34 @@ class Table(Canvas):
             return
         else:
             self.filename = filename
-        if dialog == True:
+        if dialog == True:  # I believe this will like... never be true? We may have stripped this entirely out.
             impdialog = ImportDialog(self, filename=filename)
             df = impdialog.df
             if df is None:
                 return
         else:
-            
+            df = pd.read_csv(filename, encoding = 'utf-8',keep_default_na=False, dtype=str,)
+
         #Excel is interpreting site numbers < 12 as dates and converting them. Ex: 08-16 to Aug-16.
         #To prevent data loss mobile app sends field numbers with a leading " ' " which we don't want.
-
-            df = pd.read_csv(filename, encoding = 'utf-8',keep_default_na=False, dtype=str,)
-            df['otherCatalogNumbers'] = df['otherCatalogNumbers'].apply(lambda x: x.lstrip("'"))
-            df['-'] = '-'
-            df.fillna('')
+        # The saveAs() also exports csv files with the leading " ' " added. unless "dbReady = True" when called
+            numericColumnsToCheck = ['otherCatalogNumbers','eventDate','dateIdentified']
+            for numericColumn in numericColumnsToCheck:
+                try:
+                    df[numericColumn] = df[numericColumn].apply(lambda x: x.lstrip("'"))
+                except KeyError:
+                    print('KeyError attempting to load in {} header.'.format(numericColumn))
+                    pass
+            df['-'] = '-' # add in the little "-" seperator.
+            df.fillna('') # make any nans into empty strings.
             self.refreshSpecimenSiteNums(df)
         model = TableModel(dataframe=df)
         self.updateModel(model)
         self.sortTable([self.model.df.columns.get_loc('site#'),self.model.df.columns.get_loc('specimen#')])
         self.adjustColumnWidths()
+
+        #this solves addressing errors related to index at row 1 = 1 on import, and various functions later properly reset the index to 0
+        self.model.resetIndex()
         self.redraw()
         self.setSelectedRow(0)
         self.drawSelectedRow()
@@ -3553,7 +3589,8 @@ class Table(Canvas):
             for item in df.columns.values.tolist():
                 if item not in self.column_order:
                     self.column_order.append(item)
-            self.model.df = df.reindex(columns = self.column_order)
+            #If it needs to add a new column full of empty values, bring it in as a string dtype.
+            self.model.df = df.reindex(columns = self.column_order, fill_value= '')
 
             
     def getGeometry(self, frame):
@@ -3807,6 +3844,10 @@ class ToolBar(Frame):
         img = images.save_proj()
         addButton(self, 'Save', self.parentapp.save, img, 'save', side=LEFT)
 
+        # add in an option for database ready Export 
+        img = images.open_proj()
+        addButton(self, 'DB Save', self.parentapp.saveForDatabase, img, 'Save in Database Format', side=LEFT)
+
         # add an image for the button later, using existing img until this one is resized.
         #img = images.open_processRecords() 
         img = images.merge() 
@@ -3815,13 +3856,14 @@ class ToolBar(Frame):
         img = images.aggregate() #hijacking random image for now
         addButton(self, 'Export',self.parentapp.genLabelPDF, img, 'Export Labels to PDF', side=LEFT)
 
+        img = images.table_delete()  
+        addButton(self, 'Undo',self.parentapp.undo, img, 'Undo the last major change.', side=LEFT)
+        
         img = images.prefs()
         addButton(self, 'Preferences', self.parentapp.showPrefs, img, 'Show Preferences', side = LEFT)
         
         img = images.cross()
         addButton(self, 'Help', self.parentapp.helpDocumentation , img , 'Help Documentation', side=LEFT)
-
-        
 
         # List of unused button assets (for temp use before we get in our assets.
         # img = images.open_proj()

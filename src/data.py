@@ -298,8 +298,12 @@ class TableModel(object):
 
     def setValueAt(self, value, rowindex, colindex):
         """Changed the dictionary when cell is updated by user"""
-        if value == '':
-            value = np.nan
+        # This first "if" check was introducing 'nan's seemingly randomly .
+        # as we don't expect any significant numeric data, I believe it is safe
+        # to leave empty strings as empty strings.
+        #if value == '':
+            #value = np.nan
+        
         dtype = self.df.dtypes[colindex]
         #try to cast to column type
         try:

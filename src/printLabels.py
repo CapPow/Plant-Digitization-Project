@@ -17,7 +17,10 @@ from tkinter import filedialog
 # dynamic spacing needs redesigned and simplified
 # before size options are added.
 
-def genPrintLabelPDFs(labelDataInput):
+def genPrintLabelPDFs(labelDataInput,defaultFileName = None):
+    """labelDataInput = list of dictionaries formatted as: {DWC Column:'field value'}
+       defaultFileName = the filename to use as the default when saving the pdf file."""
+    
     labelData = labelDataInput
     xPaperSize = 5.50 * inch   #These values should be user preferences! (But it'll be a PITA to do)
     yPaperSize = 3.50 * inch
@@ -416,11 +419,12 @@ def genPrintLabelPDFs(labelDataInput):
         #Add the flowables to the elements list.
         elements.append(docTable)
         elements.append(PageBreak())
-
+#Bookmark
     #Build the base document's parameters.
     labelFileName = filedialog.asksaveasfilename(
                                             initialdir=os.getcwd(),
                                             defaultextension='.pdf',
+                                            initialfile = defaultFileName,
                                             filetypes=(('pdf','*.pdf'),),title = 'Save Labels As')
     doc = BaseDocTemplate(labelFileName,
      pagesize=customPageSize,
