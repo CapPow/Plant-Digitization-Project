@@ -448,6 +448,8 @@ class Table(Canvas):
 
         prec = self.floatprecision
         rows = self.visiblerows
+
+        self.model.resetIndex()
         for col in self.visiblecols:
             coldata = df.iloc[rows,col]
             if prec != 0:
@@ -455,13 +457,17 @@ class Table(Canvas):
                     coldata = coldata.apply(lambda x: set_precision(x, prec), 1)
             coldata = coldata.astype(object).fillna('')
             offset = rows[0]
+
             for row in self.visiblerows:
                 text = coldata.iloc[row-offset]
+                
                 if self.model.df.columns[col] == 'specimen#':       #If it is a site record add a widget to generate specimens from it.                  
                     if self.model.getValueAt(row, col) == '!AddSITE':
                         self.drawAddSpecimenWidget(row,col)
+                        self.setRowColors(row,'#f9e66b')#set site level row to yellow
                     else:
                         self.drawText(row, col, text, align)
+                        self.setRowColors(row,'#baec6d') #set specimen level row to green
                 else:
                     self.drawText(row, col, text, align)
             colname = df.columns[col]
@@ -554,8 +560,6 @@ class Table(Canvas):
         """Color individual cells in column(s). Requires that the rowcolors
          dataframe has been set. This needs to be updatedif the index is reset"""
 
-        #if len(self.rowcolors==0):
-        #    return
         df = self.model.df
         rc = self.rowcolors
         rows = self.visiblerows
@@ -573,22 +577,27 @@ class Table(Canvas):
 
     def setRowColors(self, rows=None, clr=None):
         """Set rows color from menu"""
-
         if clr is None:
             clr = self.getaColor('#dcf1fc')
         if clr == None:
             return
         if rows == None:
             rows = self.multiplerowlist
+
         df = self.model.df
         idx = df.index[rows]
         rc = self.rowcolors
-        colnames = df.columns[self.multiplecollist]
+        colnames = df.columns
         for c in colnames:
             if c not in rc.columns:
                 rc[c] = pd.Series(np.nan,index=df.index)
-            rc[c][idx] = clr
-        self.redraw()
+        try:
+            rc.iloc[idx] = clr
+        except IndexError: 
+            self.rowcolors = self.rowcolors.append(pd.Series(), ignore_index=True)
+            rc = self.rowcolors
+            rc.iloc[idx] = clr
+        #self.redraw() #recrusive since we've added it elsewhere
         return
 
     def setColorbyValue(self):
@@ -814,7 +823,8 @@ class Table(Canvas):
         return
 
     def set_yviews(self,*args):
-        """Set the xview of table and row header"""
+        """Set the yview of table and row header
+        Example usage: self.set_yviews('moveto', y-0.01)"""
 
         self.yview(*args)
         self.rowheader.yview(*args)
@@ -825,13 +835,16 @@ class Table(Canvas):
         """Helper function to pass row to addRowFromSite
            in data.py"""
 
-
+        self.storeCurrent()
         row = self.getSelectedRow()
         siteData = self.model.df.loc[row].to_dict() #occasional error, this func adds incorrect site Num row
         oldOtherSiteNum = siteData.get('site#')
         siteData.pop('specimen#', None)
         specimenNumbers = self.model.df['specimen#'].tolist()
-        nextSpecimenNumber = max([int(y) for y in[x for x in specimenNumbers if isinstance(x, int)]]) + 1
+        try:
+            nextSpecimenNumber = max([int(y) for y in[x for x in specimenNumbers if isinstance(x, int)]]) + 1
+        except ValueError:
+            nextSpecimenNumber = 1
         newOtherCatNumber = str(oldOtherSiteNum) + '-' + str(nextSpecimenNumber)
         siteData['otherCatalogNumbers'] = newOtherCatNumber
         df = self.model.df
@@ -842,6 +855,40 @@ class Table(Canvas):
         self.refreshSpecimenSiteNums(self.model.df)
         self.sortTable([self.model.df.columns.get_loc('site#'),self.model.df.columns.get_loc('specimen#')])
         self.setSelectedRow(row)
+        self.redraw()
+        return
+
+    def addSite(self):
+        """Inserts a "Site" row at the required index by append/concat"""
+
+        self.storeCurrent()
+        rowindex = self.getSelectedRow()
+        a, b = self.model.df[:rowindex], self.model.df[rowindex:]
+        
+        def siteNumExtract(catNum):
+            """ input a field number formatted as "siteNumber-SpecimenNumber" (ie: 04-124)
+            In the case of site only data, use "siteNumber-#" (ie: 05-#) returns the first "site number" value.
+            Using this method instead of calling defined function in core.py for simplicity.
+            There may be a cleaner way to do this."""
+    
+            try:
+                result = catNum.split('-')[0]
+                if result.isdigit():
+                    return int(result)
+                else:
+                    return 0
+            except: #an open exception catcher may be unwise.
+                return 0
+        maxSiteNum = max(self.model.df['otherCatalogNumbers'].apply(lambda x: siteNumExtract(x)))
+        newSiteData = {'otherCatalogNumbers':'{}-#'.format(maxSiteNum + 1), '-':'-'}
+        a = a.append(pd.Series(newSiteData), ignore_index=1)
+        self.model.df = pd.concat([a,b])
+        self.refreshSpecimenSiteNums(self.model.df)
+        self.sortTable([self.model.df.columns.get_loc('site#'),self.model.df.columns.get_loc('specimen#')])
+        self.model.resetIndex()
+        self.setSelectedRow(self.model.df.shape[0] - 1)
+        self.drawSelectedRow()
+        self.movetoSelectedRow(self.getSelectedRow())
         self.redraw()
         return
 
@@ -1781,13 +1828,12 @@ class Table(Canvas):
 
     def movetoSelectedRow(self, row=None, recname=None):
         """Move to selected row, updating table"""
-
-        row=self.model.getRecordIndex(recname)
+        #row=self.model.getRecordIndex(recname)
         self.setSelectedRow(row)
         self.drawSelectedRow()
         x,y = self.getCanvasPos(row, 0)
-        self.yview('moveto', y-0.01)
-        self.tablecolheader.yview('moveto', y)
+        self.set_yviews('moveto', y-0.01)
+        
         return
 
     def copyTable(self, event=None):
@@ -2138,6 +2184,7 @@ class Table(Canvas):
                         "Fill Down" : lambda: self.fillDown(rows, cols), # could potentially be removed
                         "Fill Right" : lambda: self.fillAcross(cols, rows), # could potentially be removed
                         "Add Row(s)" : lambda: self.addRows(),
+                        "Add Site" : lambda: self.addSite(),                        
                         "Delete Row(s)" : lambda: self.deleteRow(),
                         "Add Column(s)" : lambda: self.addColumn(),
                         "Delete Column(s)" : lambda: self.deleteColumn(),
@@ -2152,7 +2199,7 @@ class Table(Canvas):
                         "Load": self.load,
                         "Save": self.save,
                         "Save as": self.saveAs,
-                        "Import csv": lambda: self.importCSV(dialog=True),
+                        "Import csv": lambda: self.importCSV(),
                         "Export": self.doExport,
                         "Preferences" : self.showPrefs,
                         "Table to Text" : self.showasText, # could potentially be removed
@@ -2969,7 +3016,6 @@ class Table(Canvas):
         """Clears all the data and makes a new table"""
 
         if messagebox.askyesno('New Data', 'Load a blank data set? (any unsaved progress will be lost)'):
-            #bookmark
             newDFDict = {
             'otherCatalogNumbers':['1-#','1-1'],
             'family':['',''],
@@ -3365,16 +3411,20 @@ class Table(Canvas):
         """
 
         toPrintDataFrame = self.getSelectedLabelDict()  #function returns a list of dicts (one for each record to print)
-        for record in toPrintDataFrame:   
-            if CatNumberBar.stuCollCheckBoxVar.get() == 1: # for each dict, if it is student collection
-                record['verifiedBy'] = CatNumberBar.stuCollVerifyByVar.get() #then add the verified by name to the dict.
+        labelsToPrint = len(toPrintDataFrame)
+        if labelsToPrint > 0:
+            for record in toPrintDataFrame:   
+                if CatNumberBar.stuCollCheckBoxVar.get() == 1: # for each dict, if it is student collection
+                    record['verifiedBy'] = CatNumberBar.stuCollVerifyByVar.get() #then add the verified by name to the dict.
 
-            associatedTaxaItems = record.get('associatedTaxa').split(', ') #for each dict, verify that the associatedTaxa string does not consist of >15 items.
-            if len(associatedTaxaItems) > 15:   #if it is too large, trunicate it at 15, and append "..." to indicate trunication.
-                record['associatedTaxa'] = ', '.join(associatedTaxaItems[:15])+' ...'   
+                associatedTaxaItems = record.get('associatedTaxa').split(', ') #for each dict, verify that the associatedTaxa string does not consist of >15 items.
+                if len(associatedTaxaItems) > 15:   #if it is too large, trunicate it at 15, and append "..." to indicate trunication.
+                    record['associatedTaxa'] = ', '.join(associatedTaxaItems[:15])+' ...'   
 
-        pdfFileName = self.filename.replace('.csv', '.pdf').split('/')[-1] # prep the default file name
-        genPrintLabelPDFs(toPrintDataFrame, pdfFileName)     #sent modified list of dicts to the printLabelPDF module without editing actual data fields.
+            pdfFileName = self.filename.replace('.csv', '.pdf').split('/')[-1] # prep the default file name
+            genPrintLabelPDFs(toPrintDataFrame, pdfFileName)     #sent modified list of dicts to the printLabelPDF module without editing actual data fields.
+        else:
+            messagebox.showwarning("No Labels to Make", "No specimen records (green rows) selected.")
         return
 
     
@@ -3582,6 +3632,7 @@ class Table(Canvas):
             #except ValueError:
             except (ValueError, IndexError, AttributeError) as e:
                 return ''
+        
         df = dframe
         if self.column_order:
             df['site#'] = df['otherCatalogNumbers'].apply(lambda x: siteNumExtract(x))
@@ -3591,7 +3642,6 @@ class Table(Canvas):
                     self.column_order.append(item)
             #If it needs to add a new column full of empty values, bring it in as a string dtype.
             self.model.df = df.reindex(columns = self.column_order, fill_value= '')
-
             
     def getGeometry(self, frame):
         """Get frame geometry"""

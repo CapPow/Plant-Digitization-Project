@@ -478,7 +478,7 @@ class RowWidgetColumn(Canvas):
 
         i=0
 
-        fieldColIndex = self.table.findColumnIndex('othercatalognumbers')
+        fieldColIndex = self.table.findColumnIndex('otherCatalogNumbers')
 
         for col in cols:
 
@@ -669,7 +669,7 @@ class RowHeader(Canvas):
         if hasattr(self, 'rightmenu'):
             self.rightmenu.destroy()
         rowclicked = self.table.get_row_clicked(event)
-        fieldNumIndex = self.table.findColumnIndex('othercatalognumbers')
+        fieldNumIndex = self.table.findColumnIndex('otherCatalogNumbers')
         fieldNum = self.model.getValueAt(rowclicked, fieldNumIndex)
         if '#' in fieldNum:
             self.rightmenu = self.popupMenu(event, outside=1, addRecord='yes')
@@ -729,6 +729,7 @@ class RowHeader(Canvas):
                          "Sort columns by row" : lambda: self.table.sortColumnIndex(),
                          "Select All" : self.table.selectAll,
                          "Add Row(s)" : lambda: self.table.addRows(),
+                         "Add Site" : lambda: self.table.addSite(),
                          "Delete Selected Row(s)" : lambda: self.table.deleteRow(),
                          "Set Row Color" : lambda: self.table.setRowColors(),
                          "Add Record From This Site" : lambda: self.table.addRowFromSite()}
@@ -737,9 +738,9 @@ class RowHeader(Canvas):
         #         "Add Row(s)","Delete Selected Row(s)", "Set Row Color"]
         if addRecord == None:
             #main = ["Add Row(s)","Delete Selected Row(s)"]
-            main = ["Delete Selected Row(s)"]
+            main = ["Delete Selected Row(s)", "Add Site"]
         elif addRecord == 'yes':
-            main = ["Add Record From This Site","Add Row(s)", "Delete Selected Row(s)"]
+            main = ["Add Record From This Site","Add Site", "Delete Selected Row(s)"]
 
         popupmenu = Menu(self, tearoff = 0)
         def popupFocusOut(event):
