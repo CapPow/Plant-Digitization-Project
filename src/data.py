@@ -284,7 +284,11 @@ class TableModel(object):
 
     def getRowCount(self):
          """Returns the number of rows in the table model."""
-         return len(self.reclist)
+         
+         #return len(self.reclist) # orig code was calling a variable set on initial load in index length.
+         # todo
+        #it would be wise to find each instance of getRowCount{} to check if we've already hotfixed (in some hacky way) the symptoms of this problem
+         return len(self.df.index)
 
     def getValueAt(self, rowindex, colindex):
          """Returns the cell value at location specified

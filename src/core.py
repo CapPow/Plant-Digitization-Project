@@ -134,7 +134,7 @@ class Table(Canvas):
         self.column_order = [
             'site#',
             '-',
-            'specimen#',            
+            'specimen#',
             'eventDate',
             'scientificName',
             'scientificNameAuthorship',
@@ -3101,7 +3101,7 @@ class Table(Canvas):
         associatedTaxa = []
         # an indication of record processing
         self.parentframe.master.title("PD-Desktop (Processing Records...)")
-
+        
         while currentRow < int(self.model.getRowCount()):
             try:
                 currentRow = self.currentrow
@@ -3848,30 +3848,39 @@ class CatNumberBar(Frame):
 
     def addCatalogNumbers(self):
         """Add catalog numbers..."""
-
+        # todo alter the catalog number assignment to use a pool of available catalog numbers, & maybe when appropriate return removed values to the pool.
+        # see the comments below "def delCatalogNumbers(self):"
         prefix = self.catPrefixVar.get()
         digits = self.catDigitsVar.get()
         start = self.catStartVar.get()
+        df = self.parentapp.model.df
+        specimenRecordGroup = df.iloc[self.parentapp.getOnlySpecimenRecords()]
+        
         if len(str(start)) > digits: #check that the starting value does not require more decimal places than the entered digit length
             messagebox.showwarning("Starting Value Error", "Starting Catalog Number Value Exceeds Entered The Max Digits")
         else:
             try: # try and isolate the records which need a catalog number
-                groupNeedingBarcodes = self.parentapp.model.df['catalogNumber'].str.len() != (len(str(prefix)) + digits)
+                groupNeedingBarcodes = specimenRecordGroup[specimenRecordGroup['catalogNumber'].str.len() != (len(str(prefix)) + digits)]
             except KeyError: #if no 'catalogNumber column exists, generate it
                 self.parentapp.model.df['catalogNumber'] = ''
-                groupNeedingBarcodes = self.parentapp.model.df['catalogNumber'].str.len() != (len(str(prefix)) + digits) #probably could simplify this.
-
-            groupNeedingBarcodes = self.parentapp.model.df[groupNeedingBarcodes] #change the boolean values into a df slice
+                groupNeedingBarcodes = specimenRecordGroup[specimenRecordGroup['catalogNumber'].str.len() != (len(str(prefix)) + digits)]
             catalogValues = [prefix + str(x + int(start)).zfill(digits) for x in range(len(groupNeedingBarcodes))] #Generate a list of the barcodes to assign
             self.catStartVar.set(len(catalogValues) + int(start)) # update the starting view by the quanity being added
-            self.parentapp.model.df.loc[groupNeedingBarcodes.index,'catalogNumber'] = catalogValues #apply the selective changes
+            df.loc[groupNeedingBarcodes.index,'catalogNumber'] = catalogValues #apply the selective changes
             self.parentapp.redraw()
                 
     def delCatalogNumbers(self):
         """Blindly removes the catalogNumber column..."""
         try:
+            # todo
+            # currently, there exists an issue where:
+            # if a user has one or more pre-existing, yet properly formatted catalog numbers,
+            # then assigns numbers to empty catalogNumber fields
+            # then removes the catalog numbers
+            # the catalog number starting value will roll back further than appropriate
+            # because the pre-existing numbers were properly formatted & we're counting the quantity to roll back based on formatting conditions.
             self.parentapp.model.df.drop('catalogNumber', axis=1, inplace=True)
-            if messagebox.askyesno("Roll Back Starting Catalog Number?", "Would you like to reduce the starting catalog value by the quantity removed from the table?"):
+            if messagebox.askyesno("Roll Back Starting Catalog Number?", "Would you like to reduce the starting catalog value by the quantity removed from the table?\nTAKE CAUTION: If you had pre-existing catalog numbers assigned, this may roll back the starting value too far!"):
                 self.catStartVar.set(str(self.catStartVar.get() - len(self.parentapp.getOnlySpecimenRecords())))              
         except ValueError:
             pass
