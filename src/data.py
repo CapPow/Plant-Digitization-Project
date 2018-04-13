@@ -284,7 +284,11 @@ class TableModel(object):
 
     def getRowCount(self):
          """Returns the number of rows in the table model."""
-         return len(self.reclist)
+         
+         #return len(self.reclist) # orig code was calling a variable set on initial load in index length.
+         # todo
+        #it would be wise to find each instance of getRowCount{} to check if we've already hotfixed (in some hacky way) the symptoms of this problem
+         return len(self.df.index)
 
     def getValueAt(self, rowindex, colindex):
          """Returns the cell value at location specified
@@ -298,8 +302,12 @@ class TableModel(object):
 
     def setValueAt(self, value, rowindex, colindex):
         """Changed the dictionary when cell is updated by user"""
-        if value == '':
-            value = np.nan
+        # This first "if" check was introducing 'nan's seemingly randomly .
+        # as we don't expect any significant numeric data, I believe it is safe
+        # to leave empty strings as empty strings.
+        #if value == '':
+            #value = np.nan
+        
         dtype = self.df.dtypes[colindex]
         #try to cast to column type
         try:

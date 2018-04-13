@@ -21,6 +21,8 @@ Priority Tasks:
 
 Tasks:
 
+* Clean up tkinter importing across all submodules, and consolidate all code in order to simplify the creation of binaries. 
+
 * Use existing pandastable's column types to add a column type for site only rows (ie: the ones we currently fill with "!AddSITE" and then populate those cells with a button. We could make these column types uneditable, perhaps. Find relevant code in core.py by searching for "#column specific actions, define for every column type in the model"
 
 * Impliment the rename and move image handling functions from fieldImageHandling.py, possibly at the time of label printing
