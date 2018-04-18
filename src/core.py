@@ -3132,7 +3132,6 @@ class Table(Canvas):
                 else:
                     self.model.setValueAt(resultLocality, currentRow, localityColumn)
                     self.redraw()
-                
                 catNum = self.model.getValueAt(currentRow, catalogNumColumn)
                 resSci = self.genScientificName(currentRow)
                 # missing scientific name
@@ -3235,7 +3234,7 @@ class Table(Canvas):
                     messagebox.showinfo('LIMITED Location data at row {}'.format(currentRow+1), 'Locality at row {} was generated using limited methods'.format(currentRow+1))
                 else:# if we could infer nothing from existing geographic fields, AND we have no GPS values then they have work to do!
                     messagebox.showinfo('LIMITED Location data at row {}'.format(currentRow+1), 'Row {} is missing important geographic data!\nYou may need to manually enter data into location fields (such as State, and County).'.format(currentRow+1))
-
+                    return newLocality
             return newLocality
 
         except ValueError:
@@ -3260,7 +3259,6 @@ class Table(Canvas):
         longitudeColumn = self.findColumnIndex('decimalLongitude')
         coordUncertaintyColumn = self.findColumnIndex('coordinateUncertaintyInMeters')
         
-
         if localityColumn != '':
             currentLocality = self.model.getValueAt(currentRow, localityColumn)
             try:
@@ -3337,7 +3335,6 @@ class Table(Canvas):
     def genScientificName(self, currentRowArg):
         """Generate scientific name calls Catalog of Life to get
         most up-to-date scientific name for the specimen in question."""
-
         currentRow = currentRowArg
         sciNameColumn = self.findColumnIndex('scientificName')
         authorColumn = self.findColumnIndex('scientificNameAuthorship')
@@ -3345,26 +3342,23 @@ class Table(Canvas):
         sciNameList = sciNameAtRow.split(' ')
         sciNameToQuery = sciNameAtRow
         sciAuthorAtRow = str(self.model.getValueAt(currentRow, authorColumn))
-        if sciNameAtRow != '':            
+        sciNameSuffix = ''
+        if sciNameAtRow != '':
             exclusionWordList = ['sp.','sp','spp','spp.','ssp','ssp.','var','var.']
-
             #this intends to exclude only those instances where the final word is one from the exclusion list.
             if sciNameList[-1].lower() in exclusionWordList:    #If an excluded word is in scientific name then modify.
                 sciNameToQuery = sciNameList
                 sciNameSuffix = str(' ' + sciNameToQuery[-1])       #store excluded word incase the user only has genus and wants Sp or the like included.
                 sciNameToQuery.pop()
-                if len(sciNameToQuery) > 1:                     #If the name has more than 1 word after excluded word was removed then forget the excluded word.
-                    sciNameSuffix = ''
-                else:
+                if len(sciNameToQuery) < 1:                     #If the name has more than 1 word after excluded word was removed then forget the excluded word.
                     return sciNameAtRow
                 sciNameToQuery = ' '.join(sciNameToQuery)
-            elif (len(sciNameList) == 4) & (sciNameList[2].lower() in exclusionWordList): # handle infraspecific abbreviations by trusting user input.
-                infraSpecificAbbreviation = sciNameList[2]
-                sciNameList.remove(infraSpecificAbbreviation)
-                sciNameToQuery = ' '.join(sciNameList)
-                sciNameSuffix = ''
-            else:
-                sciNameSuffix = ''
+            #elif ((len(sciNameList) == 4) & (sciNameList[2].lower() in exclusionWordList)): # handle infraspecific abbreviations by trusting user input.
+            elif len(sciNameList) == 4:
+                if sciNameList[2].lower() in exclusionWordList: # handle infraspecific abbreviations by trusting user input.
+                    infraSpecificAbbreviation = sciNameList[2]
+                    sciNameList.remove(infraSpecificAbbreviation)
+                    sciNameToQuery = ' '.join(sciNameList)
             results = colNameSearch(sciNameToQuery)
             if isinstance(results, tuple):
                 if results[0] == 'ERROR':
@@ -3379,8 +3373,9 @@ class Table(Canvas):
                         if len(sciName) > 2:
                             sciName.insert(-1, infraSpecificAbbreviation)
                         sciName = ' '.join(sciName)
-                except UnboundLocalError:
+                except NameError:
                     pass # if we fail to check infraSpecificAbbreviation, it must not exist. Probably a nicer way to do this.
+    
                 if sciNameAtRow != sciName:   #If scientific name needs updating, ask. Don't ask about new authority in this case.
                     if messagebox.askyesno('Scientific name at row {}'.format(currentRow+1), 'Would you like to change {} to {} and update the authority?'.format(sciNameAtRow,sciName)):
                         return (sciName, auth)
@@ -3409,7 +3404,7 @@ class Table(Canvas):
                         return "user_set_sciname"
                 elif results == 'http_Error':
                      messagebox.showinfo('Name ERROR at row {}'.format(currentRow+1, "Catalog of Life, the webservice might be down. Try again later, if this issue persists please contact us: plantdigitizationprojectutc@gmail.com"))
-        else: # Can this ever catch anything? 
+        else: # Can this ever catch anything?
             if messagebox.askyesno('MISSING Name at row {}'.format(currentRow+1), "Would you like to halt record processing to add a Scientific Name to row {}?".format(currentRow+1)):
                 self.setSelectedRow(currentRow)
                 self.setSelectedCol(sciNameColumn)
