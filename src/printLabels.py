@@ -24,6 +24,8 @@ def genPrintLabelPDFs(labelDataInput,defaultFileName = None):
     labelData = labelDataInput
     xPaperSize = 5.50 * inch   #These values should be user preferences! (But it'll be a PITA to do)
     yPaperSize = 3.50 * inch
+#    yPaperSize = 5.50 * inch
+#    xPaperSize = 3.50 * inch
     customPageSize = (xPaperSize,yPaperSize)        #set up Paper size for labels, this should be user selectable in time.
 
     relFont = 12                                    #a font size which everything else relates to. Base normal text font size.
