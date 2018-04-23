@@ -1,0 +1,3825 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>src.core.Table</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="src-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="src-module.html">Package&nbsp;src</a> ::
+        <a href="src.core-module.html">Module&nbsp;core</a> ::
+        Class&nbsp;Table
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="src.core.Table-class.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS DESCRIPTION ==================== -->
+<h1 class="epydoc">Class Table</h1><p class="nomargin-top"><span class="codelink"><a href="src.core-pysrc.html#Table">source&nbsp;code</a></span></p>
+<pre class="base-tree">
+  Tkinter.Misc --+            
+                 |            
+Tkinter.BaseWidget --+        
+                     |        
+      Tkinter.Pack --+        
+                     |        
+     Tkinter.Place --+        
+                     |        
+      Tkinter.Grid --+        
+                     |        
+        Tkinter.Widget --+    
+                         |    
+         Tkinter.XView --+    
+                         |    
+         Tkinter.YView --+    
+                         |    
+            Tkinter.Canvas --+
+                             |
+                            <strong class="uidshort">Table</strong>
+</pre>
+
+<hr />
+<pre class="literalblock">
+A tkinter class for providing table functionality.
+
+Args:
+    parent: parent Frame
+    model: a TableModel with some data
+    dataframe: a pandas DataFrame
+    width: width of frame
+    height: height of frame
+    rows: number of rows if creating empty table
+    cols: number of columns if creating empty table
+    showtoolbar: whether to show the toolbar, default False
+    showstatusbar: whether to show the statusbar
+
+</pre>
+
+<!-- ==================== NESTED CLASSES ==================== -->
+<a name="section-NestedClasses"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Nested Classes</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-NestedClasses"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code>Tkinter.Misc</code></b>:
+      <code><a href="float-class.html">getdouble</a></code>,
+      <code><a href="int-class.html">getint</a></code>
+      </p>
+    </td>
+  </tr>
+</table>
+<!-- ==================== INSTANCE METHODS ==================== -->
+<a name="section-InstanceMethods"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Instance Methods</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-InstanceMethods"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.core.Table-class.html#__init__" class="summary-sig-name">__init__</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">parent</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">model</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">dataframe</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">width</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">height</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">rows</span>=<span class="summary-sig-default">20</span>,
+        <span class="summary-sig-arg">cols</span>=<span class="summary-sig-default">5</span>,
+        <span class="summary-sig-arg">showtoolbar</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">showstatusbar</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">**kwargs</span>)</span><br />
+      Construct a canvas widget with the parent MASTER.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.__init__">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="set_defaults"></a><span class="summary-sig-name">set_defaults</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Set default settings</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.set_defaults">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="setFontSize"></a><span class="summary-sig-name">setFontSize</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Set font size to match font, we need to get rid of `size as a 
+      separate variable?</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.setFontSize">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="mouse_wheel"></a><span class="summary-sig-name">mouse_wheel</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">event</span>)</span><br />
+      Handle mouse wheel scroll for windows</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.mouse_wheel">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="doBindings"></a><span class="summary-sig-name">doBindings</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Bind keys and mouse clicks, this can be overriden</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.doBindings">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.core.Table-class.html#show" class="summary-sig-name">show</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">callback</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Adds column header and scrollbars and combines them with the current 
+      table adding all to the master frame provided in constructor.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.show">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="remove"></a><span class="summary-sig-name">remove</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Close table frame</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.remove">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="getVisibleRegion"></a><span class="summary-sig-name">getVisibleRegion</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Get visible region of canvas</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.getVisibleRegion">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="getRowPosition"></a><span class="summary-sig-name">getRowPosition</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">y</span>)</span><br />
+      Set row position</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.getRowPosition">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="getColPosition"></a><span class="summary-sig-name">getColPosition</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">x</span>)</span><br />
+      Get column position at coord</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.getColPosition">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="getVisibleRows"></a><span class="summary-sig-name">getVisibleRows</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">y1</span>,
+        <span class="summary-sig-arg">y2</span>)</span><br />
+      Get the visible row range</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.getVisibleRows">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="getVisibleCols"></a><span class="summary-sig-name">getVisibleCols</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">x1</span>,
+        <span class="summary-sig-arg">x2</span>)</span><br />
+      Get the visible column range</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.getVisibleCols">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.core.Table-class.html#redrawVisible" class="summary-sig-name">redrawVisible</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">event</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">callback</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Redraw the visible portion of the canvas.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.redrawVisible">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.core.Table-class.html#getOnlySpecimenRecords" class="summary-sig-name">getOnlySpecimenRecords</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Returns a list of indices which are specimen records.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.getOnlySpecimenRecords">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="redraw"></a><span class="summary-sig-name">redraw</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">event</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">callback</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Redraw table</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.redraw">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="redrawCell"></a><span class="summary-sig-name">redrawCell</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">row</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">col</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">recname</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">colname</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Redraw a specific cell only</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.redrawCell">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="setColumnColors"></a><span class="summary-sig-name">setColumnColors</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">cols</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">clr</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Set a column color and store it</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.setColumnColors">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="colorColumns"></a><span class="summary-sig-name">colorColumns</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">cols</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">color</span>=<span class="summary-sig-default">'gray'</span>)</span><br />
+      Color visible columns</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.colorColumns">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="setColorByMask"></a><span class="summary-sig-name">setColorByMask</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">col</span>,
+        <span class="summary-sig-arg">mask</span>,
+        <span class="summary-sig-arg">clr</span>)</span><br />
+      Color individual cells in a column using a mask.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.setColorByMask">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.core.Table-class.html#colorRows" class="summary-sig-name">colorRows</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Color individual cells in column(s).</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.colorRows">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="setRowColors"></a><span class="summary-sig-name">setRowColors</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">rows</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">clr</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Set rows color from menu</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.setRowColors">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="setColorbyValue"></a><span class="summary-sig-name">setColorbyValue</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Set row colors in a column by values</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.setColorbyValue">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="getScale"></a><span class="summary-sig-name">getScale</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Scales font</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.getScale">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="adjustColumnWidths"></a><span class="summary-sig-name">adjustColumnWidths</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Optimally adjust col widths to accomodate the longest entry in each 
+      column - usually only called on first redraw</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.adjustColumnWidths">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="autoResizeColumns"></a><span class="summary-sig-name">autoResizeColumns</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Automatically set nice column widths and draw</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.autoResizeColumns">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="setColPositions"></a><span class="summary-sig-name">setColPositions</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Determine current column grid positions</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.setColPositions">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="sortTable"></a><span class="summary-sig-name">sortTable</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">columnIndex</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">ascending</span>=<span class="summary-sig-default">1</span>,
+        <span class="summary-sig-arg">index</span>=<span class="summary-sig-default">False</span>)</span><br />
+      Set up sort order dict based on currently selected field</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.sortTable">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="sortColumnIndex"></a><span class="summary-sig-name">sortColumnIndex</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Sort the column header by the current rows values</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.sortColumnIndex">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="groupby"></a><span class="summary-sig-name">groupby</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">colindex</span>)</span><br />
+      Group by</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.groupby">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="setindex"></a><span class="summary-sig-name">setindex</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Set indexes</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.setindex">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="resetIndex"></a><span class="summary-sig-name">resetIndex</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Reset index and redraw row header</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.resetIndex">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="copyIndex"></a><span class="summary-sig-name">copyIndex</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Copy index to a column</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.copyIndex">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="renameIndex"></a><span class="summary-sig-name">renameIndex</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Rename the row index</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.renameIndex">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="showIndex"></a><span class="summary-sig-name">showIndex</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Show the row index</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.showIndex">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="update_rowcolors"></a><span class="summary-sig-name">update_rowcolors</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Update row colors if present</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.update_rowcolors">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="set_xviews"></a><span class="summary-sig-name">set_xviews</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">*args</span>)</span><br />
+      Set the xview of table and col header</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.set_xviews">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="set_yviews"></a><span class="summary-sig-name">set_yviews</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">*args</span>)</span><br />
+      Set the yview of table and row header Example usage: 
+      self.set_yviews('moveto', y-0.01)</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.set_yviews">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="addRowFromSite"></a><span class="summary-sig-name">addRowFromSite</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">event</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Helper function to pass row to addRowFromSite in data.py</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.addRowFromSite">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="addSite"></a><span class="summary-sig-name">addSite</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Inserts a &quot;Site&quot; row at the required index by append/concat</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.addSite">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="addRow"></a><span class="summary-sig-name">addRow</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Insert a new row</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.addRow">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="addRows"></a><span class="summary-sig-name">addRows</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">num</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Add new rows</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.addRows">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="addColumn"></a><span class="summary-sig-name">addColumn</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">newname</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Add a new column</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.addColumn">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="deleteRow"></a><span class="summary-sig-name">deleteRow</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Delete a row</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.deleteRow">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="deleteColumn"></a><span class="summary-sig-name">deleteColumn</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Delete currently selected column(s)</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.deleteColumn">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="tableChanged"></a><span class="summary-sig-name">tableChanged</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Callback to be used when dataframe changes so that other widgets and 
+      data can be updated</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.tableChanged">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="storeCurrent"></a><span class="summary-sig-name">storeCurrent</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Store current version of the table before a major change is made</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.storeCurrent">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="undo"></a><span class="summary-sig-name">undo</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">event</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Undo last major table change</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.undo">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="deleteCells"></a><span class="summary-sig-name">deleteCells</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">rows</span>,
+        <span class="summary-sig-arg">cols</span>,
+        <span class="summary-sig-arg">answer</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Clear the cell contents</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.deleteCells">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="clearData"></a><span class="summary-sig-name">clearData</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">evt</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Delete cells from gui event</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.clearData">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="clearTable"></a><span class="summary-sig-name">clearTable</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Make an empty table</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.clearTable">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="autoAddColumns"></a><span class="summary-sig-name">autoAddColumns</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">numcols</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Automatically add x number of cols</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.autoAddColumns">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="setColumnType"></a><span class="summary-sig-name">setColumnType</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Change the column dtype</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.setColumnType">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="cleanData"></a><span class="summary-sig-name">cleanData</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Deal with missing data</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.cleanData">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="resample"></a><span class="summary-sig-name">resample</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      table resampling dialog</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.resample">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.core.Table-class.html#_callFunction" class="summary-sig-name" onclick="show_private();">_callFunction</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">df</span>,
+        <span class="summary-sig-arg">funcname</span>)</span><br />
+      Get function from a string as a module level or dataframe method and 
+      apply it to the dataframe.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table._callFunction">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="convertDates"></a><span class="summary-sig-name">convertDates</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Convert single or multiple columns into datetime</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.convertDates">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="showAll"></a><span class="summary-sig-name">showAll</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Re-show unfiltered</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.showAll">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="getRowsFromIndex"></a><span class="summary-sig-name">getRowsFromIndex</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">idx</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Get row positions from index values</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.getRowsFromIndex">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="getRowsFromMask"></a><span class="summary-sig-name">getRowsFromMask</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">mask</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.getRowsFromMask">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="query"></a><span class="summary-sig-name">query</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">evt</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Do query</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.query">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="queryBar"></a><span class="summary-sig-name">queryBar</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">evt</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Query/filtering dialog</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.queryBar">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_eval"></a><span class="summary-sig-name">_eval</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">df</span>,
+        <span class="summary-sig-arg">ex</span>)</span><br />
+      Evaluate an expression using numexpr</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table._eval">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="evalFunction"></a><span class="summary-sig-name">evalFunction</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">evt</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Apply a string based function to create new columns</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.evalFunction">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="recalculateFunctions"></a><span class="summary-sig-name">recalculateFunctions</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">omit</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Re evaluate any columns that were derived from functions and 
+      dependent on other columns (except self derived?)</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.recalculateFunctions">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="updateFunctions"></a><span class="summary-sig-name">updateFunctions</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Remove functions if a column has been deleted</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.updateFunctions">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="resizeColumn"></a><span class="summary-sig-name">resizeColumn</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">col</span>,
+        <span class="summary-sig-arg">width</span>)</span><br />
+      Resize a column by dragging</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.resizeColumn">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="get_row_clicked"></a><span class="summary-sig-name">get_row_clicked</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">event</span>)</span><br />
+      Get row where event on canvas occurs</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.get_row_clicked">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="get_col_clicked"></a><span class="summary-sig-name">get_col_clicked</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">event</span>)</span><br />
+      Get column where event on the canvas occurs</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.get_col_clicked">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="setSelectedRow"></a><span class="summary-sig-name">setSelectedRow</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">row</span>)</span><br />
+      Set currently selected row and reset multiple row list</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.setSelectedRow">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="setSelectedCol"></a><span class="summary-sig-name">setSelectedCol</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">col</span>)</span><br />
+      Set currently selected column</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.setSelectedCol">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="setSelectedCells"></a><span class="summary-sig-name">setSelectedCells</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">startrow</span>,
+        <span class="summary-sig-arg">endrow</span>,
+        <span class="summary-sig-arg">startcol</span>,
+        <span class="summary-sig-arg">endcol</span>)</span><br />
+      Set a block of cells selected</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.setSelectedCells">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="getSelectedRow"></a><span class="summary-sig-name">getSelectedRow</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Get currently selected row</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.getSelectedRow">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="getSelectedColumn"></a><span class="summary-sig-name">getSelectedColumn</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Get currently selected column</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.getSelectedColumn">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="selectAll"></a><span class="summary-sig-name">selectAll</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">evt</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Select all rows and cells</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.selectAll">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.core.Table-class.html#selectNone" class="summary-sig-name">selectNone</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Deselect current, called when table is redrawn with completely new 
+      cols and rows e.g.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.selectNone">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="getCellCoords"></a><span class="summary-sig-name">getCellCoords</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">row</span>,
+        <span class="summary-sig-arg">col</span>)</span><br />
+      Get x-y coordinates to drawing a cell in a given row/col</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.getCellCoords">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="getCanvasPos"></a><span class="summary-sig-name">getCanvasPos</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">row</span>,
+        <span class="summary-sig-arg">col</span>)</span><br />
+      Get the cell x-y coords as a fraction of canvas size</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.getCanvasPos">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="isInsideTable"></a><span class="summary-sig-name">isInsideTable</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">x</span>,
+        <span class="summary-sig-arg">y</span>)</span><br />
+      Returns true if x-y coord is inside table bounds</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.isInsideTable">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="setRowHeight"></a><span class="summary-sig-name">setRowHeight</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">h</span>)</span><br />
+      Set the row height</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.setRowHeight">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="clearSelected"></a><span class="summary-sig-name">clearSelected</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Clear selections</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.clearSelected">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.core.Table-class.html#gotoprevRow" class="summary-sig-name">gotoprevRow</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Programmatically set previous row - eg.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.gotoprevRow">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.core.Table-class.html#gotonextRow" class="summary-sig-name">gotonextRow</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Programmatically set next row - eg.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.gotonextRow">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="handle_left_click"></a><span class="summary-sig-name">handle_left_click</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">event</span>)</span><br />
+      Respond to a single press</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.handle_left_click">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="handle_left_release"></a><span class="summary-sig-name">handle_left_release</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">event</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.handle_left_release">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="handle_left_ctrl_click"></a><span class="summary-sig-name">handle_left_ctrl_click</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">event</span>)</span><br />
+      Handle ctrl clicks for multiple row selections</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.handle_left_ctrl_click">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="handle_left_shift_click"></a><span class="summary-sig-name">handle_left_shift_click</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">event</span>)</span><br />
+      Handle shift click, for selecting multiple rows</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.handle_left_shift_click">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="handle_mouse_drag"></a><span class="summary-sig-name">handle_mouse_drag</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">event</span>)</span><br />
+      Handle mouse moved with button held down, multiple selections</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.handle_mouse_drag">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="handle_arrow_keys"></a><span class="summary-sig-name">handle_arrow_keys</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">event</span>)</span><br />
+      Handle arrow keys press</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.handle_arrow_keys">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.core.Table-class.html#handle_double_click" class="summary-sig-name">handle_double_click</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">event</span>)</span><br />
+      Do double click stuff.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.handle_double_click">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="handle_right_click"></a><span class="summary-sig-name">handle_right_click</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">event</span>)</span><br />
+      respond to a right click</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.handle_right_click">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="placeColumn"></a><span class="summary-sig-name">placeColumn</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">col1</span>,
+        <span class="summary-sig-arg">col2</span>)</span><br />
+      Move col2 next to col1, useful for placing a new column made from the
+      first one next to it so user can see it easily</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.placeColumn">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="gotonextCell"></a><span class="summary-sig-name">gotonextCell</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Move highlighted cell to next cell in row or a new col</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.gotonextCell">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="movetoSelectedRow"></a><span class="summary-sig-name">movetoSelectedRow</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">row</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">recname</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Move to selected row, updating table</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.movetoSelectedRow">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="copyTable"></a><span class="summary-sig-name">copyTable</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">event</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Copy from the clipboard</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.copyTable">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="pasteTable"></a><span class="summary-sig-name">pasteTable</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">event</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Paste a new table from the clipboard</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.pasteTable">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="paste"></a><span class="summary-sig-name">paste</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">row</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">column</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Paste contents from clipboard</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.paste">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="copy"></a><span class="summary-sig-name">copy</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">rows</span>,
+        <span class="summary-sig-arg">cols</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Copy cell contents to clipboard</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.copy">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="aggregate"></a><span class="summary-sig-name">aggregate</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Show aggregate dialog</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.aggregate">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="doCombine"></a><span class="summary-sig-name">doCombine</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Do combine/merge operation</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.doCombine">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="merge"></a><span class="summary-sig-name">merge</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">table</span>)</span><br />
+      Merge with another table.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.merge">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="describe"></a><span class="summary-sig-name">describe</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Create table summary</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.describe">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="convertColumnNames"></a><span class="summary-sig-name">convertColumnNames</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">s</span>=<span class="summary-sig-default">'_'</span>)</span><br />
+      Convert col names so we can use numexpr</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.convertColumnNames">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="convertNumeric"></a><span class="summary-sig-name">convertNumeric</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Convert cols to numeric if possible</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.convertNumeric">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="createChildTable"></a><span class="summary-sig-name">createChildTable</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">df</span>,
+        <span class="summary-sig-arg">title</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">index</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">out</span>=<span class="summary-sig-default">False</span>)</span><br />
+      Add the child table</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.createChildTable">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="closeChildTable"></a><span class="summary-sig-name">closeChildTable</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Close the child table</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.closeChildTable">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="tableFromSelection"></a><span class="summary-sig-name">tableFromSelection</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Create a new table from the selected cells</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.tableFromSelection">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="showInfo"></a><span class="summary-sig-name">showInfo</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Show dataframe info</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.showInfo">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="get_memory"></a><span class="summary-sig-name">get_memory</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      memory usage of current table</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.get_memory">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="showasText"></a><span class="summary-sig-name">showasText</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Get table as formatted text - for printing</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.showasText">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="popupMenu"></a><span class="summary-sig-name">popupMenu</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">event</span>,
+        <span class="summary-sig-arg">rows</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">cols</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">outside</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Add left and right click behaviour for canvas, should not have to 
+      override this function, it will take its values from defined dicts in
+      constructor</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.popupMenu">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="fillDown"></a><span class="summary-sig-name">fillDown</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">rowlist</span>,
+        <span class="summary-sig-arg">collist</span>)</span><br />
+      Fill down a column, or multiple columns</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.fillDown">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="fillAcross"></a><span class="summary-sig-name">fillAcross</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">collist</span>,
+        <span class="summary-sig-arg">rowlist</span>)</span><br />
+      Fill across a row, or multiple rows</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.fillAcross">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="getSelectionValues"></a><span class="summary-sig-name">getSelectionValues</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Get values for current multiple cell selection</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.getSelectionValues">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="getSelectedDataFrame"></a><span class="summary-sig-name">getSelectedDataFrame</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Return a sub-dataframe of the selected cells</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.getSelectedDataFrame">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="getSelectedLabelDict"></a><span class="summary-sig-name">getSelectedLabelDict</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Returns a list of dictionaries from selected rows.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.getSelectedLabelDict">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="drawGrid"></a><span class="summary-sig-name">drawGrid</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">startrow</span>,
+        <span class="summary-sig-arg">endrow</span>)</span><br />
+      Draw the table grid lines</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.drawGrid">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="drawRowHeader"></a><span class="summary-sig-name">drawRowHeader</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      User has clicked to select a cell</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.drawRowHeader">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="drawSelectedRect"></a><span class="summary-sig-name">drawSelectedRect</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">row</span>,
+        <span class="summary-sig-arg">col</span>,
+        <span class="summary-sig-arg">color</span>=<span class="summary-sig-default">None</span>)</span><br />
+      User has clicked to select a cell</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.drawSelectedRect">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="drawRect"></a><span class="summary-sig-name">drawRect</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">row</span>,
+        <span class="summary-sig-arg">col</span>,
+        <span class="summary-sig-arg">color</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">tag</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">delete</span>=<span class="summary-sig-default">1</span>)</span><br />
+      Cell is colored</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.drawRect">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="handleCellEntry"></a><span class="summary-sig-name">handleCellEntry</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">row</span>,
+        <span class="summary-sig-arg">col</span>)</span><br />
+      Callback for cell entry</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.handleCellEntry">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.core.Table-class.html#drawCellEntry" class="summary-sig-name">drawCellEntry</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">row</span>,
+        <span class="summary-sig-arg">col</span>,
+        <span class="summary-sig-arg">text</span>=<span class="summary-sig-default">None</span>)</span><br />
+      When the user single/double clicks on a text/number cell, bring up 
+      entry window and allow edits.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.drawCellEntry">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="checkDataEntry"></a><span class="summary-sig-name">checkDataEntry</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">event</span>=<span class="summary-sig-default">None</span>)</span><br />
+      do validation checks on data entry in a widget</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.checkDataEntry">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="drawAddSpecimenWidget"></a><span class="summary-sig-name">drawAddSpecimenWidget</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">row</span>,
+        <span class="summary-sig-arg">col</span>)</span><br />
+      Draw the Addspecimen Widget in Cell</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.drawAddSpecimenWidget">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="drawText"></a><span class="summary-sig-name">drawText</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">row</span>,
+        <span class="summary-sig-arg">col</span>,
+        <span class="summary-sig-arg">celltxt</span>,
+        <span class="summary-sig-arg">align</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Draw the text inside a cell area</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.drawText">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="drawSelectedRow"></a><span class="summary-sig-name">drawSelectedRow</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Draw a highlight rect for the currently selected rows</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.drawSelectedRow">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="drawSelectedCol"></a><span class="summary-sig-name">drawSelectedCol</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">col</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">delete</span>=<span class="summary-sig-default">1</span>,
+        <span class="summary-sig-arg">color</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">tag</span>=<span class="summary-sig-default">'colrect'</span>)</span><br />
+      Draw a highlight rect for the current column selection</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.drawSelectedCol">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="drawMultipleRows"></a><span class="summary-sig-name">drawMultipleRows</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">rowlist</span>)</span><br />
+      Draw more than one row selection</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.drawMultipleRows">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="drawMultipleCols"></a><span class="summary-sig-name">drawMultipleCols</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Draw multiple column selections</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.drawMultipleCols">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="drawMultipleCells"></a><span class="summary-sig-name">drawMultipleCells</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Draw an outline box for multiple cell selection</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.drawMultipleCells">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="setcellbackgr"></a><span class="summary-sig-name">setcellbackgr</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      set cell background color</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.setcellbackgr">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="setgrid_color"></a><span class="summary-sig-name">setgrid_color</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      set grid color</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.setgrid_color">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="setrowselectedcolor"></a><span class="summary-sig-name">setrowselectedcolor</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Set selected row color</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.setrowselectedcolor">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="getaColor"></a><span class="summary-sig-name">getaColor</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">oldcolor</span>)</span><br />
+      get a color</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.getaColor">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="showPrefs"></a><span class="summary-sig-name">showPrefs</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">prefs</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Show table options dialog using an instance of prefs</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.showPrefs">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="getFonts"></a><span class="summary-sig-name">getFonts</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      get fonts available</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.getFonts">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="loadPrefs"></a><span class="summary-sig-name">loadPrefs</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">prefs</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Load table specific prefs from the prefs instance used if they are 
+      not present, create them.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.loadPrefs">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="savePrefs"></a><span class="summary-sig-name">savePrefs</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Save and set the prefs</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.savePrefs">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="applyPrefs"></a><span class="summary-sig-name">applyPrefs</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Apply prefs to the table by redrawing</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.applyPrefs">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="show_progressbar"></a><span class="summary-sig-name">show_progressbar</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">message</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Show progress bar window for loading of data</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.show_progressbar">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.core.Table-class.html#updateModel" class="summary-sig-name">updateModel</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">model</span>)</span><br />
+      Should call this method when a new table model is loaded.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.updateModel">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="new"></a><span class="summary-sig-name">new</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Clears all the data and makes a new table</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.new">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.core.Table-class.html#processRecords" class="summary-sig-name">processRecords</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Process records in table.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.processRecords">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="genAssociatedTaxa"></a><span class="summary-sig-name">genAssociatedTaxa</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">siteGroup</span>)</span><br />
+      Generate Associated Taxa gets all associated taxa for a given record 
+      (specimen).</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.genAssociatedTaxa">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.core.Table-class.html#genLocalityNoAPI" class="summary-sig-name">genLocalityNoAPI</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">currentRowArg</span>)</span><br />
+      Attempts to improve the locality string using existing geography 
+      data.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.genLocalityNoAPI">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.core.Table-class.html#genLocality" class="summary-sig-name">genLocality</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">currentRowArg</span>)</span><br />
+      Generate locality fields, uses API call to get country, state, city, 
+      etc.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.genLocality">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="genScientificName"></a><span class="summary-sig-name">genScientificName</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">currentRowArg</span>)</span><br />
+      Generate scientific name calls Catalog of Life to get most up-to-date
+      scientific name for the specimen in question.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.genScientificName">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.core.Table-class.html#genLabelPDF" class="summary-sig-name">genLabelPDF</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Generate Label PDF.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.genLabelPDF">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="findColumnIndex"></a><span class="summary-sig-name">findColumnIndex</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">columnLabel</span>)</span><br />
+      Find Column Index, gets the column index number for a given column 
+      header.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.findColumnIndex">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="load"></a><span class="summary-sig-name">load</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">filename</span>=<span class="summary-sig-default">None</span>)</span><br />
+      load from a file</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.load">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="saveAs"></a><span class="summary-sig-name">saveAs</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">filename</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">dbReady</span>=<span class="summary-sig-default">False</span>)</span><br />
+      Save dataframe to file</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.saveAs">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.core.Table-class.html#saveForDatabase" class="summary-sig-name">saveForDatabase</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      simply calls &quot;saveAs(filename, dbReady = True) Allowing us to 
+      make a button to generate a csv file which is ready for portal 
+      submission.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.saveForDatabase">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="save"></a><span class="summary-sig-name">save</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Save current file</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.save">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="importCSV"></a><span class="summary-sig-name">importCSV</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">filename</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">dialog</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">**kwargs</span>)</span><br />
+      Import from csv file</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.importCSV">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="loadExcel"></a><span class="summary-sig-name">loadExcel</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">filename</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Load excel file</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.loadExcel">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="doExport"></a><span class="summary-sig-name">doExport</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">filename</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Do a simple export of the cell contents to csv</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.doExport">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="refreshSpecimenSiteNums"></a><span class="summary-sig-name">refreshSpecimenSiteNums</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">dframe</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.refreshSpecimenSiteNums">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="getGeometry"></a><span class="summary-sig-name">getGeometry</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">frame</span>)</span><br />
+      Get frame geometry</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.getGeometry">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="clearFormatting"></a><span class="summary-sig-name">clearFormatting</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.clearFormatting">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="helpDocumentation"></a><span class="summary-sig-name">helpDocumentation</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.helpDocumentation">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.core.Table-class.html#quit" class="summary-sig-name">quit</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Quit the Tcl interpreter.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.quit">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="saveBarPrefs"></a><span class="summary-sig-name">saveBarPrefs</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      saves the CollectionDataEntryBar settings</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.core-pysrc.html#Table.saveBarPrefs">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code>Tkinter.Canvas</code></b>:
+      <code>addtag</code>,
+      <code>addtag_above</code>,
+      <code>addtag_all</code>,
+      <code>addtag_below</code>,
+      <code>addtag_closest</code>,
+      <code>addtag_enclosed</code>,
+      <code>addtag_overlapping</code>,
+      <code>addtag_withtag</code>,
+      <code>bbox</code>,
+      <code>canvasx</code>,
+      <code>canvasy</code>,
+      <code>coords</code>,
+      <code>create_arc</code>,
+      <code>create_bitmap</code>,
+      <code>create_image</code>,
+      <code>create_line</code>,
+      <code>create_oval</code>,
+      <code>create_polygon</code>,
+      <code>create_rectangle</code>,
+      <code>create_text</code>,
+      <code>create_window</code>,
+      <code>dchars</code>,
+      <code>delete</code>,
+      <code>dtag</code>,
+      <code>find</code>,
+      <code>find_above</code>,
+      <code>find_all</code>,
+      <code>find_below</code>,
+      <code>find_closest</code>,
+      <code>find_enclosed</code>,
+      <code>find_overlapping</code>,
+      <code>find_withtag</code>,
+      <code>focus</code>,
+      <code>gettags</code>,
+      <code>icursor</code>,
+      <code>index</code>,
+      <code>insert</code>,
+      <code>itemcget</code>,
+      <code>itemconfig</code>,
+      <code>itemconfigure</code>,
+      <code>lift</code>,
+      <code>lower</code>,
+      <code>move</code>,
+      <code>postscript</code>,
+      <code>scale</code>,
+      <code>scan_dragto</code>,
+      <code>scan_mark</code>,
+      <code>select_adjust</code>,
+      <code>select_clear</code>,
+      <code>select_from</code>,
+      <code>select_item</code>,
+      <code>select_to</code>,
+      <code>tag_bind</code>,
+      <code>tag_lower</code>,
+      <code>tag_raise</code>,
+      <code>tag_unbind</code>,
+      <code>tkraise</code>,
+      <code>type</code>
+      </p>
+    <div class="private">    <p class="indent-wrapped-lines"><b>Inherited from <code>Tkinter.Canvas</code></b> (private):
+      <code>_create</code>
+      </p></div>
+    <p class="indent-wrapped-lines"><b>Inherited from <code>Tkinter.BaseWidget</code></b>:
+      <code>destroy</code>
+      </p>
+    <div class="private">    <p class="indent-wrapped-lines"><b>Inherited from <code>Tkinter.BaseWidget</code></b> (private):
+      <code>_do</code>,
+      <code>_setup</code>
+      </p></div>
+    <p class="indent-wrapped-lines"><b>Inherited from <code>Tkinter.Misc</code></b>:
+      <code>__contains__</code>,
+      <code>__getitem__</code>,
+      <code>__setitem__</code>,
+      <code>__str__</code>,
+      <code>after</code>,
+      <code>after_cancel</code>,
+      <code>after_idle</code>,
+      <code>bell</code>,
+      <code>bind</code>,
+      <code>bind_all</code>,
+      <code>bind_class</code>,
+      <code>bindtags</code>,
+      <code>cget</code>,
+      <code>clipboard_append</code>,
+      <code>clipboard_clear</code>,
+      <code>clipboard_get</code>,
+      <code>colormodel</code>,
+      <code>columnconfigure</code>,
+      <code>config</code>,
+      <code>configure</code>,
+      <code>deletecommand</code>,
+      <code>event_add</code>,
+      <code>event_delete</code>,
+      <code>event_generate</code>,
+      <code>event_info</code>,
+      <code>focus_displayof</code>,
+      <code>focus_force</code>,
+      <code>focus_get</code>,
+      <code>focus_lastfor</code>,
+      <code>focus_set</code>,
+      <code>getboolean</code>,
+      <code>getvar</code>,
+      <code>grab_current</code>,
+      <code>grab_release</code>,
+      <code>grab_set</code>,
+      <code>grab_set_global</code>,
+      <code>grab_status</code>,
+      <code>grid_bbox</code>,
+      <code>grid_columnconfigure</code>,
+      <code>grid_location</code>,
+      <code>grid_propagate</code>,
+      <code>grid_rowconfigure</code>,
+      <code>grid_size</code>,
+      <code>grid_slaves</code>,
+      <code>image_names</code>,
+      <code>image_types</code>,
+      <code>keys</code>,
+      <code>mainloop</code>,
+      <code>nametowidget</code>,
+      <code>option_add</code>,
+      <code>option_clear</code>,
+      <code>option_get</code>,
+      <code>option_readfile</code>,
+      <code>pack_propagate</code>,
+      <code>pack_slaves</code>,
+      <code>place_slaves</code>,
+      <code>propagate</code>,
+      <code>register</code>,
+      <code>rowconfigure</code>,
+      <code>selection_clear</code>,
+      <code>selection_get</code>,
+      <code>selection_handle</code>,
+      <code>selection_own</code>,
+      <code>selection_own_get</code>,
+      <code>send</code>,
+      <code>setvar</code>,
+      <code>size</code>,
+      <code>slaves</code>,
+      <code>tk_bisque</code>,
+      <code>tk_focusFollowsMouse</code>,
+      <code>tk_focusNext</code>,
+      <code>tk_focusPrev</code>,
+      <code>tk_menuBar</code>,
+      <code>tk_setPalette</code>,
+      <code>tk_strictMotif</code>,
+      <code>unbind</code>,
+      <code>unbind_all</code>,
+      <code>unbind_class</code>,
+      <code>update</code>,
+      <code>update_idletasks</code>,
+      <code>wait_variable</code>,
+      <code>wait_visibility</code>,
+      <code>wait_window</code>,
+      <code>waitvar</code>,
+      <code>winfo_atom</code>,
+      <code>winfo_atomname</code>,
+      <code>winfo_cells</code>,
+      <code>winfo_children</code>,
+      <code>winfo_class</code>,
+      <code>winfo_colormapfull</code>,
+      <code>winfo_containing</code>,
+      <code>winfo_depth</code>,
+      <code>winfo_exists</code>,
+      <code>winfo_fpixels</code>,
+      <code>winfo_geometry</code>,
+      <code>winfo_height</code>,
+      <code>winfo_id</code>,
+      <code>winfo_interps</code>,
+      <code>winfo_ismapped</code>,
+      <code>winfo_manager</code>,
+      <code>winfo_name</code>,
+      <code>winfo_parent</code>,
+      <code>winfo_pathname</code>,
+      <code>winfo_pixels</code>,
+      <code>winfo_pointerx</code>,
+      <code>winfo_pointerxy</code>,
+      <code>winfo_pointery</code>,
+      <code>winfo_reqheight</code>,
+      <code>winfo_reqwidth</code>,
+      <code>winfo_rgb</code>,
+      <code>winfo_rootx</code>,
+      <code>winfo_rooty</code>,
+      <code>winfo_screen</code>,
+      <code>winfo_screencells</code>,
+      <code>winfo_screendepth</code>,
+      <code>winfo_screenheight</code>,
+      <code>winfo_screenmmheight</code>,
+      <code>winfo_screenmmwidth</code>,
+      <code>winfo_screenvisual</code>,
+      <code>winfo_screenwidth</code>,
+      <code>winfo_server</code>,
+      <code>winfo_toplevel</code>,
+      <code>winfo_viewable</code>,
+      <code>winfo_visual</code>,
+      <code>winfo_visualid</code>,
+      <code>winfo_visualsavailable</code>,
+      <code>winfo_vrootheight</code>,
+      <code>winfo_vrootwidth</code>,
+      <code>winfo_vrootx</code>,
+      <code>winfo_vrooty</code>,
+      <code>winfo_width</code>,
+      <code>winfo_x</code>,
+      <code>winfo_y</code>
+      </p>
+    <div class="private">    <p class="indent-wrapped-lines"><b>Inherited from <code>Tkinter.Misc</code></b> (private):
+      <code>_bind</code>,
+      <code>_configure</code>,
+      <code>_displayof</code>,
+      <code>_getboolean</code>,
+      <code>_getconfigure</code>,
+      <code>_getconfigure1</code>,
+      <code>_getdoubles</code>,
+      <code>_getints</code>,
+      <code>_grid_configure</code>,
+      <code>_gridconvvalue</code>,
+      <code>_nametowidget</code>,
+      <code>_options</code>,
+      <code>_register</code>,
+      <code>_report_exception</code>,
+      <code>_root</code>,
+      <code>_substitute</code>,
+      <code>_windowingsystem</code>
+      </p></div>
+    <p class="indent-wrapped-lines"><b>Inherited from <code>Tkinter.Pack</code></b>:
+      <code>forget</code>,
+      <code>info</code>,
+      <code>pack</code>,
+      <code>pack_configure</code>,
+      <code>pack_forget</code>,
+      <code>pack_info</code>
+      </p>
+    <p class="indent-wrapped-lines"><b>Inherited from <code>Tkinter.Place</code></b>:
+      <code>place</code>,
+      <code>place_configure</code>,
+      <code>place_forget</code>,
+      <code>place_info</code>
+      </p>
+    <p class="indent-wrapped-lines"><b>Inherited from <code>Tkinter.Grid</code></b>:
+      <code>grid</code>,
+      <code>grid_configure</code>,
+      <code>grid_forget</code>,
+      <code>grid_info</code>,
+      <code>grid_remove</code>,
+      <code>location</code>
+      </p>
+    <p class="indent-wrapped-lines"><b>Inherited from <code>Tkinter.XView</code></b>:
+      <code>xview</code>,
+      <code>xview_moveto</code>,
+      <code>xview_scroll</code>
+      </p>
+    <p class="indent-wrapped-lines"><b>Inherited from <code>Tkinter.YView</code></b>:
+      <code>yview</code>,
+      <code>yview_moveto</code>,
+      <code>yview_scroll</code>
+      </p>
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS VARIABLES ==================== -->
+<a name="section-ClassVariables"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Class Variables</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-ClassVariables"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code>Tkinter.Misc</code></b>:
+      <code>_noarg_</code>
+      </p>
+    <div class="private">    <p class="indent-wrapped-lines"><b>Inherited from <code>Tkinter.Misc</code></b> (private):
+      <code>_subst_format</code>,
+      <code>_subst_format_str</code>,
+      <code>_tclCommands</code>
+      </p></div>
+    </td>
+  </tr>
+</table>
+<!-- ==================== METHOD DETAILS ==================== -->
+<a name="section-MethodDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Method Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-MethodDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="__init__"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">__init__</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">parent</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">model</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">dataframe</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">width</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">height</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">rows</span>=<span class="sig-default">20</span>,
+        <span class="sig-arg">cols</span>=<span class="sig-default">5</span>,
+        <span class="sig-arg">showtoolbar</span>=<span class="sig-default">False</span>,
+        <span class="sig-arg">showstatusbar</span>=<span class="sig-default">False</span>,
+        <span class="sig-arg">**kwargs</span>)</span>
+    <br /><em class="fname">(Constructor)</em>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.core-pysrc.html#Table.__init__">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Construct a canvas widget with the parent MASTER.</p>
+  <p>Valid resource names: background, bd, bg, borderwidth, closeenough, 
+  confine, cursor, height, highlightbackground, highlightcolor, 
+  highlightthickness, insertbackground, insertborderwidth, insertofftime, 
+  insertontime, insertwidth, offset, relief, scrollregion, 
+  selectbackground, selectborderwidth, selectforeground, state, takefocus, 
+  width, xscrollcommand, xscrollincrement, yscrollcommand, 
+  yscrollincrement.</p>
+  <dl class="fields">
+    <dt>Overrides:
+        Tkinter.BaseWidget.__init__
+        <dd><em class="note">(inherited documentation)</em></dd>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="show"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">show</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">callback</span>=<span class="sig-default">None</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.core-pysrc.html#Table.show">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Adds column header and scrollbars and combines them with the current 
+  table adding all to the master frame provided in constructor. Table is 
+  then redrawn.</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="redrawVisible"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">redrawVisible</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">event</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">callback</span>=<span class="sig-default">None</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.core-pysrc.html#Table.redrawVisible">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+Redraw the visible portion of the canvas. This is the core redraw
+method. Refreshes all table elements. Called by redraw() method as shorthand.
+
+Args:
+    event: tkinter event to trigger method, default None
+    callback: function to be called after redraw, default None
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="getOnlySpecimenRecords"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">getOnlySpecimenRecords</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.core-pysrc.html#Table.getOnlySpecimenRecords">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Returns a list of indices which are specimen records. Use it as such: 
+  self.parentapp.model.df.iloc[self.parentapp.getOnlySpecimenRecords(),:] 
+  or perhaps, depending on the tkinter frames: 
+  self.model.df.iloc[self.parentapp.getOnlySpecimenRecords(),:] Also see 
+  the function called:  self.parentapp.model.df.get_loc('catalogNumber') 
+  for use case.</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="colorRows"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">colorRows</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.core-pysrc.html#Table.colorRows">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Color individual cells in column(s). Requires that the rowcolors 
+  dataframe has been set. This needs to be updatedif the index is reset</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="_callFunction"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_callFunction</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">df</span>,
+        <span class="sig-arg">funcname</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.core-pysrc.html#Table._callFunction">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Get function from a string as a module level or dataframe method and 
+  apply it to the dataframe. Pops up a dialog allowing entry of arguments 
+  as some functions will not run without non kw args. This is meant to be a
+  general solution to applying functions without the need to custom 
+  dialogs. Returns the new DataFrame</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="selectNone"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">selectNone</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.core-pysrc.html#Table.selectNone">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Deselect current, called when table is redrawn with completely new 
+  cols and rows e.g. after model is updated.</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="gotoprevRow"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">gotoprevRow</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.core-pysrc.html#Table.gotoprevRow">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Programmatically set previous row - eg. for button events</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="gotonextRow"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">gotonextRow</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.core-pysrc.html#Table.gotonextRow">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Programmatically set next row - eg. for button events</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="handle_double_click"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">handle_double_click</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">event</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.core-pysrc.html#Table.handle_double_click">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Do double click stuff. Selected row/cols will already have been set 
+  with single click binding</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="drawCellEntry"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">drawCellEntry</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">row</span>,
+        <span class="sig-arg">col</span>,
+        <span class="sig-arg">text</span>=<span class="sig-default">None</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.core-pysrc.html#Table.drawCellEntry">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>When the user single/double clicks on a text/number cell, bring up 
+  entry window and allow edits. Also, call storeCurrent to store the 
+  dataframe state prior to a cell edit.</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="updateModel"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">updateModel</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">model</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.core-pysrc.html#Table.updateModel">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Should call this method when a new table model is loaded. Recreates 
+  widgets and redraws the table.</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="processRecords"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">processRecords</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.core-pysrc.html#Table.processRecords">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Process records in table. Deals specifically with scientific name and 
+  locality strings. This function calls genLocality and genScientificName 
+  which use web API calls to update the given scientific name as well as 
+  fill locality fields from GPS coordinates.</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="genLocalityNoAPI"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">genLocalityNoAPI</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">currentRowArg</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.core-pysrc.html#Table.genLocalityNoAPI">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Attempts to improve the locality string using existing geography data.
+  This function complains more than the inlaws.</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="genLocality"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">genLocality</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">currentRowArg</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.core-pysrc.html#Table.genLocality">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Generate locality fields, uses API call to get country, state, city, 
+  etc. from GPS coordinates.</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="genLabelPDF"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">genLabelPDF</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.core-pysrc.html#Table.genLabelPDF">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Generate Label PDF. Print specimen labels for physical plant records. 
+  # causes a pdf to be saved (uses dialog to get save name. # causes a pdf 
+  to be opened with default pdf reader. # if inproper data passed, returns 
+  empty return. # expects a dataframe or a series # a data row(record) 
+  should be a series # getSelectedDataFrame(self) should be a dataframe # 
+  http://pandastable.readthedocs.io/en/latest/_modules/pandastable/core.html#Table.getSelectedDataFrame</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="saveForDatabase"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">saveForDatabase</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.core-pysrc.html#Table.saveForDatabase">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>simply calls &quot;saveAs(filename, dbReady = True) Allowing us to 
+  make a button to generate a csv file which is ready for portal 
+  submission. The distinction is necessary because of the leading &quot; ' 
+  &quot; in some fields which are necessary for friendly input and output 
+  from common spreadsheet programs.</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="quit"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">quit</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.core-pysrc.html#Table.quit">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Quit the Tcl interpreter. All widgets will be destroyed.</p>
+  <dl class="fields">
+    <dt>Overrides:
+        Tkinter.Misc.quit
+        <dd><em class="note">(inherited documentation)</em></dd>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="src-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Mon Apr 23 19:18:18 2018
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

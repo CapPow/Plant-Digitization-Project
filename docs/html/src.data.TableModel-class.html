@@ -1,0 +1,835 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>src.data.TableModel</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="src-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="src-module.html">Package&nbsp;src</a> ::
+        <a href="src.data-module.html">Module&nbsp;data</a> ::
+        Class&nbsp;TableModel
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="src.data.TableModel-class.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS DESCRIPTION ==================== -->
+<h1 class="epydoc">Class TableModel</h1><p class="nomargin-top"><span class="codelink"><a href="src.data-pysrc.html#TableModel">source&nbsp;code</a></span></p>
+<pre class="base-tree">
+object --+
+         |
+        <strong class="uidshort">TableModel</strong>
+</pre>
+
+<hr />
+<pre class="literalblock">
+A data model for the Table class that uses pandas
+
+Args:
+    dataframe: pandas dataframe
+    rows: number of rows if empty table
+    columns: number of columns if empty table
+
+</pre>
+
+<!-- ==================== INSTANCE METHODS ==================== -->
+<a name="section-InstanceMethods"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Instance Methods</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-InstanceMethods"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.data.TableModel-class.html#__init__" class="summary-sig-name">__init__</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">dataframe</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">rows</span>=<span class="summary-sig-default">20</span>,
+        <span class="summary-sig-arg">columns</span>=<span class="summary-sig-default">5</span>)</span><br />
+      Constructor for table model.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.data-pysrc.html#TableModel.__init__">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="setup"></a><span class="summary-sig-name">setup</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">dataframe</span>,
+        <span class="summary-sig-arg">rows</span>=<span class="summary-sig-default">20</span>,
+        <span class="summary-sig-arg">columns</span>=<span class="summary-sig-default">5</span>)</span><br />
+      Create table model</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.data-pysrc.html#TableModel.setup">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="initialiseFields"></a><span class="summary-sig-name">initialiseFields</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Create meta data fields</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.data-pysrc.html#TableModel.initialiseFields">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="save"></a><span class="summary-sig-name">save</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">filename</span>)</span><br />
+      Save dataframe</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.data-pysrc.html#TableModel.save">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="load"></a><span class="summary-sig-name">load</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">filename</span>,
+        <span class="summary-sig-arg">filetype</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Load file, if no filetype given assume it's msgpack format</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.data-pysrc.html#TableModel.load">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="getlongestEntry"></a><span class="summary-sig-name">getlongestEntry</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">colindex</span>)</span><br />
+      Get the longest string in the column for determining width</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.data-pysrc.html#TableModel.getlongestEntry">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="getRecordAtRow"></a><span class="summary-sig-name">getRecordAtRow</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">rowIndex</span>)</span><br />
+      Get the entire record at the specifed row</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.data-pysrc.html#TableModel.getRecordAtRow">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="moveColumn"></a><span class="summary-sig-name">moveColumn</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">oldindex</span>,
+        <span class="summary-sig-arg">newindex</span>)</span><br />
+      Changes the order of columns</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.data-pysrc.html#TableModel.moveColumn">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.data.TableModel-class.html#autoAddRows" class="summary-sig-name">autoAddRows</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">num</span>)</span><br />
+      Add n rows to end of dataframe.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.data-pysrc.html#TableModel.autoAddRows">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="addRow"></a><span class="summary-sig-name">addRow</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">rowindex</span>)</span><br />
+      Inserts a row at the required index by append/concat</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.data-pysrc.html#TableModel.addRow">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="deleteRow"></a><span class="summary-sig-name">deleteRow</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">row</span>,
+        <span class="summary-sig-arg">unique</span>=<span class="summary-sig-default">True</span>)</span><br />
+      Delete a row</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.data-pysrc.html#TableModel.deleteRow">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="deleteRows"></a><span class="summary-sig-name">deleteRows</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">rowlist</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">unique</span>=<span class="summary-sig-default">True</span>)</span><br />
+      Delete multiple or all rows</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.data-pysrc.html#TableModel.deleteRows">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="addColumn"></a><span class="summary-sig-name">addColumn</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">colname</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">dtype</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">data</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Add a column</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.data-pysrc.html#TableModel.addColumn">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="deleteColumn"></a><span class="summary-sig-name">deleteColumn</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">colindex</span>)</span><br />
+      delete a column</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.data-pysrc.html#TableModel.deleteColumn">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="deleteColumns"></a><span class="summary-sig-name">deleteColumns</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">cols</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Remove all cols or list provided</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.data-pysrc.html#TableModel.deleteColumns">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="deleteCells"></a><span class="summary-sig-name">deleteCells</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">rows</span>,
+        <span class="summary-sig-arg">cols</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.data-pysrc.html#TableModel.deleteCells">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="resetIndex"></a><span class="summary-sig-name">resetIndex</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Reset index behaviour</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.data-pysrc.html#TableModel.resetIndex">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="setindex"></a><span class="summary-sig-name">setindex</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">colindex</span>)</span><br />
+      Index setting behaviour</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.data-pysrc.html#TableModel.setindex">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="copyIndex"></a><span class="summary-sig-name">copyIndex</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Copy index to a column</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.data-pysrc.html#TableModel.copyIndex">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="groupby"></a><span class="summary-sig-name">groupby</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">cols</span>)</span><br />
+      Group by cols</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.data-pysrc.html#TableModel.groupby">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="getColumnType"></a><span class="summary-sig-name">getColumnType</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">columnIndex</span>)</span><br />
+      Get the column type</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.data-pysrc.html#TableModel.getColumnType">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="getColumnCount"></a><span class="summary-sig-name">getColumnCount</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Returns the number of columns in the data model</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.data-pysrc.html#TableModel.getColumnCount">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="getColumnName"></a><span class="summary-sig-name">getColumnName</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">columnIndex</span>)</span><br />
+      Returns the name of the given column by columnIndex</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.data-pysrc.html#TableModel.getColumnName">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="getColumnData"></a><span class="summary-sig-name">getColumnData</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">columnIndex</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">columnName</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">filters</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Return the data in a list for this col, filters is a tuple of the 
+      form (key,value,operator,bool)</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.data-pysrc.html#TableModel.getColumnData">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="getColumns"></a><span class="summary-sig-name">getColumns</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">colnames</span>,
+        <span class="summary-sig-arg">filters</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">allowempty</span>=<span class="summary-sig-default">True</span>)</span><br />
+      Get column data for multiple cols, with given filter options, 
+      filterby: list of tuples of the form (key,value,operator,bool) 
+      allowempty: boolean if false means rows with empty vals for any 
+      required fields are not returned returns: lists of column data</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.data-pysrc.html#TableModel.getColumns">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="getRowCount"></a><span class="summary-sig-name">getRowCount</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Returns the number of rows in the table model.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.data-pysrc.html#TableModel.getRowCount">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="getValueAt"></a><span class="summary-sig-name">getValueAt</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">rowindex</span>,
+        <span class="summary-sig-arg">colindex</span>)</span><br />
+      Returns the cell value at location specified by columnIndex and 
+      rowIndex.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.data-pysrc.html#TableModel.getValueAt">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="setValueAt"></a><span class="summary-sig-name">setValueAt</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">value</span>,
+        <span class="summary-sig-arg">rowindex</span>,
+        <span class="summary-sig-arg">colindex</span>)</span><br />
+      Changed the dictionary when cell is updated by user</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.data-pysrc.html#TableModel.setValueAt">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.data.TableModel-class.html#__repr__" class="summary-sig-name">__repr__</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      repr(x)</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.data-pysrc.html#TableModel.__repr__">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
+      <code>__delattr__</code>,
+      <code>__format__</code>,
+      <code>__getattribute__</code>,
+      <code>__hash__</code>,
+      <code>__new__</code>,
+      <code>__reduce__</code>,
+      <code>__reduce_ex__</code>,
+      <code>__setattr__</code>,
+      <code>__sizeof__</code>,
+      <code>__str__</code>,
+      <code>__subclasshook__</code>
+      </p>
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS VARIABLES ==================== -->
+<a name="section-ClassVariables"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Class Variables</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-ClassVariables"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="keywords"></a><span class="summary-name">keywords</span> = <code title="{'colors': 'colors'}">{'colors': 'colors'}</code>
+    </td>
+  </tr>
+</table>
+<!-- ==================== PROPERTIES ==================== -->
+<a name="section-Properties"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Properties</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Properties"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
+      <code>__class__</code>
+      </p>
+    </td>
+  </tr>
+</table>
+<!-- ==================== METHOD DETAILS ==================== -->
+<a name="section-MethodDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Method Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-MethodDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="__init__"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">__init__</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">dataframe</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">rows</span>=<span class="sig-default">20</span>,
+        <span class="sig-arg">columns</span>=<span class="sig-default">5</span>)</span>
+    <br /><em class="fname">(Constructor)</em>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.data-pysrc.html#TableModel.__init__">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Constructor for table model.</p>
+  <dl class="fields">
+    <dt>Overrides:
+        object.__init__
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="autoAddRows"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">autoAddRows</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">num</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.data-pysrc.html#TableModel.autoAddRows">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Add n rows to end of dataframe. Will create rows with index starting 
+  from highest previous row count</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="__repr__"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">__repr__</span>(<span class="sig-arg">self</span>)</span>
+    <br /><em class="fname">(Representation operator)</em>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.data-pysrc.html#TableModel.__repr__">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>repr(x)</p>
+  <dl class="fields">
+    <dt>Overrides:
+        object.__repr__
+        <dd><em class="note">(inherited documentation)</em></dd>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="src-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Mon Apr 23 19:18:18 2018
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

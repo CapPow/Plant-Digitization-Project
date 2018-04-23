@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>src.preferences</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="src-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="src-module.html">Package&nbsp;src</a> ::
+        Module&nbsp;preferences
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="src.preferences-pysrc.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="src.preferences-module.html">Module src.preferences</a></h1>
+<pre class="py-src">
+<a name="L1"></a><tt class="py-lineno">  1</tt>  <tt class="py-line"><tt class="py-comment">#!/usr/bin/env python</tt> </tt>
+<a name="L2"></a><tt class="py-lineno">  2</tt>  <tt class="py-line"><tt class="py-docstring">"""</tt> </tt>
+<a name="L3"></a><tt class="py-lineno">  3</tt>  <tt class="py-line"><tt class="py-docstring">    Implements a configuration class for pandastable</tt> </tt>
+<a name="L4"></a><tt class="py-lineno">  4</tt>  <tt class="py-line"><tt class="py-docstring">    Created Oct 2015</tt> </tt>
+<a name="L5"></a><tt class="py-lineno">  5</tt>  <tt class="py-line"><tt class="py-docstring">    Copyright (C) Damien Farrell</tt> </tt>
+<a name="L6"></a><tt class="py-lineno">  6</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L7"></a><tt class="py-lineno">  7</tt>  <tt class="py-line"><tt class="py-docstring">    This program is free software; you can redistribute it and/or</tt> </tt>
+<a name="L8"></a><tt class="py-lineno">  8</tt>  <tt class="py-line"><tt class="py-docstring">    modify it under the terms of the GNU General Public License</tt> </tt>
+<a name="L9"></a><tt class="py-lineno">  9</tt>  <tt class="py-line"><tt class="py-docstring">    as published by the Free Software Foundation; either version 3</tt> </tt>
+<a name="L10"></a><tt class="py-lineno"> 10</tt>  <tt class="py-line"><tt class="py-docstring">    of the License, or (at your option) any later version.</tt> </tt>
+<a name="L11"></a><tt class="py-lineno"> 11</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L12"></a><tt class="py-lineno"> 12</tt>  <tt class="py-line"><tt class="py-docstring">    This program is distributed in the hope that it will be useful,</tt> </tt>
+<a name="L13"></a><tt class="py-lineno"> 13</tt>  <tt class="py-line"><tt class="py-docstring">    but WITHOUT ANY WARRANTY; without even the implied warranty of</tt> </tt>
+<a name="L14"></a><tt class="py-lineno"> 14</tt>  <tt class="py-line"><tt class="py-docstring">    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</tt> </tt>
+<a name="L15"></a><tt class="py-lineno"> 15</tt>  <tt class="py-line"><tt class="py-docstring">    GNU General Public License for more details.</tt> </tt>
+<a name="L16"></a><tt class="py-lineno"> 16</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L17"></a><tt class="py-lineno"> 17</tt>  <tt class="py-line"><tt class="py-docstring">    You should have received a copy of the GNU General Public License</tt> </tt>
+<a name="L18"></a><tt class="py-lineno"> 18</tt>  <tt class="py-line"><tt class="py-docstring">    along with this program; if not, write to the Free Software</tt> </tt>
+<a name="L19"></a><tt class="py-lineno"> 19</tt>  <tt class="py-line"><tt class="py-docstring">    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA</tt> </tt>
+<a name="L20"></a><tt class="py-lineno"> 20</tt>  <tt class="py-line"><tt class="py-docstring">"""</tt> </tt>
+<a name="L21"></a><tt class="py-lineno"> 21</tt>  <tt class="py-line"> </tt>
+<a name="L22"></a><tt class="py-lineno"> 22</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">__future__</tt> <tt class="py-keyword">import</tt> <tt class="py-name">absolute_import</tt><tt class="py-op">,</tt> <tt class="py-name">division</tt><tt class="py-op">,</tt> <tt class="py-name">print_function</tt> </tt>
+<a name="L23"></a><tt class="py-lineno"> 23</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">math</tt><tt class="py-op">,</tt> <tt class="py-name">time</tt> </tt>
+<a name="L24"></a><tt class="py-lineno"> 24</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">os</tt><tt class="py-op">,</tt> <tt class="py-name">types</tt> </tt>
+<a name="L25"></a><tt class="py-lineno"> 25</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">string</tt><tt class="py-op">,</tt> <tt id="link-0" class="py-name" targets="Method src.core.Table.copy()=src.core.Table-class.html#copy,Function src.images.copy()=src.images-module.html#copy"><a title="src.core.Table.copy
+src.images.copy" class="py-name" href="#" onclick="return doclink('link-0', 'copy', 'link-0');">copy</a></tt> </tt>
+<a name="L26"></a><tt class="py-lineno"> 26</tt>  <tt class="py-line"><tt class="py-comment">#from configparser import ConfigParser</tt> </tt>
+<a name="L27"></a><tt class="py-lineno"> 27</tt>  <tt class="py-line"><tt class="py-keyword">try</tt><tt class="py-op">:</tt> </tt>
+<a name="L28"></a><tt class="py-lineno"> 28</tt>  <tt class="py-line">    <tt class="py-keyword">from</tt> <tt class="py-name">tkinter</tt> <tt class="py-keyword">import</tt> <tt class="py-op">*</tt> </tt>
+<a name="L29"></a><tt class="py-lineno"> 29</tt>  <tt class="py-line">    <tt class="py-keyword">from</tt> <tt class="py-name">tkinter</tt><tt class="py-op">.</tt><tt class="py-name">ttk</tt> <tt class="py-keyword">import</tt> <tt class="py-op">*</tt> </tt>
+<a name="L30"></a><tt class="py-lineno"> 30</tt>  <tt class="py-line"><tt class="py-keyword">except</tt><tt class="py-op">:</tt> </tt>
+<a name="L31"></a><tt class="py-lineno"> 31</tt>  <tt class="py-line">    <tt class="py-keyword">from</tt> <tt class="py-name">Tkinter</tt> <tt class="py-keyword">import</tt> <tt class="py-op">*</tt> </tt>
+<a name="L32"></a><tt class="py-lineno"> 32</tt>  <tt class="py-line">    <tt class="py-keyword">from</tt> <tt class="py-name">ttk</tt> <tt class="py-keyword">import</tt> <tt class="py-op">*</tt> </tt>
+<a name="L33"></a><tt class="py-lineno"> 33</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-op">.</tt><tt id="link-1" class="py-name" targets="Module src.core=src.core-module.html"><a title="src.core" class="py-name" href="#" onclick="return doclink('link-1', 'core', 'link-1');">core</a></tt> <tt class="py-keyword">import</tt> <tt id="link-2" class="py-name" targets="Class src.core.Table=src.core.Table-class.html"><a title="src.core.Table" class="py-name" href="#" onclick="return doclink('link-2', 'Table', 'link-2');">Table</a></tt> </tt>
+<a name="L34"></a><tt class="py-lineno"> 34</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-op">.</tt><tt id="link-3" class="py-name" targets="Module src.data=src.data-module.html"><a title="src.data" class="py-name" href="#" onclick="return doclink('link-3', 'data', 'link-3');">data</a></tt> <tt class="py-keyword">import</tt> <tt id="link-4" class="py-name" targets="Class src.data.TableModel=src.data.TableModel-class.html"><a title="src.data.TableModel" class="py-name" href="#" onclick="return doclink('link-4', 'TableModel', 'link-4');">TableModel</a></tt> </tt>
+<a name="L35"></a><tt class="py-lineno"> 35</tt>  <tt class="py-line"> </tt>
+<a name="Prefs"></a><div id="Prefs-def"><a name="L36"></a><tt class="py-lineno"> 36</tt> <a class="py-toggle" href="#" id="Prefs-toggle" onclick="return toggle('Prefs');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="src.preferences.Prefs-class.html">Prefs</a><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Prefs-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="Prefs-expanded"><a name="L37"></a><tt class="py-lineno"> 37</tt>  <tt class="py-line">    <tt class="py-docstring">"""This class implements a preferences system using configparser """</tt> </tt>
+<a name="L38"></a><tt class="py-lineno"> 38</tt>  <tt class="py-line"> </tt>
+<a name="Prefs.__init__"></a><div id="Prefs.__init__-def"><a name="L39"></a><tt class="py-lineno"> 39</tt> <a class="py-toggle" href="#" id="Prefs.__init__-toggle" onclick="return toggle('Prefs.__init__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="src.preferences.Prefs-class.html#__init__">__init__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">path</tt><tt class="py-op">=</tt> <tt class="py-string">'.pandastable'</tt><tt class="py-op">,</tt> <tt class="py-param">opts</tt><tt class="py-op">=</tt><tt class="py-op">{</tt><tt class="py-op">}</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Prefs.__init__-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Prefs.__init__-expanded"><a name="L40"></a><tt class="py-lineno"> 40</tt>  <tt class="py-line"> </tt>
+<a name="L41"></a><tt class="py-lineno"> 41</tt>  <tt class="py-line">        <tt class="py-name">homepath</tt> <tt class="py-op">=</tt> <tt class="py-name">os</tt><tt class="py-op">.</tt><tt class="py-name">path</tt><tt class="py-op">.</tt><tt class="py-name">join</tt><tt class="py-op">(</tt><tt class="py-name">os</tt><tt class="py-op">.</tt><tt class="py-name">path</tt><tt class="py-op">.</tt><tt class="py-name">expanduser</tt><tt class="py-op">(</tt><tt class="py-string">'~'</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L42"></a><tt class="py-lineno"> 42</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">defaultpath</tt> <tt class="py-op">=</tt> <tt class="py-name">os</tt><tt class="py-op">.</tt><tt class="py-name">path</tt><tt class="py-op">.</tt><tt class="py-name">join</tt><tt class="py-op">(</tt><tt class="py-name">homepath</tt><tt class="py-op">,</tt> <tt class="py-name">path</tt><tt class="py-op">)</tt> </tt>
+<a name="L43"></a><tt class="py-lineno"> 43</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt class="py-name">os</tt><tt class="py-op">.</tt><tt class="py-name">path</tt><tt class="py-op">.</tt><tt class="py-name">exists</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">defaultpath</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L44"></a><tt class="py-lineno"> 44</tt>  <tt class="py-line">            <tt class="py-name">os</tt><tt class="py-op">.</tt><tt class="py-name">mkdir</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">defaultpath</tt><tt class="py-op">)</tt> </tt>
+<a name="L45"></a><tt class="py-lineno"> 45</tt>  <tt class="py-line"> </tt>
+<a name="L46"></a><tt class="py-lineno"> 46</tt>  <tt class="py-line">        <tt class="py-name">filename</tt> <tt class="py-op">=</tt> <tt class="py-name">os</tt><tt class="py-op">.</tt><tt class="py-name">path</tt><tt class="py-op">.</tt><tt class="py-name">join</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">defaultpath</tt><tt class="py-op">,</tt> <tt class="py-string">'default.conf'</tt><tt class="py-op">)</tt> </tt>
+<a name="L47"></a><tt class="py-lineno"> 47</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">filename</tt> <tt class="py-op">=</tt> <tt class="py-name">filename</tt> </tt>
+<a name="L48"></a><tt class="py-lineno"> 48</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt class="py-name">os</tt><tt class="py-op">.</tt><tt class="py-name">path</tt><tt class="py-op">.</tt><tt class="py-name">exists</tt><tt class="py-op">(</tt><tt class="py-name">filename</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L49"></a><tt class="py-lineno"> 49</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-5" class="py-name" targets="Method src.preferences.Prefs.createConfig()=src.preferences.Prefs-class.html#createConfig"><a title="src.preferences.Prefs.createConfig" class="py-name" href="#" onclick="return doclink('link-5', 'createConfig', 'link-5');">createConfig</a></tt><tt class="py-op">(</tt><tt class="py-name">opts</tt><tt class="py-op">,</tt> <tt class="py-name">filename</tt><tt class="py-op">)</tt> </tt>
+<a name="L50"></a><tt class="py-lineno"> 50</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-6" class="py-name" targets="Method src.preferences.Prefs.writeConfig()=src.preferences.Prefs-class.html#writeConfig"><a title="src.preferences.Prefs.writeConfig" class="py-name" href="#" onclick="return doclink('link-6', 'writeConfig', 'link-6');">writeConfig</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L51"></a><tt class="py-lineno"> 51</tt>  <tt class="py-line">        <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L52"></a><tt class="py-lineno"> 52</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-7" class="py-name" targets="Method src.preferences.Prefs.parseConfig()=src.preferences.Prefs-class.html#parseConfig"><a title="src.preferences.Prefs.parseConfig" class="py-name" href="#" onclick="return doclink('link-7', 'parseConfig', 'link-7');">parseConfig</a></tt><tt class="py-op">(</tt><tt class="py-name">filename</tt><tt class="py-op">)</tt> </tt>
+<a name="L53"></a><tt class="py-lineno"> 53</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> </tt>
+</div><a name="L54"></a><tt class="py-lineno"> 54</tt>  <tt class="py-line"> </tt>
+<a name="Prefs.createConfig"></a><div id="Prefs.createConfig-def"><a name="L55"></a><tt class="py-lineno"> 55</tt> <a class="py-toggle" href="#" id="Prefs.createConfig-toggle" onclick="return toggle('Prefs.createConfig');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="src.preferences.Prefs-class.html#createConfig">createConfig</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">opts</tt><tt class="py-op">=</tt><tt class="py-op">{</tt><tt class="py-op">}</tt><tt class="py-op">,</tt> <tt class="py-param">conffile</tt><tt class="py-op">=</tt><tt class="py-string">'default.conf'</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Prefs.createConfig-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Prefs.createConfig-expanded"><a name="L56"></a><tt class="py-lineno"> 56</tt>  <tt class="py-line">        <tt class="py-docstring">"""Create a basic config file with default options and/or custom values"""</tt> </tt>
+<a name="L57"></a><tt class="py-lineno"> 57</tt>  <tt class="py-line"> </tt>
+<a name="L58"></a><tt class="py-lineno"> 58</tt>  <tt class="py-line">        <tt class="py-name">c</tt> <tt class="py-op">=</tt> <tt class="py-name">ConfigParser</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L59"></a><tt class="py-lineno"> 59</tt>  <tt class="py-line">        <tt class="py-name">wdir</tt> <tt class="py-op">=</tt> <tt class="py-name">os</tt><tt class="py-op">.</tt><tt class="py-name">path</tt><tt class="py-op">.</tt><tt class="py-name">join</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">defaultpath</tt><tt class="py-op">,</tt><tt class="py-string">'workingdir'</tt><tt class="py-op">)</tt> </tt>
+<a name="L60"></a><tt class="py-lineno"> 60</tt>  <tt class="py-line">        <tt class="py-name">cp</tt> <tt class="py-op">=</tt> <tt id="link-8" class="py-name" targets="Function src.preferences.createConfigParserfromOptions()=src.preferences-module.html#createConfigParserfromOptions"><a title="src.preferences.createConfigParserfromOptions" class="py-name" href="#" onclick="return doclink('link-8', 'createConfigParserfromOptions', 'link-8');">createConfigParserfromOptions</a></tt><tt class="py-op">(</tt><tt class="py-name">opts</tt><tt class="py-op">,</tt> <tt class="py-string">'default'</tt><tt class="py-op">)</tt> </tt>
+<a name="L61"></a><tt class="py-lineno"> 61</tt>  <tt class="py-line">        <tt class="py-name">cp</tt><tt class="py-op">.</tt><tt class="py-name">write</tt><tt class="py-op">(</tt><tt class="py-name">open</tt><tt class="py-op">(</tt><tt class="py-name">conffile</tt><tt class="py-op">,</tt><tt class="py-string">'w'</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L62"></a><tt class="py-lineno"> 62</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">cp</tt> <tt class="py-op">=</tt> <tt class="py-name">cp</tt> </tt>
+<a name="L63"></a><tt class="py-lineno"> 63</tt>  <tt class="py-line">        <tt class="py-comment">#self.parseConfig(conffile)</tt> </tt>
+<a name="L64"></a><tt class="py-lineno"> 64</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">cp</tt> </tt>
+</div><a name="L65"></a><tt class="py-lineno"> 65</tt>  <tt class="py-line"> </tt>
+<a name="Prefs.parseConfig"></a><div id="Prefs.parseConfig-def"><a name="L66"></a><tt class="py-lineno"> 66</tt> <a class="py-toggle" href="#" id="Prefs.parseConfig-toggle" onclick="return toggle('Prefs.parseConfig');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="src.preferences.Prefs-class.html#parseConfig">parseConfig</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">conffile</tt><tt class="py-op">=</tt><tt class="py-name">None</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Prefs.parseConfig-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Prefs.parseConfig-expanded"><a name="L67"></a><tt class="py-lineno"> 67</tt>  <tt class="py-line">        <tt class="py-docstring">"""Parse the config file"""</tt> </tt>
+<a name="L68"></a><tt class="py-lineno"> 68</tt>  <tt class="py-line"> </tt>
+<a name="L69"></a><tt class="py-lineno"> 69</tt>  <tt class="py-line">        <tt id="link-9" class="py-name" targets="Variable src.image2base64.f=src.image2base64-module.html#f"><a title="src.image2base64.f" class="py-name" href="#" onclick="return doclink('link-9', 'f', 'link-9');">f</a></tt> <tt class="py-op">=</tt> <tt class="py-name">open</tt><tt class="py-op">(</tt><tt class="py-name">conffile</tt><tt class="py-op">,</tt><tt class="py-string">'r'</tt><tt class="py-op">)</tt> </tt>
+<a name="L70"></a><tt class="py-lineno"> 70</tt>  <tt class="py-line">        <tt class="py-name">cp</tt> <tt class="py-op">=</tt> <tt class="py-name">ConfigParser</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L71"></a><tt class="py-lineno"> 71</tt>  <tt class="py-line">        <tt class="py-keyword">try</tt><tt class="py-op">:</tt> </tt>
+<a name="L72"></a><tt class="py-lineno"> 72</tt>  <tt class="py-line">            <tt class="py-name">cp</tt><tt class="py-op">.</tt><tt class="py-name">read</tt><tt class="py-op">(</tt><tt class="py-name">conffile</tt><tt class="py-op">)</tt> </tt>
+<a name="L73"></a><tt class="py-lineno"> 73</tt>  <tt class="py-line">        <tt class="py-keyword">except</tt> <tt class="py-name">Exception</tt> <tt class="py-keyword">as</tt> <tt class="py-name">e</tt><tt class="py-op">:</tt> </tt>
+<a name="L74"></a><tt class="py-lineno"> 74</tt>  <tt class="py-line">            <tt class="py-keyword">print</tt><tt class="py-op">(</tt><tt class="py-string">'failed to read config file! check format'</tt><tt class="py-op">)</tt> </tt>
+<a name="L75"></a><tt class="py-lineno"> 75</tt>  <tt class="py-line">            <tt class="py-keyword">print</tt><tt class="py-op">(</tt><tt class="py-string">'error returned:'</tt><tt class="py-op">,</tt> <tt class="py-name">e</tt><tt class="py-op">)</tt> </tt>
+<a name="L76"></a><tt class="py-lineno"> 76</tt>  <tt class="py-line">            <tt class="py-keyword">return</tt> </tt>
+<a name="L77"></a><tt class="py-lineno"> 77</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">filename</tt> <tt class="py-op">=</tt> <tt class="py-name">conffile</tt> </tt>
+<a name="L78"></a><tt class="py-lineno"> 78</tt>  <tt class="py-line">        <tt class="py-comment">#as attributes</tt> </tt>
+<a name="L79"></a><tt class="py-lineno"> 79</tt>  <tt class="py-line">        <tt id="link-10" class="py-name" targets="Function src.preferences.setAttributesfromConfigParser()=src.preferences-module.html#setAttributesfromConfigParser"><a title="src.preferences.setAttributesfromConfigParser" class="py-name" href="#" onclick="return doclink('link-10', 'setAttributesfromConfigParser', 'link-10');">setAttributesfromConfigParser</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">,</tt> <tt class="py-name">cp</tt><tt class="py-op">)</tt> </tt>
+<a name="L80"></a><tt class="py-lineno"> 80</tt>  <tt class="py-line">        <tt class="py-keyword">print</tt><tt class="py-op">(</tt><tt class="py-string">'parsed config file ok'</tt><tt class="py-op">)</tt> </tt>
+<a name="L81"></a><tt class="py-lineno"> 81</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> </tt>
+</div><a name="L82"></a><tt class="py-lineno"> 82</tt>  <tt class="py-line"> </tt>
+<a name="Prefs.writeConfig"></a><div id="Prefs.writeConfig-def"><a name="L83"></a><tt class="py-lineno"> 83</tt> <a class="py-toggle" href="#" id="Prefs.writeConfig-toggle" onclick="return toggle('Prefs.writeConfig');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="src.preferences.Prefs-class.html#writeConfig">writeConfig</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">filename</tt><tt class="py-op">=</tt><tt class="py-name">None</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Prefs.writeConfig-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Prefs.writeConfig-expanded"><a name="L84"></a><tt class="py-lineno"> 84</tt>  <tt class="py-line">        <tt class="py-docstring">"""Save a config file from the current object"""</tt> </tt>
+<a name="L85"></a><tt class="py-lineno"> 85</tt>  <tt class="py-line"> </tt>
+<a name="L86"></a><tt class="py-lineno"> 86</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">filename</tt> <tt class="py-op">==</tt> <tt class="py-name">None</tt><tt class="py-op">:</tt> </tt>
+<a name="L87"></a><tt class="py-lineno"> 87</tt>  <tt class="py-line">            <tt class="py-name">filename</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">filename</tt> </tt>
+<a name="L88"></a><tt class="py-lineno"> 88</tt>  <tt class="py-line"> </tt>
+<a name="L89"></a><tt class="py-lineno"> 89</tt>  <tt class="py-line">        <tt class="py-comment">#cp = createConfigParserfromOptions(opts, 'default')</tt> </tt>
+<a name="L90"></a><tt class="py-lineno"> 90</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">cp</tt><tt class="py-op">.</tt><tt class="py-name">write</tt><tt class="py-op">(</tt><tt class="py-name">open</tt><tt class="py-op">(</tt><tt class="py-name">filename</tt><tt class="py-op">,</tt><tt class="py-string">'w'</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L91"></a><tt class="py-lineno"> 91</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> </tt>
+</div></div><a name="L92"></a><tt class="py-lineno"> 92</tt>  <tt class="py-line"> </tt>
+<a name="setAttributesfromConfigParser"></a><div id="setAttributesfromConfigParser-def"><a name="L93"></a><tt class="py-lineno"> 93</tt> <a class="py-toggle" href="#" id="setAttributesfromConfigParser-toggle" onclick="return toggle('setAttributesfromConfigParser');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="src.preferences-module.html#setAttributesfromConfigParser">setAttributesfromConfigParser</a><tt class="py-op">(</tt><tt class="py-param">obj</tt><tt class="py-op">,</tt> <tt class="py-param">cp</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="setAttributesfromConfigParser-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="setAttributesfromConfigParser-expanded"><a name="L94"></a><tt class="py-lineno"> 94</tt>  <tt class="py-line">    <tt class="py-docstring">"""A helper method that makes the options in a ConfigParser object</tt> </tt>
+<a name="L95"></a><tt class="py-lineno"> 95</tt>  <tt class="py-line"><tt class="py-docstring">       attributes of obj"""</tt> </tt>
+<a name="L96"></a><tt class="py-lineno"> 96</tt>  <tt class="py-line"> </tt>
+<a name="L97"></a><tt class="py-lineno"> 97</tt>  <tt class="py-line">    <tt class="py-keyword">for</tt> <tt class="py-name">s</tt> <tt class="py-keyword">in</tt> <tt class="py-name">cp</tt><tt class="py-op">.</tt><tt class="py-name">sections</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L98"></a><tt class="py-lineno"> 98</tt>  <tt class="py-line">        <tt class="py-name">obj</tt><tt class="py-op">.</tt><tt class="py-name">__dict__</tt><tt class="py-op">[</tt><tt class="py-name">s</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt class="py-name">cp</tt><tt class="py-op">.</tt><tt class="py-name">items</tt><tt class="py-op">(</tt><tt class="py-name">s</tt><tt class="py-op">)</tt> </tt>
+<a name="L99"></a><tt class="py-lineno"> 99</tt>  <tt class="py-line">        <tt class="py-keyword">for</tt> <tt id="link-11" class="py-name"><a title="src.image2base64.f" class="py-name" href="#" onclick="return doclink('link-11', 'f', 'link-9');">f</a></tt> <tt class="py-keyword">in</tt> <tt class="py-name">cp</tt><tt class="py-op">.</tt><tt class="py-name">items</tt><tt class="py-op">(</tt><tt class="py-name">s</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L100"></a><tt class="py-lineno">100</tt>  <tt class="py-line">            <tt class="py-keyword">try</tt><tt class="py-op">:</tt> <tt class="py-name">val</tt><tt class="py-op">=</tt><tt id="link-12" class="py-name" targets="Class int=int-class.html"><a title="int" class="py-name" href="#" onclick="return doclink('link-12', 'int', 'link-12');">int</a></tt><tt class="py-op">(</tt><tt id="link-13" class="py-name"><a title="src.image2base64.f" class="py-name" href="#" onclick="return doclink('link-13', 'f', 'link-9');">f</a></tt><tt class="py-op">[</tt><tt class="py-number">1</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L101"></a><tt class="py-lineno">101</tt>  <tt class="py-line">            <tt class="py-keyword">except</tt><tt class="py-op">:</tt> <tt class="py-name">val</tt><tt class="py-op">=</tt><tt id="link-14" class="py-name"><a title="src.image2base64.f" class="py-name" href="#" onclick="return doclink('link-14', 'f', 'link-9');">f</a></tt><tt class="py-op">[</tt><tt class="py-number">1</tt><tt class="py-op">]</tt> </tt>
+<a name="L102"></a><tt class="py-lineno">102</tt>  <tt class="py-line">            <tt class="py-name">obj</tt><tt class="py-op">.</tt><tt class="py-name">__dict__</tt><tt class="py-op">[</tt><tt id="link-15" class="py-name"><a title="src.image2base64.f" class="py-name" href="#" onclick="return doclink('link-15', 'f', 'link-9');">f</a></tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt class="py-name">val</tt> </tt>
+</div><a name="L103"></a><tt class="py-lineno">103</tt>  <tt class="py-line"> </tt>
+<a name="createConfigParserfromOptions"></a><div id="createConfigParserfromOptions-def"><a name="L104"></a><tt class="py-lineno">104</tt> <a class="py-toggle" href="#" id="createConfigParserfromOptions-toggle" onclick="return toggle('createConfigParserfromOptions');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="src.preferences-module.html#createConfigParserfromOptions">createConfigParserfromOptions</a><tt class="py-op">(</tt><tt class="py-param">opts</tt><tt class="py-op">,</tt> <tt class="py-param">section</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="createConfigParserfromOptions-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="createConfigParserfromOptions-expanded"><a name="L105"></a><tt class="py-lineno">105</tt>  <tt class="py-line">    <tt class="py-docstring">"""Helper method to create a ConfigParser from a dict of options"""</tt> </tt>
+<a name="L106"></a><tt class="py-lineno">106</tt>  <tt class="py-line"> </tt>
+<a name="L107"></a><tt class="py-lineno">107</tt>  <tt class="py-line">    <tt class="py-name">cp</tt> <tt class="py-op">=</tt> <tt class="py-name">ConfigParser</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L108"></a><tt class="py-lineno">108</tt>  <tt class="py-line">    <tt class="py-name">s</tt><tt class="py-op">=</tt><tt class="py-string">'default'</tt> </tt>
+<a name="L109"></a><tt class="py-lineno">109</tt>  <tt class="py-line">    <tt class="py-name">cp</tt><tt class="py-op">.</tt><tt class="py-name">add_section</tt><tt class="py-op">(</tt><tt class="py-name">s</tt><tt class="py-op">)</tt> </tt>
+<a name="L110"></a><tt class="py-lineno">110</tt>  <tt class="py-line">    <tt class="py-keyword">for</tt> <tt class="py-name">name</tt> <tt class="py-keyword">in</tt> <tt class="py-name">opts</tt><tt class="py-op">:</tt> </tt>
+<a name="L111"></a><tt class="py-lineno">111</tt>  <tt class="py-line">        <tt class="py-name">val</tt> <tt class="py-op">=</tt> <tt class="py-name">opts</tt><tt class="py-op">[</tt><tt class="py-name">name</tt><tt class="py-op">]</tt><tt class="py-op">[</tt><tt class="py-string">'default'</tt><tt class="py-op">]</tt> </tt>
+<a name="L112"></a><tt class="py-lineno">112</tt>  <tt class="py-line">        <tt class="py-keyword">print</tt><tt class="py-op">(</tt><tt class="py-name">name</tt><tt class="py-op">,</tt><tt class="py-name">val</tt><tt class="py-op">)</tt> </tt>
+<a name="L113"></a><tt class="py-lineno">113</tt>  <tt class="py-line">        <tt class="py-name">cp</tt><tt class="py-op">.</tt><tt id="link-16" class="py-name" targets="Method src.dialogs.AutoScrollbar.set()=src.dialogs.AutoScrollbar-class.html#set,Method src.prefs.Preferences.set()=src.prefs.Preferences-class.html#set"><a title="src.dialogs.AutoScrollbar.set
+src.prefs.Preferences.set" class="py-name" href="#" onclick="return doclink('link-16', 'set', 'link-16');">set</a></tt><tt class="py-op">(</tt><tt class="py-name">s</tt><tt class="py-op">,</tt> <tt class="py-name">name</tt><tt class="py-op">,</tt> <tt class="py-name">str</tt><tt class="py-op">(</tt><tt class="py-name">val</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L114"></a><tt class="py-lineno">114</tt>  <tt class="py-line">    <tt class="py-comment">#cp.write(open(filename,'w'))</tt> </tt>
+<a name="L115"></a><tt class="py-lineno">115</tt>  <tt class="py-line">    <tt class="py-keyword">return</tt> <tt class="py-name">cp</tt> </tt>
+</div><a name="L116"></a><tt class="py-lineno">116</tt>  <tt class="py-line"> </tt>
+<a name="L117"></a><tt class="py-lineno">117</tt>  <tt class="py-line"> </tt>
+<a name="App"></a><div id="App-def"><a name="L118"></a><tt class="py-lineno">118</tt> <a class="py-toggle" href="#" id="App-toggle" onclick="return toggle('App');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="src.preferences.App-class.html">App</a><tt class="py-op">(</tt><tt class="py-base-class">Frame</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="App-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="App-expanded"><a name="L119"></a><tt class="py-lineno">119</tt>  <tt class="py-line">    <tt class="py-docstring">"""Test frame for table"""</tt> </tt>
+<a name="App.__init__"></a><div id="App.__init__-def"><a name="L120"></a><tt class="py-lineno">120</tt> <a class="py-toggle" href="#" id="App.__init__-toggle" onclick="return toggle('App.__init__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="src.preferences.App-class.html#__init__">__init__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">parent</tt><tt class="py-op">=</tt><tt class="py-name">None</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="App.__init__-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="App.__init__-expanded"><a name="L121"></a><tt class="py-lineno">121</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">parent</tt> <tt class="py-op">=</tt> <tt class="py-name">parent</tt> </tt>
+<a name="L122"></a><tt class="py-lineno">122</tt>  <tt class="py-line">        <tt class="py-name">Frame</tt><tt class="py-op">.</tt><tt id="link-17" class="py-name" targets="Method src.core.CatNumberBar.__init__()=src.core.CatNumberBar-class.html#__init__,Method src.core.ChildToolBar.__init__()=src.core.ChildToolBar-class.html#__init__,Method src.core.CollectionDataEntryBar.__init__()=src.core.CollectionDataEntryBar-class.html#__init__,Method src.core.Table.__init__()=src.core.Table-class.html#__init__,Method src.core.ToolBar.__init__()=src.core.ToolBar-class.html#__init__,Method src.core.statusBar.__init__()=src.core.statusBar-class.html#__init__,Method src.data.TableModel.__init__()=src.data.TableModel-class.html#__init__,Method src.dialogs.AggregateDialog.__init__()=src.dialogs.AggregateDialog-class.html#__init__,Method src.dialogs.CombineDialog.__init__()=src.dialogs.CombineDialog-class.html#__init__,Method src.dialogs.EasyListbox.__init__()=src.dialogs.EasyListbox-class.html#__init__,Method src.dialogs.FilterBar.__init__()=src.dialogs.FilterBar-class.html#__init__,Method src.dialogs.ImportDialog.__init__()=src.dialogs.ImportDialog-class.html#__init__,Method src.dialogs.MultipleValDialog.__init__()=src.dialogs.MultipleValDialog-class.html#__init__,Method src.dialogs.ProgressDialog.__init__()=src.dialogs.ProgressDialog-class.html#__init__,Method src.dialogs.QueryDialog.__init__()=src.dialogs.QueryDialog-class.html#__init__,Method src.dialogs.SimpleEditor.__init__()=src.dialogs.SimpleEditor-class.html#__init__,Method src.dialogs.ToolTip.__init__()=src.dialogs.ToolTip-class.html#__init__,Method src.dialogs.VerticalScrolledFrame.__init__()=src.dialogs.VerticalScrolledFrame-class.html#__init__,Method src.headers.ColumnHeader.__init__()=src.headers.ColumnHeader-class.html#__init__,Method src.headers.IndexHeader.__init__()=src.headers.IndexHeader-class.html#__init__,Method src.headers.RowHeader.__init__()=src.headers.RowHeader-class.html#__init__,Method src.headers.RowWidgetColumn.__init__()=src.headers.RowWidgetColumn-class.html#__init__,Method src.pdproject.PDDesktop.__init__()=src.pdproject.PDDesktop-class.html#__init__,Method src.preferences.App.__init__()=src.preferences.App-class.html#__init__,Method src.preferences.Prefs.__init__()=src.preferences.Prefs-class.html#__init__,Method src.prefs.Preferences.__init__()=src.prefs.Preferences-class.html#__init__,Method src.tests.App.__init__()=src.tests.App-class.html#__init__,Method src.tests.clickThread.__init__()=src.tests.clickThread-class.html#__init__"><a title="src.core.CatNumberBar.__init__
+src.core.ChildToolBar.__init__
+src.core.CollectionDataEntryBar.__init__
+src.core.Table.__init__
+src.core.ToolBar.__init__
+src.core.statusBar.__init__
+src.data.TableModel.__init__
+src.dialogs.AggregateDialog.__init__
+src.dialogs.CombineDialog.__init__
+src.dialogs.EasyListbox.__init__
+src.dialogs.FilterBar.__init__
+src.dialogs.ImportDialog.__init__
+src.dialogs.MultipleValDialog.__init__
+src.dialogs.ProgressDialog.__init__
+src.dialogs.QueryDialog.__init__
+src.dialogs.SimpleEditor.__init__
+src.dialogs.ToolTip.__init__
+src.dialogs.VerticalScrolledFrame.__init__
+src.headers.ColumnHeader.__init__
+src.headers.IndexHeader.__init__
+src.headers.RowHeader.__init__
+src.headers.RowWidgetColumn.__init__
+src.pdproject.PDDesktop.__init__
+src.preferences.App.__init__
+src.preferences.Prefs.__init__
+src.prefs.Preferences.__init__
+src.tests.App.__init__
+src.tests.clickThread.__init__" class="py-name" href="#" onclick="return doclink('link-17', '__init__', 'link-17');">__init__</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">)</tt> </tt>
+<a name="L123"></a><tt class="py-lineno">123</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">main</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">master</tt> </tt>
+<a name="L124"></a><tt class="py-lineno">124</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">main</tt><tt class="py-op">.</tt><tt class="py-name">geometry</tt><tt class="py-op">(</tt><tt class="py-string">'600x400+200+100'</tt><tt class="py-op">)</tt> </tt>
+<a name="L125"></a><tt class="py-lineno">125</tt>  <tt class="py-line">        <tt id="link-18" class="py-name"><a title="src.image2base64.f" class="py-name" href="#" onclick="return doclink('link-18', 'f', 'link-9');">f</a></tt> <tt class="py-op">=</tt> <tt class="py-name">Frame</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">main</tt><tt class="py-op">)</tt> </tt>
+<a name="L126"></a><tt class="py-lineno">126</tt>  <tt class="py-line">        <tt id="link-19" class="py-name"><a title="src.image2base64.f" class="py-name" href="#" onclick="return doclink('link-19', 'f', 'link-9');">f</a></tt><tt class="py-op">.</tt><tt id="link-20" class="py-name" targets="Method src.dialogs.AutoScrollbar.pack()=src.dialogs.AutoScrollbar-class.html#pack"><a title="src.dialogs.AutoScrollbar.pack" class="py-name" href="#" onclick="return doclink('link-20', 'pack', 'link-20');">pack</a></tt><tt class="py-op">(</tt><tt class="py-name">fill</tt><tt class="py-op">=</tt><tt class="py-name">BOTH</tt><tt class="py-op">,</tt><tt class="py-name">expand</tt><tt class="py-op">=</tt><tt class="py-number">1</tt><tt class="py-op">)</tt> </tt>
+<a name="L127"></a><tt class="py-lineno">127</tt>  <tt class="py-line">        <tt class="py-name">df</tt> <tt class="py-op">=</tt> <tt id="link-21" class="py-name"><a title="src.data.TableModel" class="py-name" href="#" onclick="return doclink('link-21', 'TableModel', 'link-4');">TableModel</a></tt><tt class="py-op">.</tt><tt class="py-name">getSampleData</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L128"></a><tt class="py-lineno">128</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">table</tt> <tt class="py-op">=</tt> <tt class="py-name">pt</tt> <tt class="py-op">=</tt> <tt id="link-22" class="py-name"><a title="src.core.Table" class="py-name" href="#" onclick="return doclink('link-22', 'Table', 'link-2');">Table</a></tt><tt class="py-op">(</tt><tt id="link-23" class="py-name"><a title="src.image2base64.f" class="py-name" href="#" onclick="return doclink('link-23', 'f', 'link-9');">f</a></tt><tt class="py-op">,</tt> <tt class="py-name">dataframe</tt><tt class="py-op">=</tt><tt class="py-name">df</tt><tt class="py-op">)</tt> </tt>
+<a name="L129"></a><tt class="py-lineno">129</tt>  <tt class="py-line">        <tt class="py-name">pt</tt><tt class="py-op">.</tt><tt id="link-24" class="py-name" targets="Method src.core.Table.show()=src.core.Table-class.html#show"><a title="src.core.Table.show" class="py-name" href="#" onclick="return doclink('link-24', 'show', 'link-24');">show</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L130"></a><tt class="py-lineno">130</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> </tt>
+</div></div><a name="L131"></a><tt class="py-lineno">131</tt>  <tt class="py-line"> </tt>
+<a name="L132"></a><tt class="py-lineno">132</tt>  <tt class="py-line"><tt class="py-keyword">if</tt> <tt class="py-name">__name__</tt> <tt class="py-op">==</tt> <tt class="py-string">'__main__'</tt><tt class="py-op">:</tt> </tt>
+<a name="L133"></a><tt class="py-lineno">133</tt>  <tt class="py-line"> </tt>
+<a name="L134"></a><tt class="py-lineno">134</tt>  <tt class="py-line">    <tt class="py-name">p</tt> <tt class="py-op">=</tt> <tt id="link-25" class="py-name" targets="Class src.preferences.Prefs=src.preferences.Prefs-class.html"><a title="src.preferences.Prefs" class="py-name" href="#" onclick="return doclink('link-25', 'Prefs', 'link-25');">Prefs</a></tt><tt class="py-op">(</tt><tt class="py-string">'.dataexplore'</tt><tt class="py-op">)</tt> </tt>
+<a name="L135"></a><tt class="py-lineno">135</tt>  <tt class="py-line">    <tt class="py-name">a</tt><tt class="py-op">=</tt><tt id="link-26" class="py-name" targets="Class src.preferences.App=src.preferences.App-class.html,Class src.tests.App=src.tests.App-class.html"><a title="src.preferences.App
+src.tests.App" class="py-name" href="#" onclick="return doclink('link-26', 'App', 'link-26');">App</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L136"></a><tt class="py-lineno">136</tt>  <tt class="py-line">    <tt class="py-comment">#from .plotting import MPLBaseOptions</tt> </tt>
+<a name="L137"></a><tt class="py-lineno">137</tt>  <tt class="py-line">    <tt class="py-comment">#opts = MPLBaseOptions(a).opts</tt> </tt>
+<a name="L138"></a><tt class="py-lineno">138</tt>  <tt class="py-line">    <tt class="py-name">opts</tt> <tt class="py-op">=</tt> <tt class="py-op">{</tt><tt class="py-string">'layout'</tt><tt class="py-op">:</tt><tt class="py-op">{</tt><tt class="py-string">'type'</tt><tt class="py-op">:</tt><tt class="py-string">'checkbutton'</tt><tt class="py-op">,</tt><tt class="py-string">'default'</tt><tt class="py-op">:</tt><tt class="py-string">'horizontal'</tt><tt class="py-op">}</tt><tt class="py-op">,</tt> </tt>
+<a name="L139"></a><tt class="py-lineno">139</tt>  <tt class="py-line">            <tt class="py-op">}</tt> </tt>
+<a name="L140"></a><tt class="py-lineno">140</tt>  <tt class="py-line">    <tt class="py-name">p</tt><tt class="py-op">.</tt><tt id="link-27" class="py-name"><a title="src.preferences.Prefs.createConfig" class="py-name" href="#" onclick="return doclink('link-27', 'createConfig', 'link-5');">createConfig</a></tt><tt class="py-op">(</tt><tt class="py-name">opts</tt><tt class="py-op">)</tt> </tt>
+<a name="L141"></a><tt class="py-lineno">141</tt>  <tt class="py-line"> </tt>
+<a name="L142"></a><tt class="py-lineno">142</tt>  <tt class="py-line">    <tt class="py-comment">#app=App()</tt> </tt>
+<a name="L143"></a><tt class="py-lineno">143</tt>  <tt class="py-line">    <tt class="py-comment">#app.mainloop()</tt> </tt>
+<a name="L144"></a><tt class="py-lineno">144</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="src-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Mon Apr 23 19:18:18 2018
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

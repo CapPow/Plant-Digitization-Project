@@ -76,9 +76,11 @@ class Table(Canvas):
                          relief=GROOVE,
                          scrollregion=(0,0,300,200))
         self.parentframe = parent
+
         #get platform into a variable
         self.ostype = util.checkOS()
         self.platform = platform.system()
+
         self.width = width
         self.height = height
         self.filename = None
@@ -3937,7 +3939,7 @@ class ToolBar(Frame):
         img = images.cross()
         addButton(self, 'Help', self.parentapp.helpDocumentation , img , 'Help Documentation', side=LEFT)
 
-        # List of unused button assets (for temp use before we get in our assets.
+        # List of unused button assets (for temp use before we get in our assets)
         # img = images.open_proj()
         #img = images.excel()        
         #img = images.copy()        

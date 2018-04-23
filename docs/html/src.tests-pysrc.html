@@ -1,0 +1,337 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>src.tests</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="src-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="src-module.html">Package&nbsp;src</a> ::
+        Module&nbsp;tests
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="src.tests-pysrc.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="src.tests-module.html">Module src.tests</a></h1>
+<pre class="py-src">
+<a name="L1"></a><tt class="py-lineno">  1</tt>  <tt class="py-line"><tt class="py-comment">#!/usr/bin/env python</tt> </tt>
+<a name="L2"></a><tt class="py-lineno">  2</tt>  <tt class="py-line"><tt class="py-docstring">"""</tt> </tt>
+<a name="L3"></a><tt class="py-lineno">  3</tt>  <tt class="py-line"><tt class="py-docstring">    Implements tests for pandastable.</tt> </tt>
+<a name="L4"></a><tt class="py-lineno">  4</tt>  <tt class="py-line"><tt class="py-docstring">    Created Jan 2014</tt> </tt>
+<a name="L5"></a><tt class="py-lineno">  5</tt>  <tt class="py-line"><tt class="py-docstring">    Copyright (C) Damien Farrell</tt> </tt>
+<a name="L6"></a><tt class="py-lineno">  6</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L7"></a><tt class="py-lineno">  7</tt>  <tt class="py-line"><tt class="py-docstring">    This program is free software; you can redistribute it and/or</tt> </tt>
+<a name="L8"></a><tt class="py-lineno">  8</tt>  <tt class="py-line"><tt class="py-docstring">    modify it under the terms of the GNU General Public License</tt> </tt>
+<a name="L9"></a><tt class="py-lineno">  9</tt>  <tt class="py-line"><tt class="py-docstring">    as published by the Free Software Foundation; either version 3</tt> </tt>
+<a name="L10"></a><tt class="py-lineno"> 10</tt>  <tt class="py-line"><tt class="py-docstring">    of the License, or (at your option) any later version.</tt> </tt>
+<a name="L11"></a><tt class="py-lineno"> 11</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L12"></a><tt class="py-lineno"> 12</tt>  <tt class="py-line"><tt class="py-docstring">    This program is distributed in the hope that it will be useful,</tt> </tt>
+<a name="L13"></a><tt class="py-lineno"> 13</tt>  <tt class="py-line"><tt class="py-docstring">    but WITHOUT ANY WARRANTY; without even the implied warranty of</tt> </tt>
+<a name="L14"></a><tt class="py-lineno"> 14</tt>  <tt class="py-line"><tt class="py-docstring">    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</tt> </tt>
+<a name="L15"></a><tt class="py-lineno"> 15</tt>  <tt class="py-line"><tt class="py-docstring">    GNU General Public License for more details.</tt> </tt>
+<a name="L16"></a><tt class="py-lineno"> 16</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L17"></a><tt class="py-lineno"> 17</tt>  <tt class="py-line"><tt class="py-docstring">    You should have received a copy of the GNU General Public License</tt> </tt>
+<a name="L18"></a><tt class="py-lineno"> 18</tt>  <tt class="py-line"><tt class="py-docstring">    along with this program; if not, write to the Free Software</tt> </tt>
+<a name="L19"></a><tt class="py-lineno"> 19</tt>  <tt class="py-line"><tt class="py-docstring">    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA</tt> </tt>
+<a name="L20"></a><tt class="py-lineno"> 20</tt>  <tt class="py-line"><tt class="py-docstring">"""</tt> </tt>
+<a name="L21"></a><tt class="py-lineno"> 21</tt>  <tt class="py-line"> </tt>
+<a name="L22"></a><tt class="py-lineno"> 22</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">__future__</tt> <tt class="py-keyword">import</tt> <tt class="py-name">absolute_import</tt><tt class="py-op">,</tt> <tt class="py-name">print_function</tt> </tt>
+<a name="L23"></a><tt class="py-lineno"> 23</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">sys</tt><tt class="py-op">,</tt> <tt class="py-name">os</tt> </tt>
+<a name="L24"></a><tt class="py-lineno"> 24</tt>  <tt class="py-line"><tt class="py-keyword">try</tt><tt class="py-op">:</tt> </tt>
+<a name="L25"></a><tt class="py-lineno"> 25</tt>  <tt class="py-line">    <tt class="py-keyword">from</tt> <tt class="py-name">tkinter</tt> <tt class="py-keyword">import</tt> <tt class="py-op">*</tt> </tt>
+<a name="L26"></a><tt class="py-lineno"> 26</tt>  <tt class="py-line">    <tt class="py-keyword">from</tt> <tt class="py-name">tkinter</tt><tt class="py-op">.</tt><tt class="py-name">ttk</tt> <tt class="py-keyword">import</tt> <tt class="py-op">*</tt> </tt>
+<a name="L27"></a><tt class="py-lineno"> 27</tt>  <tt class="py-line"><tt class="py-keyword">except</tt><tt class="py-op">:</tt> </tt>
+<a name="L28"></a><tt class="py-lineno"> 28</tt>  <tt class="py-line">    <tt class="py-keyword">from</tt> <tt class="py-name">Tkinter</tt> <tt class="py-keyword">import</tt> <tt class="py-op">*</tt> </tt>
+<a name="L29"></a><tt class="py-lineno"> 29</tt>  <tt class="py-line">    <tt class="py-keyword">from</tt> <tt class="py-name">ttk</tt> <tt class="py-keyword">import</tt> <tt class="py-op">*</tt> </tt>
+<a name="L30"></a><tt class="py-lineno"> 30</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">pandas</tt> <tt class="py-keyword">as</tt> <tt class="py-name">pd</tt> </tt>
+<a name="L31"></a><tt class="py-lineno"> 31</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-op">.</tt><tt id="link-0" class="py-name" targets="Module src.core=src.core-module.html"><a title="src.core" class="py-name" href="#" onclick="return doclink('link-0', 'core', 'link-0');">core</a></tt> <tt class="py-keyword">import</tt> <tt id="link-1" class="py-name" targets="Class src.core.Table=src.core.Table-class.html"><a title="src.core.Table" class="py-name" href="#" onclick="return doclink('link-1', 'Table', 'link-1');">Table</a></tt> </tt>
+<a name="L32"></a><tt class="py-lineno"> 32</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-op">.</tt><tt id="link-2" class="py-name" targets="Module src.data=src.data-module.html"><a title="src.data" class="py-name" href="#" onclick="return doclink('link-2', 'data', 'link-2');">data</a></tt> <tt class="py-keyword">import</tt> <tt id="link-3" class="py-name" targets="Class src.data.TableModel=src.data.TableModel-class.html"><a title="src.data.TableModel" class="py-name" href="#" onclick="return doclink('link-3', 'TableModel', 'link-3');">TableModel</a></tt> </tt>
+<a name="L33"></a><tt class="py-lineno"> 33</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-op">.</tt><tt id="link-4" class="py-name" targets="Variable src.pdproject.app=src.pdproject-module.html#app"><a title="src.pdproject.app" class="py-name" href="#" onclick="return doclink('link-4', 'app', 'link-4');">app</a></tt> <tt class="py-keyword">import</tt> <tt class="py-name">DataExplore</tt> </tt>
+<a name="L34"></a><tt class="py-lineno"> 34</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">unittest</tt> </tt>
+<a name="L35"></a><tt class="py-lineno"> 35</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">threading</tt> </tt>
+<a name="L36"></a><tt class="py-lineno"> 36</tt>  <tt class="py-line"> </tt>
+<a name="clickThread"></a><div id="clickThread-def"><a name="L37"></a><tt class="py-lineno"> 37</tt> <a class="py-toggle" href="#" id="clickThread-toggle" onclick="return toggle('clickThread');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="src.tests.clickThread-class.html">clickThread</a><tt class="py-op">(</tt><tt class="py-base-class">threading</tt><tt class="py-op">.</tt><tt class="py-base-class">Thread</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="clickThread-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="clickThread-expanded"><a name="clickThread.__init__"></a><div id="clickThread.__init__-def"><a name="L38"></a><tt class="py-lineno"> 38</tt> <a class="py-toggle" href="#" id="clickThread.__init__-toggle" onclick="return toggle('clickThread.__init__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="src.tests.clickThread-class.html#__init__">__init__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">root</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="clickThread.__init__-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="clickThread.__init__-expanded"><a name="L39"></a><tt class="py-lineno"> 39</tt>  <tt class="py-line">        <tt class="py-name">threading</tt><tt class="py-op">.</tt><tt class="py-name">Thread</tt><tt class="py-op">.</tt><tt id="link-5" class="py-name" targets="Method src.core.CatNumberBar.__init__()=src.core.CatNumberBar-class.html#__init__,Method src.core.ChildToolBar.__init__()=src.core.ChildToolBar-class.html#__init__,Method src.core.CollectionDataEntryBar.__init__()=src.core.CollectionDataEntryBar-class.html#__init__,Method src.core.Table.__init__()=src.core.Table-class.html#__init__,Method src.core.ToolBar.__init__()=src.core.ToolBar-class.html#__init__,Method src.core.statusBar.__init__()=src.core.statusBar-class.html#__init__,Method src.data.TableModel.__init__()=src.data.TableModel-class.html#__init__,Method src.dialogs.AggregateDialog.__init__()=src.dialogs.AggregateDialog-class.html#__init__,Method src.dialogs.CombineDialog.__init__()=src.dialogs.CombineDialog-class.html#__init__,Method src.dialogs.EasyListbox.__init__()=src.dialogs.EasyListbox-class.html#__init__,Method src.dialogs.FilterBar.__init__()=src.dialogs.FilterBar-class.html#__init__,Method src.dialogs.ImportDialog.__init__()=src.dialogs.ImportDialog-class.html#__init__,Method src.dialogs.MultipleValDialog.__init__()=src.dialogs.MultipleValDialog-class.html#__init__,Method src.dialogs.ProgressDialog.__init__()=src.dialogs.ProgressDialog-class.html#__init__,Method src.dialogs.QueryDialog.__init__()=src.dialogs.QueryDialog-class.html#__init__,Method src.dialogs.SimpleEditor.__init__()=src.dialogs.SimpleEditor-class.html#__init__,Method src.dialogs.ToolTip.__init__()=src.dialogs.ToolTip-class.html#__init__,Method src.dialogs.VerticalScrolledFrame.__init__()=src.dialogs.VerticalScrolledFrame-class.html#__init__,Method src.headers.ColumnHeader.__init__()=src.headers.ColumnHeader-class.html#__init__,Method src.headers.IndexHeader.__init__()=src.headers.IndexHeader-class.html#__init__,Method src.headers.RowHeader.__init__()=src.headers.RowHeader-class.html#__init__,Method src.headers.RowWidgetColumn.__init__()=src.headers.RowWidgetColumn-class.html#__init__,Method src.pdproject.PDDesktop.__init__()=src.pdproject.PDDesktop-class.html#__init__,Method src.preferences.App.__init__()=src.preferences.App-class.html#__init__,Method src.preferences.Prefs.__init__()=src.preferences.Prefs-class.html#__init__,Method src.prefs.Preferences.__init__()=src.prefs.Preferences-class.html#__init__,Method src.tests.App.__init__()=src.tests.App-class.html#__init__,Method src.tests.clickThread.__init__()=src.tests.clickThread-class.html#__init__"><a title="src.core.CatNumberBar.__init__
+src.core.ChildToolBar.__init__
+src.core.CollectionDataEntryBar.__init__
+src.core.Table.__init__
+src.core.ToolBar.__init__
+src.core.statusBar.__init__
+src.data.TableModel.__init__
+src.dialogs.AggregateDialog.__init__
+src.dialogs.CombineDialog.__init__
+src.dialogs.EasyListbox.__init__
+src.dialogs.FilterBar.__init__
+src.dialogs.ImportDialog.__init__
+src.dialogs.MultipleValDialog.__init__
+src.dialogs.ProgressDialog.__init__
+src.dialogs.QueryDialog.__init__
+src.dialogs.SimpleEditor.__init__
+src.dialogs.ToolTip.__init__
+src.dialogs.VerticalScrolledFrame.__init__
+src.headers.ColumnHeader.__init__
+src.headers.IndexHeader.__init__
+src.headers.RowHeader.__init__
+src.headers.RowWidgetColumn.__init__
+src.pdproject.PDDesktop.__init__
+src.preferences.App.__init__
+src.preferences.Prefs.__init__
+src.prefs.Preferences.__init__
+src.tests.App.__init__
+src.tests.clickThread.__init__" class="py-name" href="#" onclick="return doclink('link-5', '__init__', 'link-5');">__init__</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">)</tt> </tt>
+<a name="L40"></a><tt class="py-lineno"> 40</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">root</tt> <tt class="py-op">=</tt> <tt class="py-name">root</tt> </tt>
+</div><a name="L41"></a><tt class="py-lineno"> 41</tt>  <tt class="py-line"> </tt>
+<a name="clickThread.getButton"></a><div id="clickThread.getButton-def"><a name="L42"></a><tt class="py-lineno"> 42</tt> <a class="py-toggle" href="#" id="clickThread.getButton-toggle" onclick="return toggle('clickThread.getButton');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="src.tests.clickThread-class.html#getButton">getButton</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">root</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="clickThread.getButton-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="clickThread.getButton-expanded"><a name="L43"></a><tt class="py-lineno"> 43</tt>  <tt class="py-line">        <tt class="py-keyword">print</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">root</tt><tt class="py-op">.</tt><tt class="py-name">children</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L44"></a><tt class="py-lineno"> 44</tt>  <tt class="py-line"> </tt>
+<a name="clickThread.run"></a><div id="clickThread.run-def"><a name="L45"></a><tt class="py-lineno"> 45</tt> <a class="py-toggle" href="#" id="clickThread.run-toggle" onclick="return toggle('clickThread.run');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="src.tests.clickThread-class.html#run">run</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="clickThread.run-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="clickThread.run-expanded"><a name="L46"></a><tt class="py-lineno"> 46</tt>  <tt class="py-line">        <tt class="py-name">button</tt> <tt class="py-op">=</tt> <tt class="py-keyword">lambda</tt> <tt class="py-name">a</tt><tt class="py-op">:</tt> <tt class="py-name">isinstance</tt><tt class="py-op">(</tt><tt class="py-name">a</tt><tt class="py-op">,</tt> <tt class="py-name">Button</tt><tt class="py-op">)</tt> </tt>
+<a name="L47"></a><tt class="py-lineno"> 47</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-6" class="py-name" targets="Method src.tests.clickThread.getButton()=src.tests.clickThread-class.html#getButton"><a title="src.tests.clickThread.getButton" class="py-name" href="#" onclick="return doclink('link-6', 'getButton', 'link-6');">getButton</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">root</tt><tt class="py-op">)</tt> </tt>
+<a name="L48"></a><tt class="py-lineno"> 48</tt>  <tt class="py-line">        <tt class="py-keyword">print</tt> <tt class="py-op">(</tt><tt class="py-string">"clicked"</tt><tt class="py-op">)</tt> </tt>
+</div></div><a name="L49"></a><tt class="py-lineno"> 49</tt>  <tt class="py-line"> </tt>
+<a name="App"></a><div id="App-def"><a name="L50"></a><tt class="py-lineno"> 50</tt> <a class="py-toggle" href="#" id="App-toggle" onclick="return toggle('App');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="src.tests.App-class.html">App</a><tt class="py-op">(</tt><tt class="py-base-class">Frame</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="App-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="App-expanded"><a name="L51"></a><tt class="py-lineno"> 51</tt>  <tt class="py-line">    <tt class="py-docstring">"""Test frame for table"""</tt> </tt>
+<a name="App.__init__"></a><div id="App.__init__-def"><a name="L52"></a><tt class="py-lineno"> 52</tt> <a class="py-toggle" href="#" id="App.__init__-toggle" onclick="return toggle('App.__init__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="src.tests.App-class.html#__init__">__init__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">parent</tt><tt class="py-op">=</tt><tt class="py-name">None</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="App.__init__-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="App.__init__-expanded"><a name="L53"></a><tt class="py-lineno"> 53</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">parent</tt> <tt class="py-op">=</tt> <tt class="py-name">parent</tt> </tt>
+<a name="L54"></a><tt class="py-lineno"> 54</tt>  <tt class="py-line">        <tt class="py-name">Frame</tt><tt class="py-op">.</tt><tt id="link-7" class="py-name"><a title="src.core.CatNumberBar.__init__
+src.core.ChildToolBar.__init__
+src.core.CollectionDataEntryBar.__init__
+src.core.Table.__init__
+src.core.ToolBar.__init__
+src.core.statusBar.__init__
+src.data.TableModel.__init__
+src.dialogs.AggregateDialog.__init__
+src.dialogs.CombineDialog.__init__
+src.dialogs.EasyListbox.__init__
+src.dialogs.FilterBar.__init__
+src.dialogs.ImportDialog.__init__
+src.dialogs.MultipleValDialog.__init__
+src.dialogs.ProgressDialog.__init__
+src.dialogs.QueryDialog.__init__
+src.dialogs.SimpleEditor.__init__
+src.dialogs.ToolTip.__init__
+src.dialogs.VerticalScrolledFrame.__init__
+src.headers.ColumnHeader.__init__
+src.headers.IndexHeader.__init__
+src.headers.RowHeader.__init__
+src.headers.RowWidgetColumn.__init__
+src.pdproject.PDDesktop.__init__
+src.preferences.App.__init__
+src.preferences.Prefs.__init__
+src.prefs.Preferences.__init__
+src.tests.App.__init__
+src.tests.clickThread.__init__" class="py-name" href="#" onclick="return doclink('link-7', '__init__', 'link-5');">__init__</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">)</tt> </tt>
+<a name="L55"></a><tt class="py-lineno"> 55</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">main</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">master</tt> </tt>
+<a name="L56"></a><tt class="py-lineno"> 56</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">main</tt><tt class="py-op">.</tt><tt class="py-name">geometry</tt><tt class="py-op">(</tt><tt class="py-string">'600x400+200+100'</tt><tt class="py-op">)</tt> </tt>
+<a name="L57"></a><tt class="py-lineno"> 57</tt>  <tt class="py-line">        <tt id="link-8" class="py-name" targets="Variable src.image2base64.f=src.image2base64-module.html#f"><a title="src.image2base64.f" class="py-name" href="#" onclick="return doclink('link-8', 'f', 'link-8');">f</a></tt> <tt class="py-op">=</tt> <tt class="py-name">Frame</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">main</tt><tt class="py-op">)</tt> </tt>
+<a name="L58"></a><tt class="py-lineno"> 58</tt>  <tt class="py-line">        <tt id="link-9" class="py-name"><a title="src.image2base64.f" class="py-name" href="#" onclick="return doclink('link-9', 'f', 'link-8');">f</a></tt><tt class="py-op">.</tt><tt id="link-10" class="py-name" targets="Method src.dialogs.AutoScrollbar.pack()=src.dialogs.AutoScrollbar-class.html#pack"><a title="src.dialogs.AutoScrollbar.pack" class="py-name" href="#" onclick="return doclink('link-10', 'pack', 'link-10');">pack</a></tt><tt class="py-op">(</tt><tt class="py-name">fill</tt><tt class="py-op">=</tt><tt class="py-name">BOTH</tt><tt class="py-op">,</tt><tt class="py-name">expand</tt><tt class="py-op">=</tt><tt class="py-number">1</tt><tt class="py-op">)</tt> </tt>
+<a name="L59"></a><tt class="py-lineno"> 59</tt>  <tt class="py-line">        <tt class="py-name">df</tt> <tt class="py-op">=</tt> <tt id="link-11" class="py-name"><a title="src.data.TableModel" class="py-name" href="#" onclick="return doclink('link-11', 'TableModel', 'link-3');">TableModel</a></tt><tt class="py-op">.</tt><tt class="py-name">getSampleData</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L60"></a><tt class="py-lineno"> 60</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">table</tt> <tt class="py-op">=</tt> <tt class="py-name">pt</tt> <tt class="py-op">=</tt> <tt id="link-12" class="py-name"><a title="src.core.Table" class="py-name" href="#" onclick="return doclink('link-12', 'Table', 'link-1');">Table</a></tt><tt class="py-op">(</tt><tt id="link-13" class="py-name"><a title="src.image2base64.f" class="py-name" href="#" onclick="return doclink('link-13', 'f', 'link-8');">f</a></tt><tt class="py-op">,</tt> <tt class="py-name">dataframe</tt><tt class="py-op">=</tt><tt class="py-name">df</tt><tt class="py-op">)</tt> </tt>
+<a name="L61"></a><tt class="py-lineno"> 61</tt>  <tt class="py-line">        <tt class="py-name">pt</tt><tt class="py-op">.</tt><tt id="link-14" class="py-name" targets="Method src.core.Table.show()=src.core.Table-class.html#show"><a title="src.core.Table.show" class="py-name" href="#" onclick="return doclink('link-14', 'show', 'link-14');">show</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L62"></a><tt class="py-lineno"> 62</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> </tt>
+</div></div><a name="L63"></a><tt class="py-lineno"> 63</tt>  <tt class="py-line"> </tt>
+<a name="TableTests"></a><div id="TableTests-def"><a name="L64"></a><tt class="py-lineno"> 64</tt> <a class="py-toggle" href="#" id="TableTests-toggle" onclick="return toggle('TableTests');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="src.tests.TableTests-class.html">TableTests</a><tt class="py-op">(</tt><tt class="py-base-class">unittest</tt><tt class="py-op">.</tt><tt class="py-base-class">TestCase</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="TableTests-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="TableTests-expanded"><a name="L65"></a><tt class="py-lineno"> 65</tt>  <tt class="py-line">    <tt class="py-docstring">"""Pandastable tests - test anything involving table manipulation</tt> </tt>
+<a name="L66"></a><tt class="py-lineno"> 66</tt>  <tt class="py-line"><tt class="py-docstring">       but avoid actions that trigger dialogs"""</tt> </tt>
+<a name="TableTests.setUp"></a><div id="TableTests.setUp-def"><a name="L67"></a><tt class="py-lineno"> 67</tt> <a class="py-toggle" href="#" id="TableTests.setUp-toggle" onclick="return toggle('TableTests.setUp');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="src.tests.TableTests-class.html#setUp">setUp</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="TableTests.setUp-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="TableTests.setUp-expanded"><a name="L68"></a><tt class="py-lineno"> 68</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-15" class="py-name"><a title="src.pdproject.app" class="py-name" href="#" onclick="return doclink('link-15', 'app', 'link-4');">app</a></tt> <tt class="py-op">=</tt> <tt id="link-16" class="py-name"><a title="src.pdproject.app" class="py-name" href="#" onclick="return doclink('link-16', 'app', 'link-4');">app</a></tt> <tt class="py-op">=</tt> <tt id="link-17" class="py-name" targets="Class src.preferences.App=src.preferences.App-class.html,Class src.tests.App=src.tests.App-class.html"><a title="src.preferences.App
+src.tests.App" class="py-name" href="#" onclick="return doclink('link-17', 'App', 'link-17');">App</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L69"></a><tt class="py-lineno"> 69</tt>  <tt class="py-line">        <tt class="py-comment">#thread = clickThread(self.table.parentframe)</tt> </tt>
+<a name="L70"></a><tt class="py-lineno"> 70</tt>  <tt class="py-line">        <tt class="py-comment">#thread.start()</tt> </tt>
+<a name="L71"></a><tt class="py-lineno"> 71</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> </tt>
+</div><a name="L72"></a><tt class="py-lineno"> 72</tt>  <tt class="py-line"> </tt>
+<a name="TableTests.testA"></a><div id="TableTests.testA-def"><a name="L73"></a><tt class="py-lineno"> 73</tt> <a class="py-toggle" href="#" id="TableTests.testA-toggle" onclick="return toggle('TableTests.testA');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="src.tests.TableTests-class.html#testA">testA</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="TableTests.testA-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="TableTests.testA-expanded"><a name="L74"></a><tt class="py-lineno"> 74</tt>  <tt class="py-line">        <tt class="py-docstring">"""Simple table tests"""</tt> </tt>
+<a name="L75"></a><tt class="py-lineno"> 75</tt>  <tt class="py-line"> </tt>
+<a name="L76"></a><tt class="py-lineno"> 76</tt>  <tt class="py-line">        <tt class="py-comment">#app.mainloop()</tt> </tt>
+<a name="L77"></a><tt class="py-lineno"> 77</tt>  <tt class="py-line">        <tt class="py-name">table</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-18" class="py-name"><a title="src.pdproject.app" class="py-name" href="#" onclick="return doclink('link-18', 'app', 'link-4');">app</a></tt><tt class="py-op">.</tt><tt class="py-name">table</tt> </tt>
+<a name="L78"></a><tt class="py-lineno"> 78</tt>  <tt class="py-line">        <tt class="py-name">model</tt> <tt class="py-op">=</tt> <tt class="py-name">table</tt><tt class="py-op">.</tt><tt class="py-name">model</tt> </tt>
+<a name="L79"></a><tt class="py-lineno"> 79</tt>  <tt class="py-line">        <tt class="py-name">table</tt><tt class="py-op">.</tt><tt id="link-19" class="py-name" targets="Method src.core.Table.setSelectedRow()=src.core.Table-class.html#setSelectedRow"><a title="src.core.Table.setSelectedRow" class="py-name" href="#" onclick="return doclink('link-19', 'setSelectedRow', 'link-19');">setSelectedRow</a></tt><tt class="py-op">(</tt><tt class="py-number">10</tt><tt class="py-op">)</tt> </tt>
+<a name="L80"></a><tt class="py-lineno"> 80</tt>  <tt class="py-line">        <tt class="py-name">model</tt><tt class="py-op">.</tt><tt id="link-20" class="py-name" targets="Method src.data.TableModel.deleteRows()=src.data.TableModel-class.html#deleteRows"><a title="src.data.TableModel.deleteRows" class="py-name" href="#" onclick="return doclink('link-20', 'deleteRows', 'link-20');">deleteRows</a></tt><tt class="py-op">(</tt><tt class="py-name">table</tt><tt class="py-op">.</tt><tt class="py-name">multiplerowlist</tt><tt class="py-op">)</tt> </tt>
+<a name="L81"></a><tt class="py-lineno"> 81</tt>  <tt class="py-line">        <tt class="py-name">table</tt><tt class="py-op">.</tt><tt id="link-21" class="py-name" targets="Method src.core.Table.redraw()=src.core.Table-class.html#redraw,Method src.headers.ColumnHeader.redraw()=src.headers.ColumnHeader-class.html#redraw,Method src.headers.IndexHeader.redraw()=src.headers.IndexHeader-class.html#redraw,Method src.headers.RowHeader.redraw()=src.headers.RowHeader-class.html#redraw,Method src.headers.RowWidgetColumn.redraw()=src.headers.RowWidgetColumn-class.html#redraw"><a title="src.core.Table.redraw
+src.headers.ColumnHeader.redraw
+src.headers.IndexHeader.redraw
+src.headers.RowHeader.redraw
+src.headers.RowWidgetColumn.redraw" class="py-name" href="#" onclick="return doclink('link-21', 'redraw', 'link-21');">redraw</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L82"></a><tt class="py-lineno"> 82</tt>  <tt class="py-line">        <tt class="py-name">model</tt><tt class="py-op">.</tt><tt id="link-22" class="py-name" targets="Method src.data.TableModel.deleteColumns()=src.data.TableModel-class.html#deleteColumns"><a title="src.data.TableModel.deleteColumns" class="py-name" href="#" onclick="return doclink('link-22', 'deleteColumns', 'link-22');">deleteColumns</a></tt><tt class="py-op">(</tt><tt class="py-name">table</tt><tt class="py-op">.</tt><tt class="py-name">multiplecollist</tt><tt class="py-op">)</tt> </tt>
+<a name="L83"></a><tt class="py-lineno"> 83</tt>  <tt class="py-line">        <tt class="py-name">table</tt><tt class="py-op">.</tt><tt id="link-23" class="py-name"><a title="src.core.Table.redraw
+src.headers.ColumnHeader.redraw
+src.headers.IndexHeader.redraw
+src.headers.RowHeader.redraw
+src.headers.RowWidgetColumn.redraw" class="py-name" href="#" onclick="return doclink('link-23', 'redraw', 'link-21');">redraw</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L84"></a><tt class="py-lineno"> 84</tt>  <tt class="py-line">        <tt class="py-name">table</tt><tt class="py-op">.</tt><tt id="link-24" class="py-name" targets="Method src.core.Table.autoResizeColumns()=src.core.Table-class.html#autoResizeColumns"><a title="src.core.Table.autoResizeColumns" class="py-name" href="#" onclick="return doclink('link-24', 'autoResizeColumns', 'link-24');">autoResizeColumns</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L85"></a><tt class="py-lineno"> 85</tt>  <tt class="py-line">        <tt class="py-name">df</tt> <tt class="py-op">=</tt> <tt id="link-25" class="py-name"><a title="src.data.TableModel" class="py-name" href="#" onclick="return doclink('link-25', 'TableModel', 'link-3');">TableModel</a></tt><tt class="py-op">.</tt><tt class="py-name">getSampleData</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L86"></a><tt class="py-lineno"> 86</tt>  <tt class="py-line">        <tt class="py-name">table</tt><tt class="py-op">.</tt><tt id="link-26" class="py-name" targets="Method src.core.Table.createChildTable()=src.core.Table-class.html#createChildTable"><a title="src.core.Table.createChildTable" class="py-name" href="#" onclick="return doclink('link-26', 'createChildTable', 'link-26');">createChildTable</a></tt><tt class="py-op">(</tt><tt class="py-name">df</tt><tt class="py-op">)</tt> </tt>
+<a name="L87"></a><tt class="py-lineno"> 87</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> </tt>
+</div><a name="L88"></a><tt class="py-lineno"> 88</tt>  <tt class="py-line"> </tt>
+<a name="TableTests.testB"></a><div id="TableTests.testB-def"><a name="L89"></a><tt class="py-lineno"> 89</tt> <a class="py-toggle" href="#" id="TableTests.testB-toggle" onclick="return toggle('TableTests.testB');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="src.tests.TableTests-class.html#testB">testB</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="TableTests.testB-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="TableTests.testB-expanded"><a name="L90"></a><tt class="py-lineno"> 90</tt>  <tt class="py-line">        <tt class="py-docstring">"""Sorting and adding"""</tt> </tt>
+<a name="L91"></a><tt class="py-lineno"> 91</tt>  <tt class="py-line"> </tt>
+<a name="L92"></a><tt class="py-lineno"> 92</tt>  <tt class="py-line">        <tt class="py-name">table</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-27" class="py-name"><a title="src.pdproject.app" class="py-name" href="#" onclick="return doclink('link-27', 'app', 'link-4');">app</a></tt><tt class="py-op">.</tt><tt class="py-name">table</tt> </tt>
+<a name="L93"></a><tt class="py-lineno"> 93</tt>  <tt class="py-line">        <tt class="py-name">table</tt><tt class="py-op">.</tt><tt id="link-28" class="py-name" targets="Method src.core.Table.sortTable()=src.core.Table-class.html#sortTable"><a title="src.core.Table.sortTable" class="py-name" href="#" onclick="return doclink('link-28', 'sortTable', 'link-28');">sortTable</a></tt><tt class="py-op">(</tt><tt class="py-number">0</tt><tt class="py-op">,</tt> <tt class="py-name">ascending</tt><tt class="py-op">=</tt><tt class="py-number">1</tt><tt class="py-op">)</tt> </tt>
+<a name="L94"></a><tt class="py-lineno"> 94</tt>  <tt class="py-line">        <tt class="py-name">table</tt><tt class="py-op">.</tt><tt id="link-29" class="py-name"><a title="src.core.Table.sortTable" class="py-name" href="#" onclick="return doclink('link-29', 'sortTable', 'link-28');">sortTable</a></tt><tt class="py-op">(</tt><tt class="py-number">4</tt><tt class="py-op">,</tt> <tt class="py-name">ascending</tt><tt class="py-op">=</tt><tt class="py-number">0</tt><tt class="py-op">)</tt> </tt>
+<a name="L95"></a><tt class="py-lineno"> 95</tt>  <tt class="py-line">        <tt class="py-name">table</tt><tt class="py-op">.</tt><tt id="link-30" class="py-name" targets="Method src.core.Table.setSelectedCol()=src.core.Table-class.html#setSelectedCol"><a title="src.core.Table.setSelectedCol" class="py-name" href="#" onclick="return doclink('link-30', 'setSelectedCol', 'link-30');">setSelectedCol</a></tt><tt class="py-op">(</tt><tt class="py-number">2</tt><tt class="py-op">)</tt> </tt>
+<a name="L96"></a><tt class="py-lineno"> 96</tt>  <tt class="py-line">        <tt class="py-name">table</tt><tt class="py-op">.</tt><tt id="link-31" class="py-name" targets="Method src.core.Table.drawSelectedCol()=src.core.Table-class.html#drawSelectedCol"><a title="src.core.Table.drawSelectedCol" class="py-name" href="#" onclick="return doclink('link-31', 'drawSelectedCol', 'link-31');">drawSelectedCol</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L97"></a><tt class="py-lineno"> 97</tt>  <tt class="py-line">        <tt class="py-name">table</tt><tt class="py-op">.</tt><tt id="link-32" class="py-name" targets="Method src.core.Table.getSelectedDataFrame()=src.core.Table-class.html#getSelectedDataFrame"><a title="src.core.Table.getSelectedDataFrame" class="py-name" href="#" onclick="return doclink('link-32', 'getSelectedDataFrame', 'link-32');">getSelectedDataFrame</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L98"></a><tt class="py-lineno"> 98</tt>  <tt class="py-line">        <tt class="py-name">table</tt><tt class="py-op">.</tt><tt id="link-33" class="py-name" targets="Method src.core.Table.setindex()=src.core.Table-class.html#setindex,Method src.data.TableModel.setindex()=src.data.TableModel-class.html#setindex"><a title="src.core.Table.setindex
+src.data.TableModel.setindex" class="py-name" href="#" onclick="return doclink('link-33', 'setindex', 'link-33');">setindex</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L99"></a><tt class="py-lineno"> 99</tt>  <tt class="py-line">        <tt class="py-name">table</tt><tt class="py-op">.</tt><tt id="link-34" class="py-name" targets="Method src.core.Table.resetIndex()=src.core.Table-class.html#resetIndex,Method src.data.TableModel.resetIndex()=src.data.TableModel-class.html#resetIndex"><a title="src.core.Table.resetIndex
+src.data.TableModel.resetIndex" class="py-name" href="#" onclick="return doclink('link-34', 'resetIndex', 'link-34');">resetIndex</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L100"></a><tt class="py-lineno">100</tt>  <tt class="py-line">        <tt class="py-name">table</tt><tt class="py-op">.</tt><tt id="link-35" class="py-name" targets="Method src.core.Table.addRows()=src.core.Table-class.html#addRows"><a title="src.core.Table.addRows" class="py-name" href="#" onclick="return doclink('link-35', 'addRows', 'link-35');">addRows</a></tt><tt class="py-op">(</tt><tt class="py-number">2</tt><tt class="py-op">)</tt> </tt>
+<a name="L101"></a><tt class="py-lineno">101</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> </tt>
+</div><a name="L102"></a><tt class="py-lineno">102</tt>  <tt class="py-line"> </tt>
+<a name="TableTests.testC"></a><div id="TableTests.testC-def"><a name="L103"></a><tt class="py-lineno">103</tt> <a class="py-toggle" href="#" id="TableTests.testC-toggle" onclick="return toggle('TableTests.testC');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="src.tests.TableTests-class.html#testC">testC</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="TableTests.testC-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="TableTests.testC-expanded"><a name="L104"></a><tt class="py-lineno">104</tt>  <tt class="py-line">        <tt class="py-docstring">"""Table manipulation"""</tt> </tt>
+<a name="L105"></a><tt class="py-lineno">105</tt>  <tt class="py-line"> </tt>
+<a name="L106"></a><tt class="py-lineno">106</tt>  <tt class="py-line">        <tt class="py-name">table</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-36" class="py-name"><a title="src.pdproject.app" class="py-name" href="#" onclick="return doclink('link-36', 'app', 'link-4');">app</a></tt><tt class="py-op">.</tt><tt class="py-name">table</tt> </tt>
+<a name="L107"></a><tt class="py-lineno">107</tt>  <tt class="py-line">        <tt class="py-name">table</tt><tt class="py-op">.</tt><tt id="link-37" class="py-name" targets="Method src.core.Table.groupby()=src.core.Table-class.html#groupby,Method src.data.TableModel.groupby()=src.data.TableModel-class.html#groupby"><a title="src.core.Table.groupby
+src.data.TableModel.groupby" class="py-name" href="#" onclick="return doclink('link-37', 'groupby', 'link-37');">groupby</a></tt><tt class="py-op">(</tt><tt class="py-number">0</tt><tt class="py-op">)</tt> </tt>
+<a name="L108"></a><tt class="py-lineno">108</tt>  <tt class="py-line">        <tt class="py-name">table</tt><tt class="py-op">.</tt><tt id="link-38" class="py-name" targets="Function src.images.transpose()=src.images-module.html#transpose"><a title="src.images.transpose" class="py-name" href="#" onclick="return doclink('link-38', 'transpose', 'link-38');">transpose</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L109"></a><tt class="py-lineno">109</tt>  <tt class="py-line">        <tt class="py-name">table</tt><tt class="py-op">.</tt><tt id="link-39" class="py-name"><a title="src.core.Table.sortTable" class="py-name" href="#" onclick="return doclink('link-39', 'sortTable', 'link-28');">sortTable</a></tt><tt class="py-op">(</tt><tt class="py-number">0</tt><tt class="py-op">,</tt> <tt class="py-name">ascending</tt><tt class="py-op">=</tt><tt class="py-number">1</tt><tt class="py-op">)</tt> </tt>
+<a name="L110"></a><tt class="py-lineno">110</tt>  <tt class="py-line">        <tt class="py-name">table</tt><tt class="py-op">.</tt><tt id="link-40" class="py-name"><a title="src.images.transpose" class="py-name" href="#" onclick="return doclink('link-40', 'transpose', 'link-38');">transpose</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L111"></a><tt class="py-lineno">111</tt>  <tt class="py-line">        <tt class="py-name">table</tt><tt class="py-op">.</tt><tt id="link-41" class="py-name"><a title="src.core.Table.sortTable" class="py-name" href="#" onclick="return doclink('link-41', 'sortTable', 'link-28');">sortTable</a></tt><tt class="py-op">(</tt><tt class="py-number">0</tt><tt class="py-op">,</tt> <tt class="py-name">ascending</tt><tt class="py-op">=</tt><tt class="py-number">1</tt><tt class="py-op">)</tt> </tt>
+<a name="L112"></a><tt class="py-lineno">112</tt>  <tt class="py-line">        <tt class="py-name">table</tt><tt class="py-op">.</tt><tt id="link-42" class="py-name" targets="Method src.core.Table.deleteCells()=src.core.Table-class.html#deleteCells,Method src.data.TableModel.deleteCells()=src.data.TableModel-class.html#deleteCells"><a title="src.core.Table.deleteCells
+src.data.TableModel.deleteCells" class="py-name" href="#" onclick="return doclink('link-42', 'deleteCells', 'link-42');">deleteCells</a></tt><tt class="py-op">(</tt><tt class="py-op">[</tt><tt class="py-number">2</tt><tt class="py-op">]</tt><tt class="py-op">,</tt><tt class="py-op">[</tt><tt class="py-number">3</tt><tt class="py-op">]</tt><tt class="py-op">,</tt><tt class="py-name">answer</tt><tt class="py-op">=</tt><tt class="py-number">1</tt><tt class="py-op">)</tt> </tt>
+<a name="L113"></a><tt class="py-lineno">113</tt>  <tt class="py-line">        <tt class="py-comment">#print (table.model.df)</tt> </tt>
+<a name="L114"></a><tt class="py-lineno">114</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> </tt>
+</div><a name="L115"></a><tt class="py-lineno">115</tt>  <tt class="py-line"> </tt>
+<a name="TableTests.testD"></a><div id="TableTests.testD-def"><a name="L116"></a><tt class="py-lineno">116</tt> <a class="py-toggle" href="#" id="TableTests.testD-toggle" onclick="return toggle('TableTests.testD');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="src.tests.TableTests-class.html#testD">testD</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="TableTests.testD-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="TableTests.testD-expanded"><a name="L117"></a><tt class="py-lineno">117</tt>  <tt class="py-line">        <tt class="py-docstring">"""Load/save test"""</tt> </tt>
+<a name="L118"></a><tt class="py-lineno">118</tt>  <tt class="py-line"> </tt>
+<a name="L119"></a><tt class="py-lineno">119</tt>  <tt class="py-line">        <tt class="py-name">df</tt> <tt class="py-op">=</tt> <tt id="link-43" class="py-name"><a title="src.data.TableModel" class="py-name" href="#" onclick="return doclink('link-43', 'TableModel', 'link-3');">TableModel</a></tt><tt class="py-op">.</tt><tt class="py-name">getSampleData</tt><tt class="py-op">(</tt><tt class="py-name">rows</tt><tt class="py-op">=</tt><tt class="py-number">10000</tt><tt class="py-op">)</tt> </tt>
+<a name="L120"></a><tt class="py-lineno">120</tt>  <tt class="py-line">        <tt class="py-name">model</tt> <tt class="py-op">=</tt> <tt id="link-44" class="py-name"><a title="src.data.TableModel" class="py-name" href="#" onclick="return doclink('link-44', 'TableModel', 'link-3');">TableModel</a></tt><tt class="py-op">(</tt><tt class="py-name">df</tt><tt class="py-op">)</tt> </tt>
+<a name="L121"></a><tt class="py-lineno">121</tt>  <tt class="py-line">        <tt class="py-name">table</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-45" class="py-name"><a title="src.pdproject.app" class="py-name" href="#" onclick="return doclink('link-45', 'app', 'link-4');">app</a></tt><tt class="py-op">.</tt><tt class="py-name">table</tt> </tt>
+<a name="L122"></a><tt class="py-lineno">122</tt>  <tt class="py-line">        <tt class="py-name">table</tt><tt class="py-op">.</tt><tt id="link-46" class="py-name" targets="Method src.core.Table.updateModel()=src.core.Table-class.html#updateModel"><a title="src.core.Table.updateModel" class="py-name" href="#" onclick="return doclink('link-46', 'updateModel', 'link-46');">updateModel</a></tt><tt class="py-op">(</tt><tt class="py-name">model</tt><tt class="py-op">)</tt> </tt>
+<a name="L123"></a><tt class="py-lineno">123</tt>  <tt class="py-line">        <tt class="py-name">table</tt><tt class="py-op">.</tt><tt id="link-47" class="py-name" targets="Method src.core.Table.saveAs()=src.core.Table-class.html#saveAs"><a title="src.core.Table.saveAs" class="py-name" href="#" onclick="return doclink('link-47', 'saveAs', 'link-47');">saveAs</a></tt><tt class="py-op">(</tt><tt class="py-string">'temp.mpk'</tt><tt class="py-op">)</tt> </tt>
+<a name="L124"></a><tt class="py-lineno">124</tt>  <tt class="py-line">        <tt class="py-name">table</tt><tt class="py-op">.</tt><tt id="link-48" class="py-name" targets="Method src.core.Table.load()=src.core.Table-class.html#load,Method src.data.TableModel.load()=src.data.TableModel-class.html#load"><a title="src.core.Table.load
+src.data.TableModel.load" class="py-name" href="#" onclick="return doclink('link-48', 'load', 'link-48');">load</a></tt><tt class="py-op">(</tt><tt class="py-string">'temp.mpk'</tt><tt class="py-op">)</tt> </tt>
+<a name="L125"></a><tt class="py-lineno">125</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> </tt>
+</div><a name="L126"></a><tt class="py-lineno">126</tt>  <tt class="py-line"> </tt>
+<a name="L127"></a><tt class="py-lineno">127</tt>  <tt class="py-line">    <tt class="py-string">'''def testE(self):</tt> </tt>
+<a name="L128"></a><tt class="py-lineno">128</tt>  <tt class="py-line"><tt class="py-string">        """Plugins test"""</tt> </tt>
+<a name="L129"></a><tt class="py-lineno">129</tt>  <tt class="py-line"><tt class="py-string"></tt> </tt>
+<a name="L130"></a><tt class="py-lineno">130</tt>  <tt class="py-line"><tt class="py-string">        from . import plugin</tt> </tt>
+<a name="L131"></a><tt class="py-lineno">131</tt>  <tt class="py-line"><tt class="py-string">        for plg in plugin.get_plugins_classes('gui'):</tt> </tt>
+<a name="L132"></a><tt class="py-lineno">132</tt>  <tt class="py-line"><tt class="py-string">            p = plg()</tt> </tt>
+<a name="L133"></a><tt class="py-lineno">133</tt>  <tt class="py-line"><tt class="py-string">            print (p)</tt> </tt>
+<a name="L134"></a><tt class="py-lineno">134</tt>  <tt class="py-line"><tt class="py-string">        return'''</tt> </tt>
+<a name="L135"></a><tt class="py-lineno">135</tt>  <tt class="py-line"> </tt>
+<a name="TableTests.quit"></a><div id="TableTests.quit-def"><a name="L136"></a><tt class="py-lineno">136</tt> <a class="py-toggle" href="#" id="TableTests.quit-toggle" onclick="return toggle('TableTests.quit');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="src.tests.TableTests-class.html#quit">quit</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="TableTests.quit-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="TableTests.quit-expanded"><a name="L137"></a><tt class="py-lineno">137</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-49" class="py-name"><a title="src.pdproject.app" class="py-name" href="#" onclick="return doclink('link-49', 'app', 'link-4');">app</a></tt><tt class="py-op">.</tt><tt id="link-50" class="py-name" targets="Method src.core.Table.quit()=src.core.Table-class.html#quit,Method src.dialogs.AggregateDialog.quit()=src.dialogs.AggregateDialog-class.html#quit,Method src.dialogs.CombineDialog.quit()=src.dialogs.CombineDialog-class.html#quit,Method src.dialogs.ImportDialog.quit()=src.dialogs.ImportDialog-class.html#quit,Method src.tests.TableTests.quit()=src.tests.TableTests-class.html#quit"><a title="src.core.Table.quit
+src.dialogs.AggregateDialog.quit
+src.dialogs.CombineDialog.quit
+src.dialogs.ImportDialog.quit
+src.tests.TableTests.quit" class="py-name" href="#" onclick="return doclink('link-50', 'quit', 'link-50');">quit</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div></div><a name="L138"></a><tt class="py-lineno">138</tt>  <tt class="py-line"> </tt>
+<a name="DataExploreTests"></a><div id="DataExploreTests-def"><a name="L139"></a><tt class="py-lineno">139</tt> <a class="py-toggle" href="#" id="DataExploreTests-toggle" onclick="return toggle('DataExploreTests');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="src.tests.DataExploreTests-class.html">DataExploreTests</a><tt class="py-op">(</tt><tt class="py-base-class">unittest</tt><tt class="py-op">.</tt><tt class="py-base-class">TestCase</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="DataExploreTests-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="DataExploreTests-expanded"><a name="DataExploreTests.setUp"></a><div id="DataExploreTests.setUp-def"><a name="L140"></a><tt class="py-lineno">140</tt> <a class="py-toggle" href="#" id="DataExploreTests.setUp-toggle" onclick="return toggle('DataExploreTests.setUp');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="src.tests.DataExploreTests-class.html#setUp">setUp</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="DataExploreTests.setUp-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="DataExploreTests.setUp-expanded"><a name="L141"></a><tt class="py-lineno">141</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> </tt>
+</div><a name="L142"></a><tt class="py-lineno">142</tt>  <tt class="py-line"> </tt>
+<a name="L143"></a><tt class="py-lineno">143</tt>  <tt class="py-line">    <tt class="py-string">'''def testApp(self):</tt> </tt>
+<a name="L144"></a><tt class="py-lineno">144</tt>  <tt class="py-line"><tt class="py-string">        """Basic dataexplore app test"""</tt> </tt>
+<a name="L145"></a><tt class="py-lineno">145</tt>  <tt class="py-line"><tt class="py-string">        app = DataExplore()</tt> </tt>
+<a name="L146"></a><tt class="py-lineno">146</tt>  <tt class="py-line"><tt class="py-string">        table = app.getCurrentTable()</tt> </tt>
+<a name="L147"></a><tt class="py-lineno">147</tt>  <tt class="py-line"><tt class="py-string">        app.deleteSheet()</tt> </tt>
+<a name="L148"></a><tt class="py-lineno">148</tt>  <tt class="py-line"><tt class="py-string">        app.sampleData()</tt> </tt>
+<a name="L149"></a><tt class="py-lineno">149</tt>  <tt class="py-line"><tt class="py-string">        table.selectAll()</tt> </tt>
+<a name="L150"></a><tt class="py-lineno">150</tt>  <tt class="py-line"><tt class="py-string">        table.plotSelected()</tt> </tt>
+<a name="L151"></a><tt class="py-lineno">151</tt>  <tt class="py-line"><tt class="py-string">        app.quit()'''</tt> </tt>
+</div><a name="L152"></a><tt class="py-lineno">152</tt>  <tt class="py-line"> </tt>
+<a name="L153"></a><tt class="py-lineno">153</tt>  <tt class="py-line"><tt class="py-keyword">if</tt> <tt class="py-name">__name__</tt> <tt class="py-op">==</tt> <tt class="py-string">'__main__'</tt><tt class="py-op">:</tt> </tt>
+<a name="L154"></a><tt class="py-lineno">154</tt>  <tt class="py-line">    <tt class="py-name">unittest</tt><tt class="py-op">.</tt><tt class="py-name">main</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L155"></a><tt class="py-lineno">155</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="src-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Mon Apr 23 19:18:18 2018
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

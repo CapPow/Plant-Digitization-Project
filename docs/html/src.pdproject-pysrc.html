@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>src.pdproject</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="src-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="src-module.html">Package&nbsp;src</a> ::
+        Module&nbsp;pdproject
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="src.pdproject-pysrc.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="src.pdproject-module.html">Module src.pdproject</a></h1>
+<pre class="py-src">
+<a name="L1"></a><tt class="py-lineno"> 1</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">tkinter</tt> <tt class="py-keyword">import</tt> <tt class="py-op">*</tt> </tt>
+<a name="L2"></a><tt class="py-lineno"> 2</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-0" class="py-name" targets="Module src.core=src.core-module.html"><a title="src.core" class="py-name" href="#" onclick="return doclink('link-0', 'core', 'link-0');">core</a></tt> <tt class="py-keyword">import</tt> <tt id="link-1" class="py-name" targets="Class src.core.Table=src.core.Table-class.html"><a title="src.core.Table" class="py-name" href="#" onclick="return doclink('link-1', 'Table', 'link-1');">Table</a></tt> </tt>
+<a name="L3"></a><tt class="py-lineno"> 3</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">pandas</tt> <tt class="py-keyword">as</tt> <tt class="py-name">pd</tt> </tt>
+<a name="L4"></a><tt class="py-lineno"> 4</tt>  <tt class="py-line"> </tt>
+<a name="PDDesktop"></a><div id="PDDesktop-def"><a name="L5"></a><tt class="py-lineno"> 5</tt> <a class="py-toggle" href="#" id="PDDesktop-toggle" onclick="return toggle('PDDesktop');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="src.pdproject.PDDesktop-class.html">PDDesktop</a><tt class="py-op">(</tt><tt class="py-base-class">Frame</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="PDDesktop-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="PDDesktop-expanded"><a name="L6"></a><tt class="py-lineno"> 6</tt>  <tt class="py-line">        <tt class="py-docstring">"""Basic test frame for the table"""</tt> </tt>
+<a name="PDDesktop.__init__"></a><div id="PDDesktop.__init__-def"><a name="L7"></a><tt class="py-lineno"> 7</tt> <a class="py-toggle" href="#" id="PDDesktop.__init__-toggle" onclick="return toggle('PDDesktop.__init__');">-</a><tt class="py-line">        <tt class="py-keyword">def</tt> <a class="py-def-name" href="src.pdproject.PDDesktop-class.html#__init__">__init__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">parent</tt><tt class="py-op">=</tt><tt class="py-name">None</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="PDDesktop.__init__-collapsed" style="display:none;" pad="++" indent="++++++++++++"></div><div id="PDDesktop.__init__-expanded"><a name="L8"></a><tt class="py-lineno"> 8</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">parent</tt> <tt class="py-op">=</tt> <tt class="py-name">parent</tt> </tt>
+<a name="L9"></a><tt class="py-lineno"> 9</tt>  <tt class="py-line">            <tt class="py-name">Frame</tt><tt class="py-op">.</tt><tt id="link-2" class="py-name" targets="Method src.core.CatNumberBar.__init__()=src.core.CatNumberBar-class.html#__init__,Method src.core.ChildToolBar.__init__()=src.core.ChildToolBar-class.html#__init__,Method src.core.CollectionDataEntryBar.__init__()=src.core.CollectionDataEntryBar-class.html#__init__,Method src.core.Table.__init__()=src.core.Table-class.html#__init__,Method src.core.ToolBar.__init__()=src.core.ToolBar-class.html#__init__,Method src.core.statusBar.__init__()=src.core.statusBar-class.html#__init__,Method src.data.TableModel.__init__()=src.data.TableModel-class.html#__init__,Method src.dialogs.AggregateDialog.__init__()=src.dialogs.AggregateDialog-class.html#__init__,Method src.dialogs.CombineDialog.__init__()=src.dialogs.CombineDialog-class.html#__init__,Method src.dialogs.EasyListbox.__init__()=src.dialogs.EasyListbox-class.html#__init__,Method src.dialogs.FilterBar.__init__()=src.dialogs.FilterBar-class.html#__init__,Method src.dialogs.ImportDialog.__init__()=src.dialogs.ImportDialog-class.html#__init__,Method src.dialogs.MultipleValDialog.__init__()=src.dialogs.MultipleValDialog-class.html#__init__,Method src.dialogs.ProgressDialog.__init__()=src.dialogs.ProgressDialog-class.html#__init__,Method src.dialogs.QueryDialog.__init__()=src.dialogs.QueryDialog-class.html#__init__,Method src.dialogs.SimpleEditor.__init__()=src.dialogs.SimpleEditor-class.html#__init__,Method src.dialogs.ToolTip.__init__()=src.dialogs.ToolTip-class.html#__init__,Method src.dialogs.VerticalScrolledFrame.__init__()=src.dialogs.VerticalScrolledFrame-class.html#__init__,Method src.headers.ColumnHeader.__init__()=src.headers.ColumnHeader-class.html#__init__,Method src.headers.IndexHeader.__init__()=src.headers.IndexHeader-class.html#__init__,Method src.headers.RowHeader.__init__()=src.headers.RowHeader-class.html#__init__,Method src.headers.RowWidgetColumn.__init__()=src.headers.RowWidgetColumn-class.html#__init__,Method src.pdproject.PDDesktop.__init__()=src.pdproject.PDDesktop-class.html#__init__,Method src.preferences.App.__init__()=src.preferences.App-class.html#__init__,Method src.preferences.Prefs.__init__()=src.preferences.Prefs-class.html#__init__,Method src.prefs.Preferences.__init__()=src.prefs.Preferences-class.html#__init__,Method src.tests.App.__init__()=src.tests.App-class.html#__init__,Method src.tests.clickThread.__init__()=src.tests.clickThread-class.html#__init__"><a title="src.core.CatNumberBar.__init__
+src.core.ChildToolBar.__init__
+src.core.CollectionDataEntryBar.__init__
+src.core.Table.__init__
+src.core.ToolBar.__init__
+src.core.statusBar.__init__
+src.data.TableModel.__init__
+src.dialogs.AggregateDialog.__init__
+src.dialogs.CombineDialog.__init__
+src.dialogs.EasyListbox.__init__
+src.dialogs.FilterBar.__init__
+src.dialogs.ImportDialog.__init__
+src.dialogs.MultipleValDialog.__init__
+src.dialogs.ProgressDialog.__init__
+src.dialogs.QueryDialog.__init__
+src.dialogs.SimpleEditor.__init__
+src.dialogs.ToolTip.__init__
+src.dialogs.VerticalScrolledFrame.__init__
+src.headers.ColumnHeader.__init__
+src.headers.IndexHeader.__init__
+src.headers.RowHeader.__init__
+src.headers.RowWidgetColumn.__init__
+src.pdproject.PDDesktop.__init__
+src.preferences.App.__init__
+src.preferences.Prefs.__init__
+src.prefs.Preferences.__init__
+src.tests.App.__init__
+src.tests.clickThread.__init__" class="py-name" href="#" onclick="return doclink('link-2', '__init__', 'link-2');">__init__</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">)</tt> </tt>
+<a name="L10"></a><tt class="py-lineno">10</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">main</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">master</tt> </tt>
+<a name="L11"></a><tt class="py-lineno">11</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">main</tt><tt class="py-op">.</tt><tt class="py-name">geometry</tt><tt class="py-op">(</tt><tt class="py-string">'800x400+200+100'</tt><tt class="py-op">)</tt> </tt>
+<a name="L12"></a><tt class="py-lineno">12</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">main</tt><tt class="py-op">.</tt><tt class="py-name">title</tt><tt class="py-op">(</tt><tt class="py-string">'PD-Desktop'</tt><tt class="py-op">)</tt> </tt>
+<a name="L13"></a><tt class="py-lineno">13</tt>  <tt class="py-line">            <tt id="link-3" class="py-name" targets="Variable src.image2base64.f=src.image2base64-module.html#f"><a title="src.image2base64.f" class="py-name" href="#" onclick="return doclink('link-3', 'f', 'link-3');">f</a></tt> <tt class="py-op">=</tt> <tt class="py-name">Frame</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">main</tt><tt class="py-op">)</tt> </tt>
+<a name="L14"></a><tt class="py-lineno">14</tt>  <tt class="py-line">            <tt id="link-4" class="py-name"><a title="src.image2base64.f" class="py-name" href="#" onclick="return doclink('link-4', 'f', 'link-3');">f</a></tt><tt class="py-op">.</tt><tt id="link-5" class="py-name" targets="Method src.dialogs.AutoScrollbar.pack()=src.dialogs.AutoScrollbar-class.html#pack"><a title="src.dialogs.AutoScrollbar.pack" class="py-name" href="#" onclick="return doclink('link-5', 'pack', 'link-5');">pack</a></tt><tt class="py-op">(</tt><tt class="py-name">fill</tt><tt class="py-op">=</tt><tt class="py-name">BOTH</tt><tt class="py-op">,</tt><tt class="py-name">expand</tt><tt class="py-op">=</tt><tt class="py-number">1</tt><tt class="py-op">)</tt> </tt>
+<a name="L15"></a><tt class="py-lineno">15</tt>  <tt class="py-line">            <tt class="py-name">df</tt> <tt class="py-op">=</tt> <tt class="py-name">pd</tt><tt class="py-op">.</tt><tt class="py-name">DataFrame</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L16"></a><tt class="py-lineno">16</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">table</tt> <tt class="py-op">=</tt> <tt class="py-name">pt</tt> <tt class="py-op">=</tt> <tt id="link-6" class="py-name"><a title="src.core.Table" class="py-name" href="#" onclick="return doclink('link-6', 'Table', 'link-1');">Table</a></tt><tt class="py-op">(</tt><tt id="link-7" class="py-name"><a title="src.image2base64.f" class="py-name" href="#" onclick="return doclink('link-7', 'f', 'link-3');">f</a></tt><tt class="py-op">,</tt> <tt class="py-name">dataframe</tt><tt class="py-op">=</tt><tt class="py-name">df</tt><tt class="py-op">,</tt> </tt>
+<a name="L17"></a><tt class="py-lineno">17</tt>  <tt class="py-line">                                    <tt class="py-name">showtoolbar</tt><tt class="py-op">=</tt><tt class="py-name">True</tt><tt class="py-op">,</tt> <tt class="py-name">showstatusbar</tt><tt class="py-op">=</tt><tt class="py-name">False</tt><tt class="py-op">)</tt> </tt>
+<a name="L18"></a><tt class="py-lineno">18</tt>  <tt class="py-line">            <tt class="py-name">pt</tt><tt class="py-op">.</tt><tt id="link-8" class="py-name" targets="Method src.core.Table.show()=src.core.Table-class.html#show"><a title="src.core.Table.show" class="py-name" href="#" onclick="return doclink('link-8', 'show', 'link-8');">show</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L19"></a><tt class="py-lineno">19</tt>  <tt class="py-line">            <tt class="py-keyword">return</tt> </tt>
+</div></div><a name="L20"></a><tt class="py-lineno">20</tt>  <tt class="py-line"> </tt>
+<a name="L21"></a><tt class="py-lineno">21</tt>  <tt class="py-line"><tt id="link-9" class="py-name" targets="Variable src.pdproject.app=src.pdproject-module.html#app"><a title="src.pdproject.app" class="py-name" href="#" onclick="return doclink('link-9', 'app', 'link-9');">app</a></tt> <tt class="py-op">=</tt> <tt id="link-10" class="py-name" targets="Class src.pdproject.PDDesktop=src.pdproject.PDDesktop-class.html"><a title="src.pdproject.PDDesktop" class="py-name" href="#" onclick="return doclink('link-10', 'PDDesktop', 'link-10');">PDDesktop</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L22"></a><tt class="py-lineno">22</tt>  <tt class="py-line"><tt class="py-comment">#launch the app</tt> </tt>
+<a name="L23"></a><tt class="py-lineno">23</tt>  <tt class="py-line"><tt id="link-11" class="py-name"><a title="src.pdproject.app" class="py-name" href="#" onclick="return doclink('link-11', 'app', 'link-9');">app</a></tt><tt class="py-op">.</tt><tt class="py-name">mainloop</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L24"></a><tt class="py-lineno">24</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="src-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Mon Apr 23 19:18:18 2018
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

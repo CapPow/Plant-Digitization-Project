@@ -1,25 +1,4 @@
 #!/usr/bin/env python
-"""
-    Module implementing the Data class that manages data for
-    it's associated PandasTable.
-
-    Created Jan 2014
-    Copyright (C) Damien Farrell
-
-    This program is free software; you can redistribute it and/or
-    modify it under the terms of the GNU General Public License
-    as published by the Free Software Foundation; either version 2
-    of the License, or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-"""
 
 from types import *
 from copy import deepcopy
@@ -321,34 +300,6 @@ class TableModel(object):
             print (e)
         self.df.iloc[rowindex,colindex] = value
         return
-
-    # def transpose(self):
-    #     """Transpose dataframe"""
-
-    #     df = self.df
-    #     rows = df.index
-    #     df = df.transpose()
-    #     df.reset_index()
-    #     if util.check_multiindex(df.columns) != 1:
-    #         try:
-    #             df.columns = df.columns.astype(str)
-    #         except:
-    #             pass
-    #     self.df = df.convert_objects()
-    #     self.columnwidths = {}
-    #     return
-
-    # why is this here?
-    # def query(self):
-
-    #     return
-
-    # def filterby(self):
-    #     import filtering
-    #     funcs = filtering.operatornames
-    #     floatops = ['=','>','<']
-    #     func = funcs[op]
-    #     return
 
     def __repr__(self):
         return 'Table Model with %s rows' %len(self.df)
