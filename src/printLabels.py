@@ -391,7 +391,7 @@ def genPrintLabelPDFs(labelDataInput,defaultFileName = None):
             row9 = Table([[gpsStrElement]],style = tableSty)
             tableList.append([row8])
 
-            if row7_5:
+            if dfl('identifiedBy') != '':
                 tableList.append([row7_5])
 
             tableList.append([row9])
@@ -403,7 +403,7 @@ def genPrintLabelPDFs(labelDataInput,defaultFileName = None):
             colWidths = (xPaperSize * .33, xPaperSize * .65), rowHeights = None,style=tableSty)
             tableList.append([row8])
 
-            if row7_5:
+            if dfl('identifiedBy') != '':
                 tableList.append([row7_5])
 
         # append the determined by field
