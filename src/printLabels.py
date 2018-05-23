@@ -257,7 +257,7 @@ def genPrintLabelPDFs(labelDataInput,defaultFileName = None):
         else:
             row0 = Para('collectionName','collectionNameSTY')
                 
-        
+
         row1 = Table([
             [Para('samplingEffort','samplingEffortSTY')],
             [verifiedByPara('verifiedBy','verifiedBySTY')]],
@@ -361,6 +361,12 @@ def genPrintLabelPDFs(labelDataInput,defaultFileName = None):
         row6_7 = Table([[
                     Para('occurrenceRemarks','default','Occurence Remarks: ')]],style=tableSty)
             
+        if dfl('identifiedBy') != '':
+            row7_5 = Table([[
+                    Para('identifiedBy','default','Determined by: ')]],style=tableSty)
+        # TODO: Add all tableList (row) objects to a loop which checks for content and appends else returns None 
+        # ...  Then Clean tableList for None objects
+        
         tableList = [[row0],
                       [row1],
                       [row2],
@@ -384,6 +390,10 @@ def genPrintLabelPDFs(labelDataInput,defaultFileName = None):
             row8 = Table([[Para('otherCatalogNumbers','default','Field Number: ')]], style = tableSty)
             row9 = Table([[gpsStrElement]],style = tableSty)
             tableList.append([row8])
+
+            if row7_5:
+                tableList.append([row7_5])
+
             tableList.append([row9])
             
         else:
@@ -392,7 +402,13 @@ def genPrintLabelPDFs(labelDataInput,defaultFileName = None):
             gpsStrElement]],            
             colWidths = (xPaperSize * .33, xPaperSize * .65), rowHeights = None,style=tableSty)
             tableList.append([row8])
-                   
+
+            if row7_5:
+                tableList.append([row7_5])
+
+        # append the determined by field
+        
+        
         docTableStyle = [                             #Cell alignment and padding settings (not text align within cells)
                 ('VALIGN',(0,3),(0,-1),'BOTTOM'),     #Rows 4-end align to bottom
                 ('ALIGN',(0,0),(-1,-1),'CENTER'),     #All rows align to center

@@ -29,6 +29,10 @@ Tasks:
 
 * Split record processing into: process locality, process names / associated taxa
 
+* printLabel module changes:
+  * Alter printlabel's row# convention into labeled sections for easier navigation.
+  * Add checks for duplicate names in verified by, determined by, collected by. Omit fields if they are duplicated, preferring to keep: Collected by.
+
 * Add print label options, and store them in preferences window:
   * Impliment multiple common label dimention presets for use in printLabels.py
   * Include, exclude occurenceRemarks, locationRemarks fields
