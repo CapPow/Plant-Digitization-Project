@@ -237,10 +237,10 @@ class MultipleValDialog(Dialog):
             if self.types[i] == 'combobox':
                 self.vrs[i].set(default[0])
                 w = Combobox(master, values=default,
-                         textvariable=self.vrs[i],width=14)
+                         textvariable=self.vrs[i],width=29)
                 self.entries.append(w)
             elif self.types[i] == 'listbox':
-                f,w = addListBox(master, values=default,width=14)
+                f,w = addListBox(master, values=default,width=29)
                 self.entries.append(f)
                 self.vrs[i] = w #add widget instead of var
             elif self.types[i] == 'checkbutton':
@@ -252,7 +252,7 @@ class MultipleValDialog(Dialog):
                 if default == None:
                     default=''
                 self.vrs[i].set(default)
-                self.entries.append(Entry(master, textvariable=self.vrs[i], width=10, show=s))
+                self.entries.append(Entry(master, textvariable=self.vrs[i], width=25, show=s))
             self.entries[i].grid(row=r, column=1,padx=2,pady=2,sticky='ew')
             if self.tooltips != None:
                 ToolTip.createToolTip(self.entries[i], self.tooltips[i])
