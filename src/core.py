@@ -3767,9 +3767,11 @@ class CollectionDataEntryBar(Frame):
             pass
         self.parentapp.redraw()
 
-    def addDetByName(self): # Any reason to believe this will overwrite other data? Would multiple determinations exist on import?
+    def addDetByName(self): # Only replacing empty cells.
+        detByCol = self.parentapp.model.df['identifiedBy']
         detName = self.detNameVar.get()
-        self.parentapp.model.df['identifiedBy'] = detName
+        self.parentapp.model.df.loc[detByCol == '', 'identifiedBy'] = detName
+        #self.parentapp.model.df['identifiedBy'] = detName
         if self.useDetDateVar.get() == 1:
             from datetime import date
             isoDate = date.today().isoformat()
