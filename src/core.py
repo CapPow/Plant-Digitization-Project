@@ -289,7 +289,7 @@ class Table(Canvas):
         self.Yscrollbar = AutoScrollbar(self.parentframe,orient=VERTICAL,command=self.set_yviews)
         self.Yscrollbar.grid(row=4,column=3,rowspan=1,sticky='news',pady=0,ipady=0)
         self.Xscrollbar = AutoScrollbar(self.parentframe,orient=HORIZONTAL,command=self.set_xviews)
-        self.Xscrollbar.grid(row=5,column=2,columnspan=1,sticky='news')
+        self.Xscrollbar.grid(row=6,column=2,columnspan=1,sticky='news')
         self['xscrollcommand'] = self.Xscrollbar.set
         self['yscrollcommand'] = self.Yscrollbar.set 
         self.tablecolheader['xscrollcommand'] = self.Xscrollbar.set
@@ -2990,8 +2990,8 @@ class Table(Canvas):
         self.redraw()
         return
 
-    def show_progressbar(self,message=None):
-        """Show progress bar window for loading of data"""
+    def show_progress_window(self, message=None, maximum = 100):
+        """Show determinant progress bar window"""
 
         progress_win=Toplevel() # Open a new window
         progress_win.title("Please Wait")
@@ -3006,9 +3006,10 @@ class Table(Canvas):
         lbl.grid(row=0,column=0,columnspan=2,sticky='news',padx=6,pady=4)
         progrlbl = Label(progress_win,text='Progress:')
         progrlbl.grid(row=1,column=0,sticky='news',padx=2,pady=4)
-        import ProgressBar
-        self.bar = ProgressBar.ProgressBar(progress_win)
-        self.bar.frame.grid(row=1,column=1,columnspan=2,padx=2,pady=4)
+
+        prog_bar = Progress(self.master,maximum = maximum)
+        prog_bar.grid(row=1, column =1, sticky ="news", padx=2, pady=4)
+        progress_win.n = 0
 
         return progress_win
 
@@ -3097,7 +3098,7 @@ class Table(Canvas):
 
         return
 
-    # runs through table automatically
+    # runs through selected rows
     # calls genLocality and genScientificName
     def processRecords(self):
         """Process records in table. Deals specifically with
@@ -3106,7 +3107,6 @@ class Table(Canvas):
         to update the given scientific name as well as fill locality
         fields from GPS coordinates."""
 
-        currentRow = self.currentrow
         localityColumn = self.findColumnIndex('locality')
         catalogNumColumn = self.findColumnIndex('otherCatalogNumbers')
         recordedByColumn = self.findColumnIndex('recordedBy')
@@ -3117,15 +3117,20 @@ class Table(Canvas):
         associatedTaxa = []
         # an indication of record processing
         self.parentframe.master.title("PD-Desktop (Processing Records...)")
+        rows = self.multiplerowlist
+        # TODO make this determinate progress bar a callable function
+        progBar = ttk.Progressbar(self.master,orient ="horizontal",length = 200, mode ="determinate")
+        progBar.grid(row=5, column=1, columnspan = 3, sticky='news', pady=1, ipady=1)
+        pb_Label = Label(progBar, text='Processing Records...')
+        pb_Label.grid(row=5, column=1, columnspan = 3, pady=1, ipady=1)
+        progBar["maximum"] = len(rows)
+        progBar["value"] = 0
         
-        while currentRow < int(self.model.getRowCount()):
+        for n, currentRow in enumerate(rows):
             try:
-                currentRow = self.currentrow
                 if self.model.getValueAt(currentRow, self.findColumnIndex('specimen#')) in ['#','!AddSITE']:
-                    self.gotonextRow()
-                    currentRow = self.currentrow
-                    self.redraw()
                     continue
+
                 #Clean duplicate primary collector names out of associated collectors. Presuming they're split with a " , ".
                 associatedCollectors = self.model.getValueAt(currentRow, assCollectorColumn).split(',')
                 recordedBy = self.model.getValueAt(currentRow, recordedByColumn)
@@ -3139,18 +3144,17 @@ class Table(Canvas):
                     # TODO This could probably use a try except block for whatever imaginable errors?
                     resultLocality = genLocalityNoAPI(self, currentRow)
                     self.model.setValueAt(resultLocality, currentRow, localityColumn)
-                    self.redraw()
+                # TODO change this to a pop up dialog box OR at least select it before returning
                 elif resultLocality == "user_set_gps":
                     self.parentframe.master.title("PD-Desktop")
                     self.redraw()
                     return
-                # modify to set value here
                 else:
                     self.model.setValueAt(resultLocality, currentRow, localityColumn)
-                    self.redraw()
                 catNum = self.model.getValueAt(currentRow, catalogNumColumn)
                 resSci = genScientificName(self, currentRow)
                 # missing scientific name
+                # TODO change this to a pop up dialog box OR at least select it before returning
                 if resSci == "user_set_sciname":
                     self.parentframe.master.title("PD-Desktop")
                     self.redraw()
@@ -3162,18 +3166,16 @@ class Table(Canvas):
                         if resSci[1] != 'None':
                             self.model.setValueAt(resSci[1], currentRow, authorshipColumn)
                         associatedTaxa.append([currentRow, catNum, resSci[0]])
-                        self.redraw()
                     else:
                         self.model.setValueAt(resSci, currentRow, scientNameColumn)
                         associatedTaxa.append([currentRow, catNum, resSci])
-                        self.redraw()
-                        
-                self.gotonextRow()
-                self.redraw()
+
             except IndexError:
                 self.parentframe.master.title("PD-Desktop")
-                self.redraw()
-
+            self.redraw()
+            progBar["value"] = n
+        progBar.destroy()
+        
         self.model.df = self.model.df.groupby('site#').apply(self.genAssociatedTaxa).reset_index(drop=True)#group by 'site#', apply genAssociatedTaxa groupwise
         #this loop fixes the scientific name's presence also being in associated Taxa. It would be ideal to do this in associatedTaxa
         for recordRow in range(self.model.getRowCount()):
@@ -3187,7 +3189,7 @@ class Table(Canvas):
             self.model.setValueAt(recordAssociatedTaxa, recordRow, assocTaxaColumn)
 
         self.parentframe.master.title("PD-Desktop")
-        self.setSelectedRow(0)
+        # update the table to display progress to the user.
         self.redraw()
 
     def genAssociatedTaxa(self, siteGroup):
@@ -3732,10 +3734,10 @@ class ToolBar(Frame):
         # add an image for the button later, using existing img until this one is resized.
         #img = images.open_processRecords() 
         img = images.merge() 
-        addButton(self, 'Process Records', self.parentapp.processRecords, img, 'Process Records', side=LEFT)
+        addButton(self, 'Process Records', self.parentapp.processRecords, img, 'Process Selected Records', side=LEFT)
 
         img = images.aggregate() #hijacking random image for now
-        addButton(self, 'Export',self.parentapp.genLabelPDF, img, 'Export Labels to PDF', side=LEFT)
+        addButton(self, 'Export',self.parentapp.genLabelPDF, img, 'Generate Labels for Selected Records', side=LEFT)
 
         img = images.table_delete()  
         addButton(self, 'Undo',self.parentapp.undo, img, 'Undo the last major change.', side=LEFT)
