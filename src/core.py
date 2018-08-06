@@ -3287,67 +3287,71 @@ class Table(Canvas):
         return
 
     def saveAs(self, filename=None, dbReady = False):
+        if not filename:
+            filename = self.filename
         """Save dataframe to file"""
-        if filename: # this is really only checking that we've ever initially loaded ... something. (I believe)
-            dfForExport = copy.deepcopy(self.model.df) # deep copy the existing model before we make changes to the data.
-            exportColumns = [] # build a list of columns to be saved (outgoing columns)
-            for item in dfForExport.columns.values.tolist(): # this should probably be a list comprehension
-                if item not in ['site#', 'specimen#' ,'-']: # never export these helper columns (else we'll multiply them each import)
-                    exportColumns.append(item)
+        #if filename: # this is really only checking that we've ever initially loaded ... something. (I believe)
+        dfForExport = copy.deepcopy(self.model.df) # deep copy the existing model before we make changes to the data.
+        exportColumns = [] # build a list of columns to be saved (outgoing columns)
+        for item in dfForExport.columns.values.tolist(): # this should probably be a list comprehension
+            if item not in ['site#', 'specimen#' ,'-']: # never export these helper columns (else we'll multiply them each import)
+                exportColumns.append(item)
 
-            # if this function was passed with the 'dbReady' set to True. Meaning, it should be "database ready"
-            if dbReady:
-                fileNamePreamble = 'DBReady'  # to avoid people overwriting their source data, suggest a preamble string to the file name
-                exclusionList = ['path','collectionName'] # stuff we invented, and don't need to be sending to the portals.
-                exportColumns = [colLabel for colLabel in exportColumns if colLabel not in exclusionList]
+        # if this function was passed with the 'dbReady' set to True. Meaning, it should be "database ready"
+        if dbReady:
+            fileNamePreamble = 'DBReady'  # to avoid people overwriting their source data, suggest a preamble string to the file name
+            exclusionList = ['path','collectionName'] # stuff we invented, and don't need to be sending to the portals.
+            exportColumns = [colLabel for colLabel in exportColumns if colLabel not in exclusionList]
 
-                # limit the dataframe for export to actual record specimens, by excluding "site" level records.
-                #Explination for the filter below: dfForExport rows which do not include '#' or '!AddSITE' in the 'specimen#' column.
-                dfForExport = dfForExport[~dfForExport['specimen#'].isin(['#','!AddSITE'])]
+            # limit the dataframe for export to actual record specimens, by excluding "site" level records.
+            #Explination for the filter below: dfForExport rows which do not include '#' or '!AddSITE' in the 'specimen#' column.
+            dfForExport = dfForExport[~dfForExport['specimen#'].isin(['#','!AddSITE'])]
 
-            # if we're just saving this work because we've made progress on it, keep it excel friendly.
-            else:
-                fileNamePreamble = 'Processed'  # to avoid people overwriting their source data, suggest a preamble string to the file name
+        # if we're just saving this work because we've made progress on it, keep it excel friendly.
+        else:
+            fileNamePreamble = 'Processed'  # to avoid people overwriting their source data, suggest a preamble string to the file name
 
-                #Excel is interpreting site numbers < 12 as dates and converting them. Ex: 08-16 to Aug-16.
-                #Also, many spreadsheet programs are altering the iso date format.
-                #If dbReady = False, then include a " ' " before the problem values so that they're
-                numericColumnsToCheck = ['otherCatalogNumbers','eventDate','dateIdentified']
-                for numericColumn in numericColumnsToCheck:
-                    try:
-                        dfForExport[numericColumn] = dfForExport[numericColumn].apply(lambda x: ("'")+str(x))
-                    except (KeyError):
-                        print('KeyError attempting to save the {} in a spreadsheet friendly format'.format(numericColumn))
-                    pass
+            #Excel is interpreting site numbers < 12 as dates and converting them. Ex: 08-16 to Aug-16.
+            #Also, many spreadsheet programs are altering the iso date format.
+            #If dbReady = False, then include a " ' " before the problem values so that they're
+            numericColumnsToCheck = ['otherCatalogNumbers','eventDate','dateIdentified']
+            for numericColumn in numericColumnsToCheck:
+                try:
+                    dfForExport[numericColumn] = dfForExport[numericColumn].apply(lambda x: ("'")+str(x))
+                except (KeyError):
+                    print('KeyError attempting to save the {} in a spreadsheet friendly format'.format(numericColumn))
+                pass
 
-            # prep the file name using the conditionally generated preamble.
-            defFileName = self.filename.split('/')[-1] # prep the default suggested filename.
-            if defFileName.split()[0] != fileNamePreamble: # ensure this file does not already have the preamble string
-                defFileName = '{} {}'.format(fileNamePreamble,defFileName) # if it passes this ocndition, add preamble.
-            filename = filedialog.asksaveasfilename(parent=self.master,
-                                                        defaultextension='.csv',
-                                                        initialfile = defFileName,
-                                                        initialdir = os.getcwd(),
-                                                        filetypes=[("csv","*.csv")])
+        # prep the file name using the conditionally generated preamble.
+        defFileName = self.filename.split('/')[-1] # prep the default suggested filename.
+        if defFileName.split()[0] != fileNamePreamble: # ensure this file does not already have the preamble string
+            defFileName = '{} {}'.format(fileNamePreamble,defFileName) # if it passes this ocndition, add preamble.
+        filename = filedialog.asksaveasfilename(parent=self.master,
+                                                    defaultextension='.csv',
+                                                    initialfile = defFileName,
+                                                    initialdir = os.getcwd(),
+                                                    filetypes=[("csv","*.csv")])
 
 
-            dfForExport.to_csv(filename, encoding = 'utf-8', index = False, columns = exportColumns)
-        else: 
-            return
+        dfForExport.to_csv(filename, encoding = 'utf-8', index = False, columns = exportColumns)
+#        else:
+        return
+
+
     def saveForDatabase(self):
         """ simply calls "saveAs(filename, dbReady = True)
         Allowing us to make a button to generate a csv file which is ready for portal submission.
         The distinction is necessary because of the leading " ' " in some fields which are necessary
         for friendly input and output from common spreadsheet programs."""
 
-        self.saveAs(self.filename, dbReady = True)
+        self.saveAs(filename = self.filename, dbReady = True)
         
         
     def save(self):
         """Save current file"""
     # It's probably annoying we've stripped this and made it into a "save as" function
     # I'd rather be slightly annoying than risk loss overwriting the researchers field data.
-        self.saveAs(self.filename)
+        self.saveAs(filename = self.filename)
         
     def importCSV(self, filename=None, dialog=False, **kwargs):
         """Import from csv file"""
@@ -3722,7 +3726,7 @@ class ToolBar(Frame):
 
         img = images.importcsv()
         func = lambda: self.parentapp.importCSV(dialog=False)
-        addButton(self, 'Import', func, img, 'import csv', side=LEFT)
+        addButton(self, 'Load Records', func, img, 'Load records from a .csv', side=LEFT)
 
         img = images.save_proj()
         addButton(self, 'Save', self.parentapp.save, img, 'save', side=LEFT)
@@ -3737,7 +3741,7 @@ class ToolBar(Frame):
         addButton(self, 'Process Records', self.parentapp.processRecords, img, 'Process Selected Records', side=LEFT)
 
         img = images.aggregate() #hijacking random image for now
-        addButton(self, 'Export',self.parentapp.genLabelPDF, img, 'Generate Labels for Selected Records', side=LEFT)
+        addButton(self, 'Make Labels',self.parentapp.genLabelPDF, img, 'Generate Labels for Selected Records', side=LEFT)
 
         img = images.table_delete()  
         addButton(self, 'Undo',self.parentapp.undo, img, 'Undo the last major change.', side=LEFT)

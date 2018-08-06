@@ -4,7 +4,7 @@ home=os.path.expanduser('~')
 
 setup(
     name = 'pdproject',
-    version = '0.1dev',
+    version = '0.2dev',
     description = '',
     license='GPL v3',
     package_dir = {'': 'src'},

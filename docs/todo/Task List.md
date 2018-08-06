@@ -38,6 +38,8 @@ Tasks:
   * Include, exclude occurenceRemarks, locationRemarks fields
   * Add print duplicate label Quantity Spinbox widget to specimen rows
 
+* Change the custom string exception handling between modules (IE: "loc_apierr_no_retry" in locality.py) to properly raise a known exception (with comment).
+
 * Colorcode Site/Specimen records
 
 * Disable Editing of specific fields (auto generated site#, specimen#)
