@@ -19,3 +19,9 @@ https://docs.google.com/presentation/d/1nAT_hqp6Nm3DC7_e7dxPvbbaXLJTOYzcXJ5dSW2n
 [Jacob Motley](https://www.linkedin.com/in/jacob-motley-b627a1152) - BS [Computer Science](https://github.com/j-h-m): Software Systems - UTC.
 
 [Caleb Powell](https://github.com/CapPow) - BS Environmental Science, Graduate Student - UTC.
+
+## Credits:
+
+Forked from Damien Farrell's [pandastable](https://github.com/dmnfarrell/pandastable):
+
+Farrell, D 2016 DataExplore: An Application for General Data Analysis in Research and Education. Journal of Open Research Software, 4: e9, DOI: http://dx.doi.org/10.5334/jors.94
