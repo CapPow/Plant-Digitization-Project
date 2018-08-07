@@ -336,16 +336,17 @@ class Table(Canvas):
 
     def getVisibleRegion(self):
         """Get visible region of canvas"""
-
+        #  uncommented options chosen because canvas geometry was being
+        #  modified by our additional grid objects (ie: toolbars)
         x1, y1 = self.canvasx(0), self.canvasy(0)
-        #w, h = self.winfo_width(), self.winfo_height()
-        #if w <= 1.0 or h <= 1.0:
-        w, h = self.master.winfo_width(), self.master.winfo_height()
+        w, h = self.winfo_width(), self.winfo_height()  # uncommented these
+        if w <= 1.0 or h <= 1.0:
+            w, h = self.master.winfo_width(), self.master.winfo_height()
         x2, y2 = self.canvasx(w), self.canvasy(h)
         return x1, y1, x2, y2
 
     def getRowPosition(self, y):
-        """Set row position"""
+        """Get row position"""
 
         h = self.rowheight
         y_start = self.y_start
@@ -374,16 +375,16 @@ class Table(Canvas):
         """Get the visible row range"""
 
         start = self.getRowPosition(y1)
-        end = self.getRowPosition(y2)+1
+        end = self.getRowPosition(y2) + 1
         if end > self.rows:
             end = self.rows
         return start, end
 
     def getVisibleCols(self, x1, x2):
         """Get the visible column range"""
-
+        print(x1, x2)
         start = self.getColPosition(x1)
-        end = self.getColPosition(x2)+1
+        end = self.getColPosition(x2)
         if end > self.cols:
             end = self.cols
         return start, end
@@ -463,17 +464,12 @@ class Table(Canvas):
             for row in self.visiblerows:
                 text = coldata.iloc[row-offset]
                 
-                if self.model.df.columns[col] == 'specimen#':       #If it is a site record add a widget to generate specimens from it.                  
-                    if self.model.getValueAt(row, col) == '!AddSITE':
-                        self.drawAddSpecimenWidget(row,col)
-                        self.setRowColors(row,'#f9e66b')#set site level row to yellow
-                    else:
-                        self.drawText(row, col, text, align)
-                        self.setRowColors(row,'#baec6d') #set specimen level row to green
+                if (self.model.df.columns[col] == 'specimen#') and (self.model.getValueAt(row, col) == '!AddSITE'):       #If it is a site record add a widget to generate specimens from it.                  
+                    self.drawAddSpecimenWidget(row, col)
                 else:
                     self.drawText(row, col, text, align)
-            colname = df.columns[col]
-
+        self.setRowColors(self.getOnlySiteRecords(), '#f9e66b')  # set site level row to yellow
+        self.setRowColors(self.getOnlySpecimenRecords(), '#baec6d')  # set specimen level row to green
         self.colorColumns()
         self.colorRows()
         self.tablecolheader.redraw()
@@ -490,15 +486,18 @@ class Table(Canvas):
         self.refreshSpecimenSiteNums(df)
 
         return
+
+
     def getOnlySpecimenRecords(self):
-        """Returns a list of indices which are specimen records. Use it as such:
-        self.parentapp.model.df.iloc[self.parentapp.getOnlySpecimenRecords(),:]
-        or perhaps, depending on the tkinter frames:
-        self.model.df.iloc[self.parentapp.getOnlySpecimenRecords(),:]
-        Also see the function called:  self.parentapp.model.df.get_loc('catalogNumber') for use case."""
+        """Returns a list of self.model.df indices which are specimen records."""
         listToReturn = [i for i, x in enumerate(self.model.df['specimen#']) if x != '!AddSITE']
         return listToReturn
-        
+
+
+    def getOnlySiteRecords(self):
+        """Returns a list of  self.model.df indices which are site records."""
+        listToReturn = [i for i, x in enumerate(self.model.df['specimen#']) if x == '!AddSITE']
+        return listToReturn
 
 
     def redraw(self, event=None, callback=None):
@@ -583,8 +582,9 @@ class Table(Canvas):
             clr = self.getaColor('#dcf1fc')
         if clr == None:
             return
-        if rows == None:
-            rows = self.multiplerowlist
+        if len(rows) <= 0:
+            return
+            #rows = self.multiplerowlist
 
         df = self.model.df
         idx = df.index[rows]
@@ -599,7 +599,6 @@ class Table(Canvas):
             self.rowcolors = self.rowcolors.append(pd.Series(), ignore_index=True)
             rc = self.rowcolors
             rc.iloc[idx] = clr
-        #self.redraw() #recrusive since we've added it elsewhere
         return
 
     def setColorbyValue(self):
@@ -649,12 +648,15 @@ class Table(Canvas):
         for col in range(self.cols):
             colname = self.model.getColumnName(col)
             if colname == 'site#':
-                l = 4
+                #l = 4
+                self.model.columnwidths['site#'] = 4
             if colname == '-':
-                l = 1
+                #l = 1
+                self.model.columnwidths['-'] = 1
             if colname == 'specimen#':
-                l = 6
-            elif colname in self.model.columnwidths:
+                #l = 6
+                self.model.columnwidths['specimen#'] = 6
+            if colname in self.model.columnwidths:
                 w = self.model.columnwidths[colname]
                 l = self.model.getlongestEntry(col)
             else:
@@ -1747,7 +1749,12 @@ class Table(Canvas):
 
         row = self.get_row_clicked(event)
         col = self.get_col_clicked(event)
-        x,y = self.getCanvasPos(self.currentrow, 0)
+        x,y = self.getCanvasPos(self.currentrow, self.currentcol)
+        rmin = self.visiblerows[0]
+        rmax = self.visiblerows[-1]
+        cmin = self.visiblecols[0]
+        cmax = self.visiblecols[-1]
+
         if x == None:
             return
 
@@ -1755,32 +1762,57 @@ class Table(Canvas):
             if self.currentrow == 0:
                 return
             else:
-                #self.yview('moveto', y)
-                #self.rowheader.yview('moveto', y)
                 self.currentrow  = self.currentrow -1
         elif event.keysym == 'Down':
-            if self.currentrow >= self.rows-1:
+            if self.currentrow >= self.rows -1:
                 return
             else:
-                #self.yview('moveto', y)
-                #self.rowheader.yview('moveto', y)
                 self.currentrow  = self.currentrow +1
         elif event.keysym == 'Right' or event.keysym == 'Tab':
+            # if we've run out of columns to travel stop traveling
             if self.currentcol >= self.cols-1:
-                if self.currentrow < self.rows-1:
-                    self.currentcol = 0
-                    self.currentrow  = self.currentrow +1
-                else:
-                    return
+                self.currentcol = self.cols-1
+                self.redraw()
+                return
+                # pandastables code had the selected cell wrap to next row.
+                # personal preference to just top traveling at end of columns.
+                #if self.currentrow < self.rows-1:
+                #    self.currentcol = 0
+                #    self.currentrow  = self.currentrow +1
             else:
                 self.currentcol  = self.currentcol +1
         elif event.keysym == 'Left':
+            # if we've run out of columns to travel stop traveling
+            if self.currentcol <= 0:
+                # handle edge case of column 0 being considered visible
+                # when it is not visible.
+                self.currentcol = 0
+                self.xview('moveto', 0)
+                self.tablecolheader.xview('moveto', 0)
+                self.redraw()
+                return
             self.currentcol  = self.currentcol -1
+        
+        if self.currentcol > cmax or self.currentcol <= cmin:
+            #print(self.visiblecols, self.currentcol)
+            self.xview('moveto', x)
+            self.tablecolheader.xview('moveto', x)
+
+        if self.currentrow <= rmin:           
+            #we need to shift y to page up enough
+            vh=(len(self.visiblerows)/2)
+            x,y = self.getCanvasPos(self.currentrow-vh, self.currentcol)
+
+        if self.currentrow >= rmax or self.currentrow <= rmin:
+            self.yview('moveto', y)
+            self.rowheader.yview('moveto', y)
+        
         self.drawSelectedRect(self.currentrow, self.currentcol)
         coltype = self.model.getColumnType(self.currentcol)
         #if coltype == 'text' or coltype == 'number':
         #    self.delete('entry')
         #    self.drawCellEntry(self.currentrow, self.currentcol)
+        self.redraw()
         return
 
     def handle_double_click(self, event):
@@ -3091,6 +3123,7 @@ class Table(Canvas):
         self.adjustColumnWidths()
         #this solves addressing errors related to index at row 1 = 1 on import, and various functions later properly reset the index to 0
         self.model.resetIndex()
+        self.rowcolors = pd.DataFrame()
         self.redraw()
         self.setSelectedRow(0)
         self.drawSelectedRow()
@@ -3395,6 +3428,7 @@ class Table(Canvas):
 
         #this solves addressing errors related to index at row 1 = 1 on import, and various functions later properly reset the index to 0
         self.model.resetIndex()
+        self.rowcolors = pd.DataFrame()
         self.redraw()
         self.setSelectedRow(0)
         self.drawSelectedRow()
