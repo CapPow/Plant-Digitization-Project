@@ -359,17 +359,14 @@ class Table(Canvas):
 
     def getColPosition(self, x):
         """Get column position at coord"""
+        # Major changes from pandastables
+        # finding column position using the coordinate's nearest neighbor's index in col_positions
+        # this uses real cell widths instead of default cell width settings.
+        col = self.col_positions.index(min(self.col_positions, key=lambda n:abs(n-x)))
+        if col > self.cols:
+            col = self.cols
 
-        x_start = self.x_start
-        w = self.cellwidth
-        i=0
-        col=0
-        for c in self.col_positions:
-            col = i
-            if c+w>=x:
-                break
-            i+=1
-        return int(col)
+        return col
 
     def getVisibleRows(self, y1, y2):
         """Get the visible row range"""
@@ -381,10 +378,11 @@ class Table(Canvas):
         return start, end
 
     def getVisibleCols(self, x1, x2):
-        """Get the visible column range"""
-        print(x1, x2)
-        start = self.getColPosition(x1)
-        end = self.getColPosition(x2)
+        """Get the visible column range with a 1 column buffer on either side"""
+        # Change from pandastables,added a buffer of + / - 1 columns
+        # stops partial cell coloring improving, the pan experience.
+        start = self.getColPosition(x1) - 1
+        end = self.getColPosition(x2) + 1
         if end > self.cols:
             end = self.cols
         return start, end
@@ -402,6 +400,13 @@ class Table(Canvas):
         self.delete('addSpecimenWidget')
         self.rows = len(self.model.df.index)
         self.cols = len(self.model.df.columns)
+        #  Major change from pandastables
+        #  generate a dictionary with each column's width.
+        #  dict comprehension explination:
+            # keys are every column in df.
+            # values are looked up from model.columnwidths and if they key does not exist it uses default cell widths.
+        self.colWidths = {key:self.model.columnwidths.get(key,self.cellwidth) for key in self.model.df.columns}
+
         if self.cols == 0 or self.rows == 0:
             self.delete('entry')
             self.delete('rowrect','colrect')
@@ -416,9 +421,12 @@ class Table(Canvas):
                 self.visiblerows = []
                 self.rowheader.redraw()
             return
-        self.tablewidth = (self.cellwidth) * self.cols
+
         self.configure(bg=self.cellbackgr)
         self.setColPositions()
+        # Major change from pandastables
+        #  calculate tablewidth using the actual cell widths as oppose to default width * qty of columns.
+        self.tablewidth = max(self.col_positions)
 
         #are we drawing a filtered subset of the recs?
         if self.filtered == True:
@@ -687,18 +695,14 @@ class Table(Canvas):
         """Determine current column grid positions"""
 
         df = self.model.df
-        self.col_positions=[]
-        w = self.cellwidth
-        x_pos = self.x_start
-        self.col_positions.append(x_pos)
-        for col in range(self.cols):
-            colname = str(df.columns[col])
-            if colname in self.model.columnwidths:
-                x_pos = x_pos+self.model.columnwidths[colname]
-            else:
-                x_pos = x_pos+w
-            self.col_positions.append(x_pos)
-        self.tablewidth = self.col_positions[len(self.col_positions)-1]
+#       Major change from pandastables:
+#         converted column by column iteration to Fibonacci style list comprehension
+        p = [self.x_start]
+        [p.append(p[-1] + self.colWidths.get(c, self.cellwidth)) for c in df.columns]
+        self.col_positions = p
+#       change from pandastables: just get the last value in col_positionts, it'll be the sum of all column widths.
+        self.tablewidth = self.col_positions[-1]
+
         return
 
     def sortTable(self, columnIndex=None, ascending=1, index=False):
@@ -1745,35 +1749,29 @@ class Table(Canvas):
 
     def handle_arrow_keys(self, event):
         """Handle arrow keys press"""
-        #print event.keysym
 
         row = self.get_row_clicked(event)
         col = self.get_col_clicked(event)
         x,y = self.getCanvasPos(self.currentrow, self.currentcol)
         rmin = self.visiblerows[0]
         rmax = self.visiblerows[-1]
-        cmin = self.visiblecols[0]
-        cmax = self.visiblecols[-1]
+        cmin = self.visiblecols[0] + 1
+        cmax = self.visiblecols[-1] - 1
 
         if x == None:
             return
 
         if event.keysym == 'Up':
-            if self.currentrow == 0:
-                return
-            else:
+            if self.currentrow != 0:
                 self.currentrow  = self.currentrow -1
         elif event.keysym == 'Down':
-            if self.currentrow >= self.rows -1:
-                return
-            else:
+            if self.currentrow < self.rows -1:
                 self.currentrow  = self.currentrow +1
         elif event.keysym == 'Right' or event.keysym == 'Tab':
             # if we've run out of columns to travel stop traveling
             if self.currentcol >= self.cols-1:
                 self.currentcol = self.cols-1
-                self.redraw()
-                return
+                #return
                 # pandastables code had the selected cell wrap to next row.
                 # personal preference to just top traveling at end of columns.
                 #if self.currentrow < self.rows-1:
@@ -1784,17 +1782,14 @@ class Table(Canvas):
         elif event.keysym == 'Left':
             # if we've run out of columns to travel stop traveling
             if self.currentcol <= 0:
-                # handle edge case of column 0 being considered visible
-                # when it is not visible.
                 self.currentcol = 0
-                self.xview('moveto', 0)
-                self.tablecolheader.xview('moveto', 0)
-                self.redraw()
-                return
-            self.currentcol  = self.currentcol -1
+
+            else:
+                # "-1" addresses travel issues from addressing coords at the right of the cell.
+                x,y = self.getCanvasPos(self.currentrow, self.currentcol -1 )
+                self.currentcol  = self.currentcol -1
         
         if self.currentcol > cmax or self.currentcol <= cmin:
-            #print(self.visiblecols, self.currentcol)
             self.xview('moveto', x)
             self.tablecolheader.xview('moveto', x)
 
