@@ -39,8 +39,10 @@ class PDDesktop(Frame):
                 self.edit_menu={'01Undo Last Change':{'cmd': self.table.undo},
                                 '02Preferences' :{'cmd': self.table.showPrefs},
                                 '03sep':'',
-                                '04Add Row Site to Records':{'cmd': self.table.addSite},
-                                '05Add Row From Site':{'cmd':self.table.addRowFromSite}
+                                '04Find/Replace':{'cmd':self.findText},
+                                '05sep':'',
+                                '06Add Row Site to Records':{'cmd': self.table.addSite},
+                                '07Add Row From Site':{'cmd':self.table.addRowFromSite}
                                 }
                 self.edit_menu = self.createPulldown(self.menu,self.edit_menu)
                 self.menu.add_cascade(label='Edit',menu=self.edit_menu['var'])
@@ -145,6 +147,15 @@ class PDDesktop(Frame):
                             compound="left")#, accelerator=sc)
             dict['var'] = var
             return dict
+        def findText(self):
+    
+            table = self.table
+            if hasattr(table, 'searchframe') and table.searchframe != None:
+                table.searchframe.close()
+            else:
+                table.findText()
+            return
+
 
 app = PDDesktop()
 #launch the app

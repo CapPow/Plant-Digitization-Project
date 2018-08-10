@@ -906,6 +906,132 @@ class SimpleEditor(Frame):
                 self.text.see(INSERT)
                 self.text.focus()
 
+class FindReplaceDialog(Frame):
+    """Find/replace dialog."""
+
+    def __init__(self, table):
+        parent = table.parentframe
+        Frame.__init__(self, parent)
+        self.parent = parent
+        self.table = table
+        self.setup()
+        return
+
+    def setup(self):
+
+        sf = self
+        sfont = "Helvetica 10 bold"
+        Label(sf, text='Enter Search String:', font=sfont).pack(side=TOP,fill=X)
+        self.searchvar = StringVar()
+        e = Entry(sf, textvariable=self.searchvar)
+        e.bind('<Return>', self.find)
+        e.pack(fill=BOTH,side=TOP,expand=1,padx=2,pady=2)
+        Label(sf, text='Replace With:', font=sfont).pack(side=TOP,fill=X)
+        self.replacevar = StringVar()
+        e = Entry(sf, textvariable=self.replacevar)
+        e.pack(fill=BOTH,side=TOP,expand=1,padx=2,pady=2)
+        f = Frame(sf)
+        f.pack(side=TOP, fill=BOTH, padx=2, pady=2)
+        addButton(f, 'Find Next', self.find, None, 'search', side=LEFT)
+        addButton(f, 'Replace All', self.replace, None, 'find', side=LEFT)
+        addButton(f, 'Close', self.close, None, 'close', side=LEFT)
+        # add mutually exclusive exact matching option
+        self.matchEntire = BooleanVar()
+        self.matchEntire.set(True)
+        m = Checkbutton(f,text='exact match', variable=self.matchEntire, command = self.checkBoxManager)
+        m.pack(side=TOP, fill=BOTH,padx=2, pady=2)
+        # add a case sensitivity checkbox
+        self.caseSensitive = BooleanVar()
+        self.caseSensitive.set(False)
+        self.caseCheckButton = Checkbutton(f,text='case sensitive', variable=self.caseSensitive)
+        self.caseCheckButton.pack(side=LEFT, padx=2, pady=2)
+        # add a regex checkbox
+        self.regex = BooleanVar()
+        self.regex.set(False)
+        self.regexCheckButton = Checkbutton(f,text='regex', variable=self.regex)
+        self.regexCheckButton.pack(side=LEFT, padx=2, pady=2)
+        self.checkBoxManager()
+        return
+
+    def checkBoxManager(self):
+        ''' ensures mutual exclusivity for exact matching and other find settings '''
+        boxes = {self.caseCheckButton : self.caseSensitive , self.regexCheckButton : self.regex}
+        if self.matchEntire.get():
+            for box, variable in boxes.items():
+                box.config(state=DISABLED)
+                variable.set(False)
+        else:
+            for box in boxes.keys():
+                box.config(state=NORMAL)
+        return
+
+    def identifyMatches(self):
+        ''' identifies matches to self.serachvar, used for find and replace '''
+        
+        table=self.table
+        df = table.model.df.applymap(str)
+        s = str(self.searchvar.get())
+        queryCells = []
+        # get addresses of the matches
+        for col in df.columns:
+            # for each column, make a list of row indices which match
+            if self.matchEntire.get():
+                targetRows = df[df[col] == s].index.tolist()
+            else:
+                targetRows = df[df[col].str.contains(s, case=self.caseSensitive.get(), regex=self.regex.get())].index.tolist()
+            colIndex = df.columns.get_loc(col)
+            # build list of tuples formatted as (row index #, column index #)
+            targets = [(r, colIndex) for r in targetRows]
+            queryCells.extend(targets)
+        # send the list of addresses back.
+        return queryCells
+
+    def find(self):
+        ''' selects, and places in view the next match to searchvar '''
+        table=self.table
+        # identify where the current selection is
+        currentLocation = (table.currentrow, table.currentcol)
+        # the cell address to move selection to
+        targetCellIndex = 0
+        # get list of matching addresses
+        queryCells = self.identifyMatches()
+        if currentLocation in queryCells:
+            # if currently selected cell on one of the hits, get address of the next hit
+            targetCellIndex = queryCells.index(currentLocation) + 1
+            # if currently selected cell is the last in the list, start over
+            if targetCellIndex > len(queryCells) - 1:
+                targetCellIndex = 0
+
+        try:
+            targetCell = queryCells[targetCellIndex]
+        except IndexError:
+            return
+        table.currentrow = targetCell[0]
+        table.currentcol = targetCell[1]
+        # move the tableview to the targetCell
+        table.set_table_view()
+        table.redraw()
+        return
+
+    def replace(self):
+        ''' replaces entire cells which are matched with self.replacevar '''
+        # Make sure the user can Undo!
+        self.table.storeCurrent()
+        table=self.table
+        df = table.model.df
+        r=self.replacevar.get()
+        for match in self.identifyMatches():
+            row,col = match
+            table.model.setValueAt(r,row,col)
+        table.redraw()
+        return
+
+
+    def close(self):
+        self.table.searchframe=None
+        self.destroy()
+        return
+
 class QueryDialog(Frame):
     """Use string query to filter. Will not work with spaces in column
         names, so these would need to be converted first."""

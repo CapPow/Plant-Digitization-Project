@@ -121,7 +121,8 @@ class Table(Canvas):
 
         self.rows = self.model.getRowCount()
         self.cols = self.model.getColumnCount()
-        self.tablewidth = (self.cellwidth)*self.cols
+        self.setColPositions()
+        self.tablewidth = max(self.col_positions)
         self.doBindings()
 
         #column specific actions, define for every column type in the model
@@ -336,12 +337,17 @@ class Table(Canvas):
 
     def getVisibleRegion(self):
         """Get visible region of canvas"""
-        #  uncommented options chosen because canvas geometry was being
-        #  modified by our additional grid objects (ie: toolbars)
+
         x1, y1 = self.canvasx(0), self.canvasy(0)
-        w, h = self.winfo_width(), self.winfo_height()  # uncommented these
-        if w <= 1.0 or h <= 1.0:
-            w, h = self.master.winfo_width(), self.master.winfo_height()
+        #w, h = self.winfo_width(), self.winfo_height()
+        #if w <= 1.0 or h <= 1.0:
+        w, h = self.master.winfo_width(), self.master.winfo_height()
+        # account for additional frames occupying otherwise visible tablespace.
+        if hasattr(self, 'searchframe') and self.searchframe != None:
+            h = h - self.searchframe.winfo_height()
+        if hasattr(self, 'statusbar') and self.statusbar != None:
+            h = h - self.statusbar.winfo_height()
+        # we could also accont for the horizontal toolbar's width here
         x2, y2 = self.canvasx(w), self.canvasy(h)
         return x1, y1, x2, y2
 
@@ -386,6 +392,32 @@ class Table(Canvas):
         if end > self.cols:
             end = self.cols
         return start, end
+
+    def set_table_view(self):
+        ''' makes sure the currentcol and currentrow are in view'''
+        x,y = self.getCanvasPos(self.currentrow, self.currentcol)
+        rmin = self.visiblerows[0]
+        rmax = self.visiblerows[-1] - 2
+        cmin = self.visiblecols[0] + 1
+        cmax = self.visiblecols[-1] - 1
+        
+        if self.currentcol > cmax or self.currentcol <= cmin:
+            # print (self.currentcol, self.visiblecols)
+            self.xview('moveto', x)
+            self.tablecolheader.xview('moveto', x)
+
+        if self.currentrow <= rmin:
+            # we need to shift y to page up enough
+            vh=len(self.visiblerows)/2
+            x,y = self.getCanvasPos(self.currentrow-vh,  self.currentcol)
+
+        if self.currentrow >= rmax or self.currentrow <= rmin:
+            self.yview('moveto', y)
+            self.rowheader.yview('moveto', y)
+
+        self.drawSelectedRect(self.currentrow, self.currentcol)
+        self.redraw()
+        return
 
     def redrawVisible(self, event=None, callback=None):
         """Redraw the visible portion of the canvas. This is the core redraw
@@ -701,8 +733,7 @@ class Table(Canvas):
         [p.append(p[-1] + self.colWidths.get(c, self.cellwidth)) for c in df.columns]
         self.col_positions = p
 #       change from pandastables: just get the last value in col_positionts, it'll be the sum of all column widths.
-        self.tablewidth = self.col_positions[-1]
-
+        self.tablewidth = max(self.col_positions)
         return
 
     def sortTable(self, columnIndex=None, ascending=1, index=False):
@@ -1356,7 +1387,15 @@ class Table(Canvas):
             idx = df.ix[mask].index
         return self.getRowsFromIndex(idx)
 
-    # may not need
+    def findText(self):
+        """Simple text search in whole table"""
+
+        if hasattr(self, 'searchframe') and self.searchframe != None:
+            return
+        self.searchframe = FindReplaceDialog(self)
+        self.searchframe.grid(row=6,column=0,columnspan=3,sticky='news', pady=1, ipady=1)
+        return
+
     def query(self, evt=None):
         """Do query"""
 
@@ -1789,25 +1828,8 @@ class Table(Canvas):
                 x,y = self.getCanvasPos(self.currentrow, self.currentcol -1 )
                 self.currentcol  = self.currentcol -1
         
-        if self.currentcol > cmax or self.currentcol <= cmin:
-            self.xview('moveto', x)
-            self.tablecolheader.xview('moveto', x)
-
-        if self.currentrow <= rmin:           
-            #we need to shift y to page up enough
-            vh=(len(self.visiblerows)/2)
-            x,y = self.getCanvasPos(self.currentrow-vh, self.currentcol)
-
-        if self.currentrow >= rmax or self.currentrow <= rmin:
-            self.yview('moveto', y)
-            self.rowheader.yview('moveto', y)
-        
-        self.drawSelectedRect(self.currentrow, self.currentcol)
-        coltype = self.model.getColumnType(self.currentcol)
-        #if coltype == 'text' or coltype == 'number':
-        #    self.delete('entry')
-        #    self.drawCellEntry(self.currentrow, self.currentcol)
-        self.redraw()
+        # moved the table view logic into function to share with "dialogs.FindReplaceDialog.find()"
+        self.set_table_view()
         return
 
     def handle_double_click(self, event):
@@ -3040,20 +3062,24 @@ class Table(Canvas):
 
         return progress_win
 
-    def updateModel(self, model):
+        
+    def updateModel(self, model=None):
         """Should call this method when a new table model is loaded.
            Recreates widgets and redraws the table."""
-
-        self.model = model
+    
+        if model is not None:
+            self.model = model
         self.rows = self.model.getRowCount()
         self.cols = self.model.getColumnCount()
-        self.tablewidth = (self.cellwidth)*self.cols
-        if hasattr(self, 'tablecolheader'):
-            self.tablecolheader.destroy()
-            self.rowheader.destroy()
-            #self.rowwidgetcolumn.destroy()
-            self.selectNone()
-        self.show()
+        self.setColPositions()
+        self.tablewidth = max(self.col_positions)
+        self.tablecolheader.model = model
+        self.rowheader.model = model
+        self.tableChanged()
+        self.adjustColumnWidths()
+        return
+        
+        
         return
 
     def new(self):
