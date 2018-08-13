@@ -337,7 +337,7 @@ class Table(Canvas):
 
     def getVisibleRegion(self):
         """Get visible region of canvas"""
-
+#bookmark
         x1, y1 = self.canvasx(0), self.canvasy(0)
         #w, h = self.winfo_width(), self.winfo_height()
         #if w <= 1.0 or h <= 1.0:
@@ -345,8 +345,16 @@ class Table(Canvas):
         # account for additional frames occupying otherwise visible tablespace.
         if hasattr(self, 'searchframe') and self.searchframe != None:
             h = h - self.searchframe.winfo_height()
-        if hasattr(self, 'statusbar') and self.statusbar != None:
+        # TODO unify the methods in which we determine the visibility of these various elements.
+        if self.showtoolbar:
+            h = h - self.toolbar.winfo_height()
+        if self.showstatusbar:
             h = h - self.statusbar.winfo_height()
+        if hasattr(self, 'collectiondataentrybar') and self.collectiondataentrybar != None:
+            h = h - self.collectiondataentrybar.winfo_height()
+        if hasattr(self, 'catnumberbar') and self.catnumberbar != None:
+            h = h - self.catnumberbar.winfo_height()
+
         # we could also accont for the horizontal toolbar's width here
         x2, y2 = self.canvasx(w), self.canvasy(h)
         return x1, y1, x2, y2
@@ -2991,6 +2999,7 @@ class Table(Canvas):
         CatNumberBar.stuCollVerifyByVar = StringVar()
         CatNumberBar.stuCollVerifyByVar.set(self.prefs.get('stuCollVerifyBy'))
         # checkbox for the "Student collection" status.
+        # TODO organize this catNumberBar with other preferences in a more coherent maner.
         CatNumberBar.stuCollCheckBoxVar = IntVar()
         CatNumberBar.stuCollCheckBoxVar.set(self.prefs.get('stuCollCheckBox'))
         return
