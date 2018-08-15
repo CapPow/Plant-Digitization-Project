@@ -3647,11 +3647,12 @@ class CollectionDataEntryBar(Frame):
             self.delDetByNameButton.grid(row=0, column=9, rowspan =1, sticky ='news', pady=1, ipady=1)
 
 #Functions to operate within the CollectionDataEntryBar's tkinter space.
-
+# bookmark 
     def addCollectionName(self):
         collName = self.collNameVar.get()
         self.parentapp.model.df['collectionName'] = collName
         self.parentapp.redraw()
+        self.parentapp.updatePreviewWindow()
 
     def delCollectionName(self):
         try:
@@ -3659,6 +3660,7 @@ class CollectionDataEntryBar(Frame):
         except ValueError:
             pass
         self.parentapp.redraw()
+        self.parentapp.updatePreviewWindow()
 
     def addDetByName(self): # Only replacing empty cells.
         detByCol = self.parentapp.model.df['identifiedBy']
@@ -3670,6 +3672,7 @@ class CollectionDataEntryBar(Frame):
             isoDate = date.today().isoformat()
             self.parentapp.model.df['dateIdentified'] = isoDate
         self.parentapp.redraw()
+        self.parentapp.updatePreviewWindow()
 
     def delDetByName(self): # Should this only remove the "added" names?
         try:
@@ -3678,6 +3681,7 @@ class CollectionDataEntryBar(Frame):
         except ValueError:
             pass
         self.parentapp.redraw()
+        self.parentapp.updatePreviewWindow()
 
 
 class CatNumberBar(Frame):
@@ -3762,6 +3766,7 @@ class CatNumberBar(Frame):
         else:
             self.stuCollVerifyBy.configure(state=DISABLED)
         self.parentapp.saveBarPrefs()
+        self.parentapp.updatePreviewWindow()
 
     def genCatNumPreview(self):
         """Generate catalog number preview ..."""
@@ -3797,6 +3802,7 @@ class CatNumberBar(Frame):
             self.catStartVar.set(len(catalogValues) + int(start)) # update the starting view by the quanity being added
             df.loc[groupNeedingBarcodes.index,'catalogNumber'] = catalogValues #apply the selective changes
             self.parentapp.redraw()
+            self.parentapp.updatePreviewWindow()
                 
     def delCatalogNumbers(self):
         """Blindly removes the catalogNumber column..."""
@@ -3814,6 +3820,7 @@ class CatNumberBar(Frame):
         except ValueError:
             pass
         self.parentapp.redraw()
+        self.parentapp.updatePreviewWindow()
 
 
 class ToolBar(Frame):
