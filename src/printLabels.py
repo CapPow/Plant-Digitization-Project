@@ -13,11 +13,17 @@ import sys
 import subprocess
 from tkinter import filedialog
 
+# new import for preview window
+from io import BytesIO
+from wand.image import Image as wandImage
+#TODO either integrate this as required or check the preview capability with an catching.
+
+
 # This entire module needs clean up,
 # dynamic spacing needs redesigned and simplified
 # before size options are added.
 
-def genPrintLabelPDFs(labelDataInput,defaultFileName = None):
+def genPrintLabelPDFs(labelDataInput,defaultFileName = None, ispreview = False):
     """labelDataInput = list of dictionaries formatted as: {DWC Column:'field value'}
        defaultFileName = the filename to use as the default when saving the pdf file."""
     
@@ -437,13 +443,21 @@ def genPrintLabelPDFs(labelDataInput,defaultFileName = None):
         #Add the flowables to the elements list.
         elements.append(docTable)
         elements.append(PageBreak())
-#Bookmark
+    
+    #Bookmark
     #Build the base document's parameters.
-    labelFileName = filedialog.asksaveasfilename(
-                                            initialdir=os.getcwd(),
-                                            defaultextension='.pdf',
-                                            initialfile = defaultFileName,
-                                            filetypes=(('pdf','*.pdf'),),title = 'Save Labels As')
+    if ispreview:
+        # if it is a preview dump 
+
+        #labelFileName = 'tmp.pdf'
+        labelFileName = BytesIO()
+    else:
+        labelFileName = filedialog.asksaveasfilename(
+                                                initialdir=os.getcwd(),
+                                                defaultextension='.pdf',
+                                                initialfile = defaultFileName,
+                                                filetypes=(('pdf','*.pdf'),),title = 'Save Labels As')
+
     doc = BaseDocTemplate(labelFileName,
      pagesize=customPageSize,
      pageTemplates=[],
@@ -482,11 +496,45 @@ def genPrintLabelPDFs(labelDataInput,defaultFileName = None):
     #Actually build the pdf
     build_pdf(elements)
     #Open the file after it is built (maybe change/remove this later? Idealy, a preview or something
+    
+    if ispreview:
+        
+        pdfBytes = labelFileName.getvalue()
+        labelFileName.close()
+        return pdfBytes
 
-    def open_file(filename):
-        if sys.platform == "win32":
-            os.startfile(filename)
-        else:
-            opener ="open" if sys.platform == "darwin" else "xdg-open"
-            subprocess.call([opener, filename])
-    open_file(labelFileName)
+        #genImgFromPDF(labelFileName)
+        
+    else:
+
+        def open_file(filename):
+            if sys.platform == "win32":
+                os.startfile(filename)
+            else:
+                opener ="open" if sys.platform == "darwin" else "xdg-open"
+                subprocess.call([opener, filename])
+        open_file(labelFileName)
+
+def genImgFromPDF(pdfBlob):
+    '''Converts the first page of a pdf bytesIO fileobject into a .png bytesIO
+    fileobject for preview generation.
+    introduces new requirements: ImageMagick and the wrapper wand'''
+
+    with wandImage(blob=pdfBlob) as source:
+        source.format = 'png'
+        imgBlob = source.make_blob()
+        #Image(image).save(filename = previewName)
+        
+        #pdfFile.close() # the with as block *should* close this out without memory leaks.    
+        return imgBlob
+
+def genPreview(labelDataInput):
+    '''labelDataInput = list of dictionaries formatted as: {DWC Column:'field value'}
+    Converts the first row into a preview Blob. 
+'''    
+    if len(labelDataInput) > 1:
+        labelDataInput = [labelDataInput[0]]
+    pdfBlob = genPrintLabelPDFs(labelDataInput, ispreview = True)
+    imgBlob = genImgFromPDF(pdfBlob)
+    
+    return imgBlob

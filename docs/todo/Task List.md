@@ -19,7 +19,12 @@ Priority Tasks:
 ~~* Modify Pandastables preferences windows to load preferences on start up, and save when they are modified.~~
 ~~* Values to save in preferences:~~
 
+* Add handling for non-conforming or non-existant otherCatalogNumbers upon Import.
+
+
 Tasks:
+
+* Change label printing workflow from DataFrame > PDF to DataFrame > HTML (or XML, or Markdown, or Latex..) > PDF. In order to allow easy for a simple preview display frame. Ideally, updated as edits are made. This also allows for user selected label format output options beyond only PDF.
 
 * Clean up tkinter importing across all submodules, and consolidate all code in order to simplify the creation of binaries. 
 
@@ -51,7 +56,6 @@ Tasks:
 * Add some "New blank"-ish option to generate a blank worksheet in appropriate format for those building from scratch.
 
 * Add New site# button to bottom of table. Unlike new specimen, this duplicates nothing.
-
 
 Future Tasks:
 

@@ -50,6 +50,10 @@ from locality import *
 from printLabels import *
 import webbrowser
 
+# new imports for preview
+from PIL import ImageTk, Image
+from io import BytesIO
+
 
 class Table(Canvas):
     """A tkinter class for providing table functionality.
@@ -1542,6 +1546,8 @@ class Table(Canvas):
         self.currentrow = row
         self.multiplerowlist = []
         self.multiplerowlist.append(row)
+        #bookmark
+        self.updatePreviewWindow()
         return
 
     def setSelectedCol(self, col):
@@ -1838,6 +1844,8 @@ class Table(Canvas):
         
         # moved the table view logic into function to share with "dialogs.FindReplaceDialog.find()"
         self.set_table_view()
+        self.setSelectedRow(self.currentrow)
+
         return
 
     def handle_double_click(self, event):
@@ -1894,8 +1902,8 @@ class Table(Canvas):
         if hasattr(self, 'cellentry'):
             self.cellentry.destroy()
         self.currentrow = self.currentrow+1
-        #if self.currentcol >= self.cols-1:
-        #    self.currentcol = self.currentcol+1
+        #bookmark changed for preview window 
+        self.setSelectedRow(self.currentrow)
         self.drawSelectedRect(self.currentrow, self.currentcol)
         return
 
@@ -2527,7 +2535,9 @@ class Table(Canvas):
         self.model.setValueAt(value,row,col)
         self.drawText(row, col, value, align=self.align)
         self.delete('entry')
-        self.gotonextCell()
+        # added preview update
+        self.updatePreviewWindow()
+        #self.gotonextCell() #UX preference
         return
 
     def drawCellEntry(self, row, col, text=None):
@@ -2536,7 +2546,7 @@ class Table(Canvas):
         bring up entry window and allow edits. Also, call
         storeCurrent to store the dataframe state prior to a cell edit.
         """
-
+        # TODO Change cell entry methods to include clicking elcewhere and arrowkeys following User feedback
         if self.editable == False:
             return
         # storeCurrent df before cell edit
@@ -2656,7 +2666,20 @@ class Table(Canvas):
         self.lower('fillrect')
         self.lower('colorrect')
         self.rowheader.drawSelectedRows(self.currentrow)
+        #self.updatePreviewWindow()
+
+        
         return
+    def updatePreviewWindow(self):
+        ''' updates the label preview box.
+        This will probably be slow the process is DF > reportlab pdf bytes > wand bytes > PIL display'''
+
+        previewBytes = self.genLabelPDF(ispreview = True)
+        previewImg = ImageTk.PhotoImage( Image.open(BytesIO(previewBytes)))
+        previewBox = self.catnumberbar.previewBox
+        previewBox.configure(image = previewImg)
+        previewBox.image = previewImg
+
 
     def drawSelectedCol(self, col=None, delete=1, color=None, tag='colrect'):
         """Draw a highlight rect for the current column selection"""
@@ -3283,7 +3306,7 @@ class Table(Canvas):
         
 
 
-    def genLabelPDF(self):
+    def genLabelPDF(self, ispreview = False):
         """Generate Label PDF. Print specimen labels
         for physical plant records.
         # causes a pdf to be saved (uses dialog to get save name.
@@ -3306,12 +3329,15 @@ class Table(Canvas):
                 if len(associatedTaxaItems) > 15:   #if it is too large, trunicate it at 15, and append "..." to indicate trunication.
                     record['associatedTaxa'] = ', '.join(associatedTaxaItems[:15])+' ...'   
 
+            if ispreview:
+                # if we are making a preview just return the image bytes
+                return genPreview(toPrintDataFrame)                
+                
             pdfFileName = self.filename.replace('.csv', '.pdf').split('/')[-1] # prep the default file name
             genPrintLabelPDFs(toPrintDataFrame, pdfFileName)     #sent modified list of dicts to the printLabelPDF module without editing actual data fields.
         else:
             messagebox.showwarning("No Labels to Make", "No specimen records (green rows) selected.")
         return
-
     
     def findColumnIndex(self, columnLabel):
         """Find Column Index, gets the column index
@@ -3555,6 +3581,7 @@ class Table(Canvas):
 
     def saveBarPrefs(self):
         """ saves the CollectionDataEntryBar settings """
+        # TODO Change this to be saved as bytes to reduce HD writes. Include moments when to HD write it (such as @ close and saves)
         # Save CollectionDataEntry Bar settings
         self.prefs.set('collName', CollectionDataEntryBar.collNameVar.get())
         self.prefs.set('detName',CollectionDataEntryBar.detNameVar.get())        
@@ -3715,8 +3742,13 @@ class CatNumberBar(Frame):
             else:
                 stuCollState = DISABLED
             self.stuCollVerifyBy = Entry(self,textvariable=self.stuCollVerifyByVar, width=16, state=stuCollState)
-            self.stuCollVerifyBy.grid(row=2, column=3, rowspan = 1,columnspan = 4, sticky='news', pady=1, ipady=1)
+            self.stuCollVerifyBy.grid(row=2, column=3, rowspan = 1,columnspan = 1, sticky='news', pady=1, ipady=1)
+            #bookmark changed for image preview
+            # needs a placeholder 'preview here' image
+            self.previewBox = Label(self, image = None)
+            self.previewBox.grid(row=2, column=4, rowspan = 1,columnspan = 4, sticky='news', pady=1, ipady=1)
 #Functions to operate within the CatNumberBar's tkinter space.
+            
 
     def stuCollCheckBoxChange(self):
         """disables or enables the stuCollVerifyBy entry field depending on the checkbox Status"""
