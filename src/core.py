@@ -2675,10 +2675,11 @@ class Table(Canvas):
         This will probably be slow the process is DF > reportlab pdf bytes > wand bytes > PIL display'''
 
         previewBytes = self.genLabelPDF(ispreview = True)
-        previewImg = ImageTk.PhotoImage( Image.open(BytesIO(previewBytes)))
-        previewBox = self.catnumberbar.previewBox
-        previewBox.configure(image = previewImg)
-        previewBox.image = previewImg
+        if previewBytes != None:
+            previewImg = ImageTk.PhotoImage( Image.open(BytesIO(previewBytes)))
+            previewBox = self.catnumberbar.previewBox
+            previewBox.configure(image = previewImg)
+            previewBox.image = previewImg
 
 
     def drawSelectedCol(self, col=None, delete=1, color=None, tag='colrect'):
@@ -3336,8 +3337,12 @@ class Table(Canvas):
             pdfFileName = self.filename.replace('.csv', '.pdf').split('/')[-1] # prep the default file name
             genPrintLabelPDFs(toPrintDataFrame, pdfFileName)     #sent modified list of dicts to the printLabelPDF module without editing actual data fields.
         else:
-            messagebox.showwarning("No Labels to Make", "No specimen records (green rows) selected.")
-        return
+            if ispreview:
+                # if we're generating a preview don't make popups
+                return None
+            else:
+                messagebox.showwarning("No Labels to Make", "No specimen records (green rows) selected.")
+        return None
     
     def findColumnIndex(self, columnLabel):
         """Find Column Index, gets the column index

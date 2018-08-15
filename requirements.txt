@@ -3,4 +3,6 @@ numpy
 pandas
 reportlab
 requests
+pil
+wand
 any others?
