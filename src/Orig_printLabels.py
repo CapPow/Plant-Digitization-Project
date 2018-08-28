@@ -17,21 +17,23 @@ from tkinter import filedialog
 # dynamic spacing needs redesigned and simplified
 # before size options are added.
 
-def genPrintLabelPDFs(labelDataInput, defaultFileName = None):
-    labelData = labelDataInput
-    xMarginProportion = 1.5
-    yMarginProportion = 1.5   #Padding on tables are functionally the margins in our use. (We're claiming most of paper)
-
-    xPaperSize = (5.50 * inch)   #These values should be user preferences! (But it'll be a PITA to do)
-    yPaperSize = (3.50 * inch)
-    #customPageSize = (xMarginProportion * xPaperSize,yMarginProportion * yPaperSize)        #set up Paper size for labels, this should be user selectable in time.
-    customPageSize = (11 * inch, 17 * inch)
+def genPrintLabelPDFs(labelDataInput,defaultFileName = None):
+    """labelDataInput = list of dictionaries formatted as: {DWC Column:'field value'}
+       defaultFileName = the filename to use as the default when saving the pdf file."""
     
+    labelData = labelDataInput
+    xPaperSize = 5.50 * inch   #These values should be user preferences! (But it'll be a PITA to do)
+    yPaperSize = 3.50 * inch
+#    yPaperSize = 5.50 * inch
+#    xPaperSize = 3.50 * inch
+    customPageSize = (xPaperSize,yPaperSize)        #set up Paper size for labels, this should be user selectable in time.
+
     relFont = 12                                    #a font size which everything else relates to. Base normal text font size.
 
-    
-    xMargin = xMarginProportion        #Margin set up (dynamically depending on paper sizes. Hopefully logical stuff).
-    yMargin = yMarginProportion
+    xMarginProportion = 0
+    yMarginProportion = 0   #Padding on tables are functionally the margins in our use. (We're claiming most of paper)
+    xMargin = xMarginProportion * xPaperSize        #Margin set up (dynamically depending on paper sizes. Hopefully logical stuff).
+    yMargin = xMarginProportion * yPaperSize
 
     #Style sheets below (many lines.. for various styles)
     def stylesheet(key):
@@ -255,7 +257,7 @@ def genPrintLabelPDFs(labelDataInput, defaultFileName = None):
         else:
             row0 = Para('collectionName','collectionNameSTY')
                 
-        
+
         row1 = Table([
             [Para('samplingEffort','samplingEffortSTY')],
             [verifiedByPara('verifiedBy','verifiedBySTY')]],
@@ -350,7 +352,7 @@ def genPrintLabelPDFs(labelDataInput, defaultFileName = None):
             row6 = Table([[
             Para('substrate','default','Substrate: ')]],style=tableSty)
 
-        row7 = Table([[collectedByPara('recordedBy','associatedCollectors','default','Collected by: ')]], style=tableSty)
+        row7 = [collectedByPara('recordedBy','associatedCollectors','default','Collected by: ')]
 
         row6_5 = Table([[
             Para('locationRemarks','default','Location Remarks: ')]],style=tableSty)
@@ -359,6 +361,12 @@ def genPrintLabelPDFs(labelDataInput, defaultFileName = None):
         row6_7 = Table([[
                     Para('occurrenceRemarks','default','Occurence Remarks: ')]],style=tableSty)
             
+        if dfl('identifiedBy') != '':
+            row7_5 = Table([[
+                    Para('identifiedBy','default','Determined by: ')]],style=tableSty)
+        # TODO: Add all tableList (row) objects to a loop which checks for content and appends else returns None 
+        # ...  Then Clean tableList for None objects
+        
         tableList = [[row0],
                       [row1],
                       [row2],
@@ -382,6 +390,10 @@ def genPrintLabelPDFs(labelDataInput, defaultFileName = None):
             row8 = Table([[Para('otherCatalogNumbers','default','Field Number: ')]], style = tableSty)
             row9 = Table([[gpsStrElement]],style = tableSty)
             tableList.append([row8])
+
+            if dfl('identifiedBy') != '':
+                tableList.append([row7_5])
+
             tableList.append([row9])
             
         else:
@@ -390,7 +402,13 @@ def genPrintLabelPDFs(labelDataInput, defaultFileName = None):
             gpsStrElement]],            
             colWidths = (xPaperSize * .33, xPaperSize * .65), rowHeights = None,style=tableSty)
             tableList.append([row8])
-                   
+
+            if dfl('identifiedBy') != '':
+                tableList.append([row7_5])
+
+        # append the determined by field
+        
+        
         docTableStyle = [                             #Cell alignment and padding settings (not text align within cells)
                 ('VALIGN',(0,3),(0,-1),'BOTTOM'),     #Rows 4-end align to bottom
                 ('ALIGN',(0,0),(-1,-1),'CENTER'),     #All rows align to center
@@ -419,7 +437,7 @@ def genPrintLabelPDFs(labelDataInput, defaultFileName = None):
         #Add the flowables to the elements list.
         elements.append(docTable)
         elements.append(PageBreak())
-
+#Bookmark
     #Build the base document's parameters.
     labelFileName = filedialog.asksaveasfilename(
                                             initialdir=os.getcwd(),
@@ -430,17 +448,14 @@ def genPrintLabelPDFs(labelDataInput, defaultFileName = None):
      pagesize=customPageSize,
      pageTemplates=[],
      showBoundary=0,
-     #leftMargin=xMargin,
-     leftMargin= 3 * inch,
+     leftMargin=xMargin,
      rightMargin=xMargin,
-     #topMargin=yMargin,
-     topMargin = 12.75 * inch,
+     topMargin=yMargin,
      bottomMargin=yMargin,
      allowSplitting=1,           
      title=None,
      author=None,
      _pageBreakQuick=1,
-     #rotation=180,
      encrypt=None)
 
     #Function to build the pdf

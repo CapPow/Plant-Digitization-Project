@@ -2,7 +2,18 @@
 # Author
 # License
 import requests
-
+try:
+    from tkinter import *
+    from tkinter.ttk import *
+    from tkinter import filedialog, messagebox, simpledialog
+    from tkinter import font
+except:
+    from Tkinter import *
+    from ttk import *
+    import tkFileDialog as filedialog
+    import tkSimpleDialog as simpledialog
+    import tkMessageBox as messagebox
+    
 # status codes
 # link -> https://developers.google.com/maps/documentation/geocoding/intro#StatusCodes
 # link -> https://developers.google.com/maps/documentation/geocoding/intro#ReverseGeocoding
@@ -37,6 +48,11 @@ def genLocalityNoAPI(self, currentRowArg):
     countyColumn = self.findColumnIndex('county')
     stateColumn = self.findColumnIndex('stateProvince')
     countryColumn = self.findColumnIndex('country')
+    
+    countryOfCollection = self.model.getValueAt(currentRow, countryColumn)
+    if countryOfCollection.upper() == 'UNITED STATES':
+        self.model.setValueAt('US', currentRow, countryColumn)
+    
     try:
         currentLocality = self.model.getValueAt(currentRow, localityColumn)
         #Gen list of locality value locations
@@ -47,19 +63,22 @@ def genLocalityNoAPI(self, currentRowArg):
         newLocality = [x for x in localityFields if x.lower() not in currentLocality.lower()]
         #join the list into a single string
         newLocality = ', '.join(newLocality)
-        userWarnedAboutGeo = False # set a trigger to restrict the amount of times we complain about their slack gps data.
-        for geoGeographyField in [stateColumn, countyColumn]:
-            if self.model.getValueAt(currentRow, geoGeographyField) in['','nan']:
-                messagebox.showinfo('LIMITED Location data at row {}'.format(currentRow+1), 'Row {} is missing important geographic data!\nYou may need to manually enter data into location fields (such as State, and County).'.format(currentRow+1))
-                userWarnedAboutGeo = True
-                break
-        if not userWarnedAboutGeo:
-            if newLocality != currentLocality: # if we actually changed something give the user a heads up the methods were sub-par.
-                newLocality = '{}, {}'.format(newLocality,currentLocality).rstrip(', ').lstrip(', ')
-                messagebox.showinfo('LIMITED Location data at row {}'.format(currentRow+1), 'Locality at row {} was generated using limited methods'.format(currentRow+1))
-            else:# if we could infer nothing from existing geographic fields, AND we have no GPS values then they have work to do!
-                messagebox.showinfo('LIMITED Location data at row {}'.format(currentRow+1), 'Row {} is missing important geographic data!\nYou may need to manually enter data into location fields (such as State, and County).'.format(currentRow+1))
-                return newLocality
+        
+        # modified for Mycology workflow, skipping many warnings and dialogs
+        
+#        userWarnedAboutGeo = False # set a trigger to restrict the amount of times we complain about their slack gps data.
+#        for geoGeographyField in [stateColumn, countyColumn]:
+#            if self.model.getValueAt(currentRow, geoGeographyField) in['','nan']:
+#                messagebox.showinfo('LIMITED Location data at row {}'.format(currentRow+1), 'Row {} is missing important geographic data!\nYou may need to manually enter data into location fields (such as State, and County).'.format(currentRow+1))
+#                userWarnedAboutGeo = True
+#                break
+#        if not userWarnedAboutGeo:
+#            if newLocality != currentLocality: # if we actually changed something give the user a heads up the methods were sub-par.
+#                newLocality = '{}, {}'.format(newLocality,currentLocality).rstrip(', ').lstrip(', ')
+#                messagebox.showinfo('LIMITED Location data at row {}'.format(currentRow+1), 'Locality at row {} was generated using limited methods'.format(currentRow+1))
+#            else:# if we could infer nothing from existing geographic fields, AND we have no GPS values then they have work to do!
+#                messagebox.showinfo('LIMITED Location data at row {}'.format(currentRow+1), 'Row {} is missing important geographic data!\nYou may need to manually enter data into location fields (such as State, and County).'.format(currentRow+1))
+#                return newLocality
         return newLocality
 
     except ValueError:
@@ -91,13 +110,16 @@ def genLocality(self, currentRowArg):
             longitude = (self.model.getValueAt(currentRow, longitudeColumn))
             if latitude == '' or longitude == '':
                 raise ValueError("Latitude/Longitude have no values")
+        
+        # Modified to speed up processing for Mycology workflow
+        
         except ValueError:
-            if messagebox.askyesno('MISSING GPS at row {}'.format(currentRow+1), 'Would you like to halt record processing to add GPS coordinates for row {}?'.format(currentRow+1)):
-                self.setSelectedRow(currentRow)
-                self.setSelectedCol(latitudeColumn)
-                return "user_set_gps"
-            else:
-                return "loc_error_no_gps"
+#            if messagebox.askyesno('MISSING GPS at row {}'.format(currentRow+1), 'Would you like to halt record processing to add GPS coordinates for row {}?'.format(currentRow+1)):
+#                self.setSelectedRow(currentRow)
+#                self.setSelectedCol(latitudeColumn)
+#                return "user_set_gps"
+#            else:
+            return "loc_error_no_gps"
         address = reverseGeoCall(latitude, longitude)
         if isinstance(address, list):
             newLocality = []

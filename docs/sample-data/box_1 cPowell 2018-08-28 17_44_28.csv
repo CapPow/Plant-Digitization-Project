@@ -1,0 +1,5 @@
+otherCatalogNumbers,institutionCode,collectionCode,recordedBy,kingdom,eventDate,stateProvince,country,county,municipality,locality,habitat,occurrenceRemarks,substrate,associatedTaxa,cultivationStatus,decimalLatitude,decimalLongitude,minimumElevationInMeters,maximumElevationInMeters,coordinateUncertaintyInMeters,verbatimCoordinates,scientificName,taxonRemarks,associatedCollectors,recordNumber,fieldNumber,identificationReferences,identificationRemarks,recordEnteredBy,dateEntered
+2-1,UCHT,F,,Fungi,2010-05-15,Tennessee,United States,Hamilton,Signal Mountain,,,,,,false,35.129459,-85.359561,,,800,,,,,,,,,cPowell,2018-08-28 17:35:33
+3-1,UCHT,F,,Fungi,,Tennessee,United States,Hamilton,Chattanooga,,,,,,false,35.010186,-85.364564,,,1500,,Tsuga canadensis,,,,,,,cPowell,2018-08-28 17:37:05
+4-1,UCHT,F,,Fungi,,Georgia,United States,Walker,Lookout Mountain,,,,,,false,34.922595,-85.379952,,,2000,,Tsuga canadensis,,,,,,,cPowell,2018-08-28 17:44:07
+5-1,UCHT,F,,Fungi,,,United States,,,,,,,,false,,,,,,,tsuga canadensis,,,,,,,cPowell,2018-08-28 17:44:25

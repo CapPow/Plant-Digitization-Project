@@ -3180,6 +3180,11 @@ class Table(Canvas):
         associatedTaxa = []
         # an indication of record processing
         self.parentframe.master.title("PD-Desktop (Processing Records...)")
+        
+        # modified for mycology workflow to speed up process
+        #bookmark
+        self.selectAll()
+        
         rows = self.multiplerowlist
         # TODO make this determinate progress bar a callable function
         progBar = ttk.Progressbar(self.master,orient ="horizontal",length = 200, mode ="determinate")
@@ -3295,21 +3300,26 @@ class Table(Canvas):
         # http://pandastable.readthedocs.io/en/latest/_modules/pandastable/core.html#Table.getSelectedDataFrame
         """
 
+        # mofified for mycology workflow, start by selecting ALL
+        self.selectAll()
+        
         toPrintDataFrame = self.getSelectedLabelDict()  #function returns a list of dicts (one for each record to print)
         labelsToPrint = len(toPrintDataFrame)
-        if labelsToPrint > 0:
-            for record in toPrintDataFrame:   
-                if CatNumberBar.stuCollCheckBoxVar.get() == 1: # for each dict, if it is student collection
-                    record['verifiedBy'] = CatNumberBar.stuCollVerifyByVar.get() #then add the verified by name to the dict.
+        #if labelsToPrint > 0:
+        for record in toPrintDataFrame:   
+            if CatNumberBar.stuCollCheckBoxVar.get() == 1: # for each dict, if it is student collection
+                record['verifiedBy'] = CatNumberBar.stuCollVerifyByVar.get() #then add the verified by name to the dict.
 
-                associatedTaxaItems = record.get('associatedTaxa').split(', ') #for each dict, verify that the associatedTaxa string does not consist of >15 items.
-                if len(associatedTaxaItems) > 15:   #if it is too large, trunicate it at 15, and append "..." to indicate trunication.
-                    record['associatedTaxa'] = ', '.join(associatedTaxaItems[:15])+' ...'   
+            associatedTaxaItems = record.get('associatedTaxa').split(', ') #for each dict, verify that the associatedTaxa string does not consist of >15 items.
+            if len(associatedTaxaItems) > 15:   #if it is too large, trunicate it at 15, and append "..." to indicate trunication.
+                record['associatedTaxa'] = ', '.join(associatedTaxaItems[:15])+' ...'   
 
-            pdfFileName = self.filename.replace('.csv', '.pdf').split('/')[-1] # prep the default file name
-            genPrintLabelPDFs(toPrintDataFrame, pdfFileName)     #sent modified list of dicts to the printLabelPDF module without editing actual data fields.
-        else:
-            messagebox.showwarning("No Labels to Make", "No specimen records (green rows) selected.")
+        pdfFileName = self.filename.replace('.csv', '.pdf').split('/')[-1] # prep the default file name
+        genPrintLabelPDFs(toPrintDataFrame, pdfFileName)     #sent modified list of dicts to the printLabelPDF module without editing actual data fields.
+        #else:
+            # modified for mycology workflow, Reduce dialogs and speed up prcoess.
+            #self.selectAll()
+            #messagebox.showwarning("No Labels to Make", "No specimen records (green rows) selected.")
         return
 
     
@@ -3453,6 +3463,9 @@ class Table(Canvas):
             self.refreshSpecimenSiteNums(df)
         model = TableModel(dataframe=df)
         self.updateModel(model)
+        collName = self.prefs.get('collName')
+        self.model.df['collectionName'] = collName
+        
         self.sortTable([self.model.df.columns.get_loc('site#'),self.model.df.columns.get_loc('specimen#')])
         self.adjustColumnWidths()
 
