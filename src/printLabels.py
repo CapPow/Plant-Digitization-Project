@@ -17,7 +17,8 @@ from tkinter import filedialog
 # dynamic spacing needs redesigned and simplified
 # before size options are added.
 
-def genPrintLabelPDFs(labelDataInput, defaultFileName = None):
+# modified for mycology workflow, added express option for rapid saving.
+def genPrintLabelPDFs(labelDataInput, defaultFileName = None, express = False):
     labelData = labelDataInput
     xMarginProportion = 1.5
     yMarginProportion = 1.5   #Padding on tables are functionally the margins in our use. (We're claiming most of paper)
@@ -421,11 +422,15 @@ def genPrintLabelPDFs(labelDataInput, defaultFileName = None):
         elements.append(PageBreak())
 
     #Build the base document's parameters.
-    labelFileName = filedialog.asksaveasfilename(
-                                            initialdir=os.getcwd(),
-                                            defaultextension='.pdf',
-                                            initialfile = defaultFileName,
-                                            filetypes=(('pdf','*.pdf'),),title = 'Save Labels As')
+    if not express:
+        labelFileName = filedialog.asksaveasfilename(
+                                                initialdir=os.getcwd(),
+                                                defaultextension='.pdf',
+                                                initialfile = defaultFileName,
+                                                filetypes=(('pdf','*.pdf'),),title = 'Save Labels As')
+    else:
+        labelFileName = defaultFileName
+
     doc = BaseDocTemplate(labelFileName,
      pagesize=customPageSize,
      pageTemplates=[],

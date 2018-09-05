@@ -49,7 +49,8 @@ from catalogOfLife import *
 from locality import *
 from printLabels import *
 import webbrowser
-
+# added for mycology workflow
+from glob import glob
 
 class Table(Canvas):
     """A tkinter class for providing table functionality.
@@ -337,7 +338,6 @@ class Table(Canvas):
 
     def getVisibleRegion(self):
         """Get visible region of canvas"""
-#bookmark
         x1, y1 = self.canvasx(0), self.canvasy(0)
         #w, h = self.winfo_width(), self.winfo_height()
         #if w <= 1.0 or h <= 1.0:
@@ -3182,7 +3182,6 @@ class Table(Canvas):
         self.parentframe.master.title("PD-Desktop (Processing Records...)")
         
         # modified for mycology workflow to speed up process
-        #bookmark
         self.selectAll()
         
         rows = self.multiplerowlist
@@ -3256,6 +3255,13 @@ class Table(Canvas):
             recordAssociatedTaxa = ', '.join(recordAssociatedTaxa).strip().strip(', ')
             self.model.setValueAt(recordAssociatedTaxa, recordRow, assocTaxaColumn)
 
+        # Modified for Mycology workflow 
+        # Integrate the: application of a catalog number, collection name, & label printing steps into processing.
+        self.collectiondataentrybar.addCollectionName()
+        self.catnumberbar.addCatalogNumbers()
+        self.genLabelPDF(express = True)
+        self.saveAs(self.filename, dbReady = True, express = True)
+        
         self.parentframe.master.title("PD-Desktop")
         # update the table to display progress to the user.
         self.redraw()
@@ -3288,7 +3294,7 @@ class Table(Canvas):
         
 
 
-    def genLabelPDF(self):
+    def genLabelPDF(self, express = False):
         """Generate Label PDF. Print specimen labels
         for physical plant records.
         # causes a pdf to be saved (uses dialog to get save name.
@@ -3313,13 +3319,26 @@ class Table(Canvas):
             associatedTaxaItems = record.get('associatedTaxa').split(', ') #for each dict, verify that the associatedTaxa string does not consist of >15 items.
             if len(associatedTaxaItems) > 15:   #if it is too large, trunicate it at 15, and append "..." to indicate trunication.
                 record['associatedTaxa'] = ', '.join(associatedTaxaItems[:15])+' ...'   
-
-        pdfFileName = self.filename.replace('.csv', '.pdf').split('/')[-1] # prep the default file name
-        genPrintLabelPDFs(toPrintDataFrame, pdfFileName)     #sent modified list of dicts to the printLabelPDF module without editing actual data fields.
-        #else:
-            # modified for mycology workflow, Reduce dialogs and speed up prcoess.
-            #self.selectAll()
-            #messagebox.showwarning("No Labels to Make", "No specimen records (green rows) selected.")
+        
+        # modified for mycology workflow.
+        pdfFileName = os.path.basename(self.filename).replace('.csv','.pdf')
+        #pdfFileName = self.filename.replace('.csv', '.pdf').split('/')[-1] # prep the default file name
+        if not express:
+            genPrintLabelPDFs(toPrintDataFrame, pdfFileName)     #sent modified list of dicts to the printLabelPDF module without editing actual data fields.
+            return
+        # modified for mycology workflow, quick saving.
+        else:
+            path = os.path.split(self.filename)[0]
+            if not 'Label PDFs' in path:
+                path = '{}//Label PDFs'.format(path)
+                if not os.path.exists(path):
+                    os.makedirs(path)
+            filename = '{}//{}'.format(path,pdfFileName) # use suggested default filename with preamble
+            extension = os.path.splitext(filename)[1]
+            fileNameQty = len(glob('{}*'.format(filename.replace(extension,''))))
+            if fileNameQty > 0:
+                filename = filename.replace(extension, '({}){}'.format(fileNameQty, extension))
+        genPrintLabelPDFs(toPrintDataFrame, filename, express = True)
         return
 
     
@@ -3359,7 +3378,7 @@ class Table(Canvas):
             self.redraw()
         return
 
-    def saveAs(self, filename=None, dbReady = False):
+    def saveAs(self, filename=None, dbReady = False, express = False):
         if not filename:
             filename = self.filename
         """Save dataframe to file"""
@@ -3396,16 +3415,30 @@ class Table(Canvas):
                 pass
 
         # prep the file name using the conditionally generated preamble.
-        defFileName = self.filename.split('/')[-1] # prep the default suggested filename.
+        #defFileName = self.filename.split('/')[-1] # prep the default suggested filename.
+        defFileName = os.path.basename(self.filename)
         if defFileName.split()[0] != fileNamePreamble: # ensure this file does not already have the preamble string
             defFileName = '{} {}'.format(fileNamePreamble,defFileName) # if it passes this ocndition, add preamble.
-        filename = filedialog.asksaveasfilename(parent=self.master,
-                                                    defaultextension='.csv',
-                                                    initialfile = defFileName,
-                                                    initialdir = os.getcwd(),
-                                                    filetypes=[("csv","*.csv")])
-
-
+        
+        if not express:
+            filename = filedialog.asksaveasfilename(parent=self.master,
+                                                        defaultextension='.csv',
+                                                        initialfile = defFileName,
+                                                        initialdir = os.getcwd(),
+                                                        filetypes=[("csv","*.csv")])
+        else:
+            # modified for mycology workflow, speed up dbready saving
+            
+            path = os.path.split(filename)[0]
+            if not 'DBReady' in path:
+                path = '{}//DBReady'.format(path)
+                if not os.path.exists(path):
+                    os.makedirs(path)
+            filename = '{}//{}'.format(path,defFileName) # use suggested default filename with preamble
+            extension = os.path.splitext(filename)[1]
+            fileNameQty = len(glob('{}*'.format(filename.replace(extension,''))))
+            if fileNameQty > 0:
+                filename = filename.replace(extension, '({}){}'.format(fileNameQty, extension))
         dfForExport.to_csv(filename, encoding = 'utf-8', index = False, columns = exportColumns)
 #        else:
         return
