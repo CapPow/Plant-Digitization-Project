@@ -1,3 +1,6 @@
+# Notice:
+This project has been rewritten as [collBook and collNotes](https://github.com/CapPow/collBook), and will no longer be maintained here.
+
 # Modernizing Field Collection Techniques
 
 ## Email Us with Suggestions or Issues!
